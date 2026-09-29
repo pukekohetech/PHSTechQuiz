@@ -13,7 +13,8 @@
     "Written answers now use terminology-aware rubrics so a non-empty but unrelated answer will not receive full credit.",
     "Rubrics accept several valid BCATS terms and synonyms; they do not require one exact sentence.",
     "Photo-evidence notes can also require recognised safety terminology through field validation rules.",
-    "The Learner Self-reflection questions are based directly on the supplied BCATS Safety learning resource: hazards, identifying/controlling hazards, PPE, care for tools/PPE, worker responsibilities and safety documents."
+    "The Learner Self-reflection questions are based directly on the supplied BCATS Safety learning resource: hazards, identifying/controlling hazards, PPE, care for tools/PPE, worker responsibilities and safety documents.",
+    "Damaged/unsafe equipment evidence is conditional: learners answer Yes/No, and the report fields only appear when Yes is selected."
   ],
   "questionSet": {
     "id": "ss40540-v1",
@@ -66,7 +67,7 @@
           "type": "repeatGroup",
           "id": "hazard",
           "itemLabel": "hazard",
-          "startWith": 1,
+          "startWith": 5,
           "minimum": 5,
           "maximum": null,
           "allowAdd": true,
@@ -197,18 +198,100 @@
                   "hint": "Name the tool, equipment or PPE item you cleaned/checked."
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "conditional",
+          "id": "damaged-equipment",
+          "group": {
+            "label": "Damaged equipment",
+            "title": "Damaged or unsafe equipment",
+            "intro": "Only complete a report if you actually found damaged or unsafe tools or equipment.",
+            "reminder": "If you select No, there is nothing else to write for this section."
+          },
+          "question": {
+            "id": "damaged_tools",
+            "part": "A",
+            "text": "Did you find any damaged or dangerous tools or equipment?",
+            "hint": "Choose Yes only if you actually found something damaged or unsafe.",
+            "type": "mc",
+            "shuffleOptions": false,
+            "maxPoints": 1,
+            "options": [
+              "No",
+              "Yes"
+            ],
+            "rubric": [
+              {
+                "points": 1,
+                "check": "^(?:No|Yes)$",
+                "flags": "i"
+              }
+            ]
+          },
+          "showWhen": {
+            "value": "Yes"
+          },
+          "clearWhenHidden": true,
+          "closedMessage": "No damaged or unsafe equipment to report.",
+          "questions": [
+            {
+              "id": "damaged_item",
+              "part": "B",
+              "text": "What item was damaged or unsafe?",
+              "hint": "Name the tool, machine, equipment, or PPE item.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{2,}$).+",
+                  "flags": "i"
+                }
+              ]
             },
             {
-              "id": "damaged_tools",
+              "id": "damage_problem",
               "part": "C",
-              "text": "Did you find damaged or dangerous tools or equipment?",
-              "hint": "If none were found, write N/A. If there was a problem, name the item and issue, give the date, and say who you reported it to.",
+              "text": "What was wrong with it?",
+              "hint": "Use a specific fault term such as broken, cracked, frayed, loose, missing guard, faulty, worn, exposed, split, or torn.",
               "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
                   "points": 1,
-                  "check": "(?:^\\s*N\\s*/?\\s*A\\s*$|(?=[\\s\\S]*\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\b)(?=[\\s\\S]*\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\b)[\\s\\S]+)",
+                  "check": "\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|missing guard|split|torn|tear|tears|blunt|bent|jammed|leaking|leak)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "damage_date",
+              "part": "D",
+              "text": "When did you find it?",
+              "hint": "Enter the date you found the problem, for example 29/09/2026.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "damage_reported_to",
+              "part": "E",
+              "text": "Who did you report it to?",
+              "hint": "Give the staff member name or role, for example teacher, technician, supervisor, or HOD.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{2,}$).+",
                   "flags": "i"
                 }
               ]

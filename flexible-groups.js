@@ -1,9 +1,9 @@
 /*
- * QuizMaster Flexible Groups plugin v1
- * Generic schema-v3 repeatable question groups for any standard.
+ * QuizMaster Flexible Groups plugin v2
+ * Generic schema-v3 repeatable and conditional question groups for any standard.
  *
  * Load after script.js and BEFORE photo-evidence.js:
- *   <script src="flexible-groups.js?v=1" defer></script>
+ *   <script src="flexible-groups.js?v=2" defer></script>
  *
  * Existing schema-v2 standards continue to work unchanged.
  */
@@ -11,6 +11,7 @@
   "use strict";
 
   const FLEX_SCHEMA_MIN = 3;
+  const PLUGIN_VERSION = 2;
   const originalLoadAssessment = window.loadAssessment;
 
   if (typeof originalLoadAssessment !== "function") {
@@ -28,6 +29,7 @@
       .flex-repeat-controls button{min-height:42px;padding:9px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#111827;font:inherit;font-weight:750;cursor:pointer}
       .flex-repeat-controls button.flex-repeat-add{background:#7a1f2b;border-color:#7a1f2b;color:#fff}
       .flex-repeat-controls button:disabled{opacity:.45;cursor:not-allowed}
+      .flex-conditional-status{margin:10px 0 2px;padding:10px 12px;border:1px solid #d8e5dc;border-radius:10px;background:#f3faf5;color:#315b3b;font-size:.94rem;line-height:1.4}
       @media (max-width:640px){.flex-repeat-controls__count{width:100%;margin-right:0}.flex-repeat-controls button{flex:1 1 auto}}
     `;
     document.head.appendChild(style);
@@ -117,12 +119,55 @@
     };
   }
 
+  function storedAnswer(assessmentId, questionId) {
+    try {
+      if (currentAssessmentId === assessmentId) {
+        const liveField = document.getElementById("q" + questionId);
+        if (liveField) return String(liveField.value || "").trim();
+      }
+      const encoded = data.answers?.[assessmentId]?.[questionId];
+      return encoded ? String(xorDecode(encoded) || "").trim() : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function conditionMatches(showWhen, value) {
+    const answer = String(value ?? "").trim();
+    const condition = showWhen && typeof showWhen === "object" ? showWhen : {};
+
+    if (Object.prototype.hasOwnProperty.call(condition, "value")) {
+      return answer.toLowerCase() === String(condition.value ?? "").trim().toLowerCase();
+    }
+
+    if (Array.isArray(condition.values)) {
+      const lowered = answer.toLowerCase();
+      return condition.values.some((item) => lowered === String(item ?? "").trim().toLowerCase());
+    }
+
+    if (Object.prototype.hasOwnProperty.call(condition, "notValue")) {
+      return answer.toLowerCase() !== String(condition.notValue ?? "").trim().toLowerCase();
+    }
+
+    if (condition.pattern) {
+      try {
+        return new RegExp(String(condition.pattern), String(condition.flags || "i")).test(answer);
+      } catch (error) {
+        console.warn("Flexible Groups: invalid conditional pattern", condition.pattern, error);
+        return false;
+      }
+    }
+
+    return !!answer;
+  }
+
   function materialiseFlexibleAssessment(assessment) {
     if (!Array.isArray(assessment?.blocks)) return false;
 
     const groups = [];
     const questions = [];
     const repeatMeta = [];
+    const conditionalMeta = [];
 
     assessment.blocks.forEach((block, blockIndex) => {
       const type = String(block?.type || "group").trim();
@@ -134,7 +179,12 @@
         groups.push(groupDefinition(block, vars, groupId));
         (block.questions || []).forEach((q, qIndex) => {
           const qid = safeId(q?.id || `q${qIndex + 1}`, `q${qIndex + 1}`);
-          questions.push(cloneQuestion(q, { id: qid, group: groupId }));
+          questions.push(cloneQuestion(q, {
+            id: qid,
+            group: groupId,
+            text: fillTemplate(q?.text || "", vars),
+            hint: fillTemplate(q?.hint || "", vars),
+          }));
         });
         return;
       }
@@ -144,6 +194,45 @@
           const qid = safeId(q?.id || `${blockId}-q${qIndex + 1}`, `${blockId}-q${qIndex + 1}`);
           questions.push(cloneQuestion(q, { id: qid, group: "" }));
         });
+        return;
+      }
+
+      if (type === "conditional") {
+        const groupId = blockId;
+        const vars = { n: 1, count: 1, min: 1, max: 1 };
+        groups.push(groupDefinition(block, vars, groupId));
+
+        const controllerSource = block.question || {};
+        const controllerId = safeId(controllerSource.id || `${blockId}-choice`, `${blockId}-choice`);
+        questions.push(cloneQuestion(controllerSource, {
+          id: controllerId,
+          group: groupId,
+          text: fillTemplate(controllerSource.text || "", vars),
+          hint: fillTemplate(controllerSource.hint || "", vars),
+        }));
+
+        const answer = storedAnswer(assessment.id, controllerId);
+        const visible = conditionMatches(block.showWhen, answer);
+        const followupIds = [];
+
+        if (visible) {
+          (block.questions || []).forEach((q, qIndex) => {
+            const qid = safeId(q?.id || `${blockId}-q${qIndex + 1}`, `${blockId}-q${qIndex + 1}`);
+            followupIds.push(qid);
+            questions.push(cloneQuestion(q, {
+              id: qid,
+              group: groupId,
+              text: fillTemplate(q?.text || "", vars),
+              hint: fillTemplate(q?.hint || "", vars),
+            }));
+          });
+        } else {
+          (block.questions || []).forEach((q, qIndex) => {
+            followupIds.push(safeId(q?.id || `${blockId}-q${qIndex + 1}`, `${blockId}-q${qIndex + 1}`));
+          });
+        }
+
+        conditionalMeta.push({ block, blockId, groupId, controllerId, visible, followupIds });
         return;
       }
 
@@ -180,6 +269,7 @@
     assessment.questionGroups = groups;
     assessment.questions = questions;
     assessment.__flexRepeatMeta = repeatMeta;
+    assessment.__flexConditionalMeta = conditionalMeta;
     assessment.__flexMaterialised = true;
     return true;
   }
@@ -198,11 +288,31 @@
     });
   }
 
-  function rerenderAssessment(assessment) {
-    try { persistCurrentAssessmentAnswers(); } catch (_) {}
-    materialiseFlexibleAssessment(assessment);
-    originalLoadAssessment();
-    window.requestAnimationFrame(() => renderRepeatControls(assessment));
+  function deleteConditionalAnswers(assessment, followupIds) {
+    const bucket = data.answers?.[assessment.id];
+    if (!bucket || typeof bucket !== "object") return;
+    (followupIds || []).forEach((qid) => delete bucket[qid]);
+  }
+
+  function applyQuestionUiPreferences(assessment) {
+    (assessment?.questions || []).forEach((question) => {
+      if (question?.type !== "mc" || question?.shuffleOptions !== false) return;
+      const field = document.getElementById("q" + question.id);
+      if (!(field instanceof HTMLSelectElement)) return;
+      const current = field.value;
+      field.replaceChildren();
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "Select an answer";
+      field.appendChild(blank);
+      (question.options || []).forEach((option) => {
+        const el = document.createElement("option");
+        el.value = option;
+        el.textContent = option;
+        field.appendChild(el);
+      });
+      field.value = current;
+    });
   }
 
   function renderRepeatControls(assessment) {
@@ -255,17 +365,71 @@
           if (Number.isFinite(maximum) && count >= maximum) return;
           try { persistCurrentAssessmentAnswers(); } catch (_) {}
           setRepeatCount(assessment, block, count + 1);
-          rerenderAssessment(assessment);
+          rerenderAssessment(assessment, { focusGroupId: `${blockId}-${count + 1}` });
           showToast(`Added another ${noun}.`);
-          window.requestAnimationFrame(() => {
-            const newSection = findGroupSection(`${blockId}-${count + 1}`);
-            newSection?.scrollIntoView({ behavior: "smooth", block: "start" });
-          });
         });
         controls.appendChild(addBtn);
       }
 
       lastSection.insertAdjacentElement("afterend", controls);
+    });
+  }
+
+  function renderConditionalControls(assessment) {
+    if (!assessment?.__flexMaterialised) return;
+    injectStyles();
+    document.querySelectorAll(".flex-conditional-status").forEach((el) => el.remove());
+
+    (assessment.__flexConditionalMeta || []).forEach((meta) => {
+      const { block, groupId, controllerId, visible, followupIds } = meta;
+      const field = document.getElementById("q" + controllerId);
+      const section = findGroupSection(groupId);
+      if (!field || !section) return;
+
+      const answer = String(field.value || "").trim();
+      if (answer && !visible) {
+        const note = document.createElement("div");
+        note.className = "flex-conditional-status";
+        note.textContent = String(block.closedMessage || "No additional questions are needed for this choice.");
+        const body = section.querySelector(".question-group__body") || section;
+        body.appendChild(note);
+      }
+
+      field.addEventListener("change", () => {
+        try { saveAnswer(controllerId); } catch (_) {}
+        try { persistCurrentAssessmentAnswers(); } catch (_) {}
+
+        const nextVisible = conditionMatches(block.showWhen, field.value);
+        if (nextVisible === visible) return;
+
+        if (!nextVisible && block.clearWhenHidden === true) {
+          deleteConditionalAnswers(assessment, followupIds);
+          data.lastSaved = new Date().toISOString();
+          if (STORAGE_KEY) storageSet(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        rerenderAssessment(assessment, { focusGroupId: groupId });
+      });
+    });
+  }
+
+  function renderFlexibleEnhancements(assessment) {
+    applyQuestionUiPreferences(assessment);
+    renderRepeatControls(assessment);
+    renderConditionalControls(assessment);
+  }
+
+  function rerenderAssessment(assessment, options = {}) {
+    try { persistCurrentAssessmentAnswers(); } catch (_) {}
+    materialiseFlexibleAssessment(assessment);
+    originalLoadAssessment();
+    window.requestAnimationFrame(() => {
+      renderFlexibleEnhancements(assessment);
+      if (options.focusGroupId) {
+        window.requestAnimationFrame(() => {
+          findGroupSection(options.focusGroupId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
     });
   }
 
@@ -275,7 +439,7 @@
     if (assessment && Array.isArray(assessment.blocks)) materialiseFlexibleAssessment(assessment);
     const result = originalLoadAssessment.apply(this, args);
     if (assessment?.__flexMaterialised) {
-      window.requestAnimationFrame(() => renderRepeatControls(assessment));
+      window.requestAnimationFrame(() => renderFlexibleEnhancements(assessment));
     }
     return result;
   };
@@ -284,8 +448,10 @@
   // without knowing how QuizMaster stores repeat counts internally.
   window.QuizMasterFlexible = Object.freeze({
     schemaVersion: FLEX_SCHEMA_MIN,
+    pluginVersion: PLUGIN_VERSION,
     materialiseAssessment: materialiseFlexibleAssessment,
     getRepeatCount,
     setRepeatCount,
+    conditionMatches,
   });
 })();

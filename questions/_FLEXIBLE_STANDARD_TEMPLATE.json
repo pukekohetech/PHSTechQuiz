@@ -13,7 +13,7 @@
     {
       "id": "example-flexible-assessment",
       "title": "Example flexible assessment",
-      "subtitle": "Shows ordinary groups plus a repeatable evidence group",
+      "subtitle": "Shows ordinary, repeatable, and conditional evidence blocks",
       "attachSignoff": false,
       "questions": [],
       "questionGroups": [],
@@ -97,6 +97,56 @@
               "part": "C",
               "text": "What will you do next because of this result?",
               "hint": "State the change, decision, or next step.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "conditional",
+          "id": "trial-follow-up",
+          "group": {
+            "label": "Follow-up",
+            "title": "Extra detail only when needed",
+            "intro": "This demonstrates a generic conditional block."
+          },
+          "question": {
+            "id": "needs_change",
+            "part": "A",
+            "text": "Did the trial show that you need to change something?",
+            "type": "mc",
+            "shuffleOptions": false,
+            "maxPoints": 1,
+            "options": [
+              "No",
+              "Yes"
+            ],
+            "rubric": [
+              {
+                "points": 1,
+                "check": "^(?:No|Yes)$",
+                "flags": "i"
+              }
+            ]
+          },
+          "showWhen": {
+            "value": "Yes"
+          },
+          "clearWhenHidden": true,
+          "closedMessage": "No extra change explanation is needed.",
+          "questions": [
+            {
+              "id": "change_needed",
+              "part": "B",
+              "text": "What will you change?",
+              "hint": "Describe the change that the trial showed you was needed.",
               "type": "long",
               "maxPoints": 1,
               "rubric": [
