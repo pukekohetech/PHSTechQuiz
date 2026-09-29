@@ -66,7 +66,7 @@
           "type": "repeatGroup",
           "id": "hazard",
           "itemLabel": "hazard",
-          "startWith": 5,
+          "startWith": 1,
           "minimum": 5,
           "maximum": null,
           "allowAdd": true,
