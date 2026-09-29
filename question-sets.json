@@ -11,16 +11,6 @@
       "credits": 4,
       "title": "Use safety practices for a BCATS project or related tasks",
       "assessmentCount": 3
-    },
-    {
-      "id": "us99999-test",
-      "label": "US 99999 - QuizMaster Test",
-      "file": "questions/us99999-test.json",
-      "number": "99999",
-      "version": "test",
-      "credits": 0,
-      "title": "QuizMaster test standard",
-      "assessmentCount": 2
     }
   ]
 }
