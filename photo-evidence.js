@@ -1,9 +1,9 @@
 /*
- * QuizMaster Photo Evidence plugin v1
+ * QuizMaster Photo Evidence plugin v2
  * Live camera behaviour adapted from the user's PHS Evidence Camera workflow.
  *
  * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=1" defer></script>
+ *   <script src="photo-evidence.js?v=2" defer></script>
  *
  * A question-set assessment enables this UI with:
  *   "mode": "photo-evidence",
@@ -383,16 +383,71 @@
     elements.status.className = `photo-evidence-status${type ? ` ${type}` : ""}`;
   }
 
-  function toBase64(blob) {
+  function blobToDataUrl(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        const value = String(reader.result || "");
-        resolve(value.includes(",") ? value.split(",")[1] : value);
-      };
+      reader.onload = () => resolve(String(reader.result || ""));
       reader.onerror = () => reject(reader.error || new Error("The photo could not be read."));
       reader.readAsDataURL(blob);
     });
+  }
+
+  async function readBlobDimensions(blob) {
+    if (typeof createImageBitmap === "function") {
+      try {
+        const bitmap = await createImageBitmap(blob);
+        const dims = { width: bitmap.width, height: bitmap.height };
+        bitmap.close?.();
+        return dims;
+      } catch (_) {}
+    }
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        const dims = { width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
+        URL.revokeObjectURL(url);
+        resolve(dims);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("The captured photo could not be opened."));
+      };
+      img.src = url;
+    });
+  }
+
+  async function createPhotoEvidencePdf(photoBlob, details) {
+    if (!window.jspdf?.jsPDF) await loadFirstAvailableScript(PDF_LIBRARY_URLS.jspdf);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+
+    const margin = 15;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Photo Evidence", margin, 18);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10.5);
+    doc.text(`${details.unitStandard}${details.standardVersion ? ` ${details.standardVersion}` : ""}`, margin, 27);
+    doc.text(`${details.studentName} (${details.studentId})`, margin, 34);
+    doc.text(`Evidence: ${details.evidenceLabel}`, margin, 41, { maxWidth: pageWidth - margin * 2 });
+    doc.text(`Captured: ${new Date(details.capturedAt).toLocaleString("en-NZ")}`, margin, 50);
+
+    const dims = await readBlobDimensions(photoBlob);
+    const dataUrl = await blobToDataUrl(photoBlob);
+    const maxW = pageWidth - margin * 2;
+    const maxH = pageHeight - 72;
+    const ratio = Math.min(maxW / dims.width, maxH / dims.height);
+    const drawW = dims.width * ratio;
+    const drawH = dims.height * ratio;
+    const x = (pageWidth - drawW) / 2;
+    doc.addImage(dataUrl, "JPEG", x, 60, drawW, drawH, undefined, "FAST");
+
+    return new Blob([doc.output("arraybuffer")], { type: "application/pdf" });
   }
 
   function safePart(value) {
@@ -436,21 +491,40 @@
       endpoint = getSubmissionEndpoint();
       storageRootName = getSubmissionRootName();
     } catch (_) {}
-    if (!endpoint) return setStatus("Photo submission is not configured yet.", "error");
+    if (!endpoint) return setStatus("Teacher submission is not configured yet.", "error");
     if (!storageRootName) return setStatus("Evidence storage is not configured.", "error");
 
     elements.submitBtn.disabled = true;
     elements.startBtn.disabled = true;
     elements.chooseBtn.disabled = true;
-    setStatus("Uploading photo evidence…");
+    setStatus("Preparing photo evidence…");
 
     const submissionId = makeSubmissionId();
     try {
-      const imageBase64 = await toBase64(capturedBlob);
+      try { saveStudentInfo(); } catch (_) {}
+
       const timestamp = capturedAt || new Date().toISOString();
-      const filename = `${safePart(identity.studentId)}_${safePart(identity.questionSetId || identity.unitStandard)}_${safePart(option.id)}_${compactTimestamp(timestamp)}.jpg`;
+      const details = {
+        studentName: identity.studentName,
+        studentId: identity.studentId,
+        unitStandard: identity.unitStandard,
+        standardVersion: (() => { try { return CURRENT_QUESTION_SET?.version || ""; } catch (_) { return ""; } })(),
+        evidenceLabel: option.label,
+        capturedAt: timestamp,
+      };
+
+      // Keep the known-good QuizMaster submission route: the captured JPG is
+      // wrapped in a one-page evidence PDF and submitted with the encrypted .puk.
+      // This preserves the existing Drive filing and document/submission register.
+      const [pdfBlob, pukResult] = await Promise.all([
+        createPhotoEvidencePdf(capturedBlob, details),
+        createProgressBackupForSubmission(),
+      ]);
+      const pdfBase64 = await blobToBase64(pdfBlob);
+
+      const shortRef = submissionId.replace(/^photo_/, "").slice(0, 24);
+      const dynamicAssessmentId = `${activeAssessment?.id || "photo-evidence-upload"}-${option.id}-${shortRef}`;
       const payload = {
-        submissionType: PHOTO_MODE,
         submissionId,
         appId: typeof APP_ID !== "undefined" ? APP_ID : "pukekohetech-quizmaster",
         appVersion: typeof APP_VERSION !== "undefined" ? APP_VERSION : "",
@@ -462,18 +536,19 @@
         teacherName: identity.teacherName,
         teacherEmail: identity.teacherEmail,
         unitStandard: identity.unitStandard,
-        standardVersion: (() => { try { return CURRENT_QUESTION_SET?.version || ""; } catch (_) { return ""; } })(),
-        assessmentId: activeAssessment?.id || "photo-evidence-upload",
-        assessmentTitle: activeAssessment?.title || "Photo Evidence Upload",
-        evidenceId: option.id,
-        evidenceLabel: option.label,
-        capturedAt: timestamp,
+        standardVersion: details.standardVersion,
+        assessmentId: dynamicAssessmentId,
+        assessmentTitle: `${activeAssessment?.title || "Photo Evidence Upload"} - ${option.label}`,
+        score: 1,
+        totalMarks: 1,
+        percentage: 100,
         submittedAt: new Date().toISOString(),
-        imageFileName: filename,
-        imageMimeType: "image/jpeg",
-        imageBase64,
+        pdfMimeType: "application/pdf",
+        pdfBase64,
+        pukText: pukResult.pukText,
       };
 
+      setStatus("Uploading photo evidence and updating the register…");
       await fetch(endpoint, {
         method: "POST",
         mode: "no-cors",
@@ -482,18 +557,15 @@
         cache: "no-store",
       });
 
-      setStatus("Photo sent. Confirming the Drive backup…");
-      let status = null;
-      if (typeof waitForSubmissionStatus === "function") {
-        status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
-      }
-      if (status && status.state !== "confirmed" && status.state !== "duplicate") {
-        throw new Error(status.message || "The photo was sent but could not be confirmed.");
+      setStatus("Upload received. Confirming the register…");
+      const status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
+      if (!status || (status.state !== "confirmed" && status.state !== "duplicate")) {
+        throw new Error("The photo was sent, but confirmation was not received. Tap Submit Photo Evidence again to safely retry.");
       }
 
-      sessionSubmissions.push({ label: option.label, at: new Date(), url: status?.photoUrl || "" });
+      sessionSubmissions.push({ label: option.label, at: new Date(), url: status?.pdfUrl || "" });
       renderSessionSubmissions();
-      setStatus(`Saved under Student ID ${identity.studentId}: ${option.label}`, "success");
+      setStatus(`Saved under Student ID ${identity.studentId} and recorded in the register: ${option.label}`, "success");
       try { if (typeof showToast === "function") showToast("Photo evidence saved."); } catch (_) {}
       resetCapturedPhoto();
     } catch (error) {
