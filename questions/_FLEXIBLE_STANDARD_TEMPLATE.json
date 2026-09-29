@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 3,
+  "questionSet": {
+    "id": "replace-me-v1",
+    "label": "US 00000 - Replace Me",
+    "title": "Replace with the standard title",
+    "number": "00000",
+    "version": "v1",
+    "credits": 0,
+    "standardType": "internal"
+  },
+  "assessments": [
+    {
+      "id": "example-flexible-assessment",
+      "title": "Example flexible assessment",
+      "subtitle": "Shows ordinary groups plus a repeatable evidence group",
+      "attachSignoff": false,
+      "questions": [],
+      "questionGroups": [],
+      "blocks": [
+        {
+          "type": "group",
+          "id": "start",
+          "group": {
+            "label": "Start here",
+            "title": "Project details",
+            "intro": "Ordinary questions can sit before or after a repeatable section."
+          },
+          "questions": [
+            {
+              "id": "project_name",
+              "part": "A",
+              "text": "What project are you working on?",
+              "hint": "Use the project name from your instructions.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "repeatGroup",
+          "id": "trial",
+          "itemLabel": "trial",
+          "startWith": 3,
+          "minimum": 3,
+          "maximum": null,
+          "allowAdd": true,
+          "allowRemove": true,
+          "addLabel": "+ Add another trial",
+          "removeLabel": "Remove last added trial",
+          "group": {
+            "label": "Trial {n} of {count}",
+            "title": "Trial {n}",
+            "intro": "Record one trial here.",
+            "reminder": "Keep the evidence for this trial together."
+          },
+          "questions": [
+            {
+              "id": "what",
+              "part": "A",
+              "text": "What did you trial?",
+              "hint": "Name the material, process, idea, or feature you tested.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "result",
+              "part": "B",
+              "text": "What happened?",
+              "hint": "Describe the result of the trial.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "next",
+              "part": "C",
+              "text": "What will you do next because of this result?",
+              "hint": "State the change, decision, or next step.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "finish",
+          "group": {
+            "label": "Finish",
+            "title": "Final decision"
+          },
+          "questions": [
+            {
+              "id": "final_decision",
+              "part": "A",
+              "text": "What is your final decision?",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": ".+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

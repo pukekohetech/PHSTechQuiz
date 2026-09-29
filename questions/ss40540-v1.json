@@ -1,7 +1,9 @@
 {
-  "schemaVersion": 2,
-  "_templatePurpose": "Streamlined QuizMaster question set for BCATS Skill Standard 40540 (v1), with terminology-aware rubrics based on the supplied Being safe assessment resource and BCATS Safety learning resource.",
+  "schemaVersion": 3,
+  "_templatePurpose": "QuizMaster schema-v3 example for BCATS Skill Standard 40540 (v1): repeatable hazard records plus existing photo evidence and learning-resource reflection.",
   "_assessmentIntegrityNotes": [
+    "Schema v3 uses generic repeatGroup blocks. SS 40540 starts with five hazard records and learners can add more hazards without changing QuizMaster code.",
+    "The repeatGroup feature is standard-agnostic: another standard can use the same engine for trials, stakeholders, tests, modifications, evaluations, or other repeated evidence records.",
     "Five hazard records are provided as a simple PHS scaffold. The official assessment schedule does not specify a minimum number of hazards; learners still need to cover the relevant tasks, hazards and controls for their own project.",
     "Project-stage photo evidence is repeatable so learners can cover all important stages of their project without a fixed photo count.",
     "Project-stage photo notes combine PPE, other controls and safe work into one short prompt so the photo and explanation remain together on one evidence page.",
@@ -26,482 +28,223 @@
     {
       "id": "being-safe-written-evidence",
       "title": "1. Written Evidence",
-      "subtitle": "Five hazards plus the short workplace-safety records required for SS 40540",
+      "subtitle": "Start with five hazards; add another hazard if your project needs more evidence",
       "attachSignoff": false,
-      "questionGroups": [
+      "questionGroups": [],
+      "questions": [],
+      "schemaVersion": 3,
+      "blocks": [
         {
+          "type": "group",
           "id": "project-details",
-          "label": "Start here",
-          "title": "Your BCATS project",
-          "intro": "Use the same project for all of this evidence.",
-          "reminder": "Keep answers short and based on what you actually did."
+          "group": {
+            "id": "project-details",
+            "label": "Start here",
+            "title": "Your BCATS project",
+            "intro": "Use the same project for all of this evidence.",
+            "reminder": "Keep answers short and based on what you actually did."
+          },
+          "questions": [
+            {
+              "id": "project_name",
+              "part": "A",
+              "text": "What project are you completing?",
+              "hint": "Use the project name from your instructions.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "hazard-1",
-          "label": "Hazard 1 of 5",
-          "title": "Hazard record 1",
-          "intro": "Use one real project task and one hazard.",
-          "reminder": "Keep the task, hazard, harm and control connected."
+          "type": "repeatGroup",
+          "id": "hazard",
+          "itemLabel": "hazard",
+          "startWith": 5,
+          "minimum": 5,
+          "maximum": null,
+          "allowAdd": true,
+          "allowRemove": true,
+          "addLabel": "+ Add another hazard",
+          "removeLabel": "Remove last added hazard",
+          "group": {
+            "id": "hazard-1",
+            "label": "Hazard {n} of {count}",
+            "title": "Hazard record {n}",
+            "intro": "Use one real project task and one hazard.",
+            "reminder": "Keep the task, hazard, harm and control connected."
+          },
+          "questions": [
+            {
+              "id": "task",
+              "part": "A",
+              "text": "Project task",
+              "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "hazard",
+              "part": "B",
+              "text": "Hazard",
+              "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "harm",
+              "part": "C",
+              "text": "How could it cause harm?",
+              "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "control",
+              "part": "D",
+              "text": "What did you do to manage it?",
+              "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "hazard-2",
-          "label": "Hazard 2 of 5",
-          "title": "Hazard record 2",
-          "intro": "Use one real project task and one hazard.",
-          "reminder": "Keep the task, hazard, harm and control connected."
-        },
-        {
-          "id": "hazard-3",
-          "label": "Hazard 3 of 5",
-          "title": "Hazard record 3",
-          "intro": "Use one real project task and one hazard.",
-          "reminder": "Keep the task, hazard, harm and control connected."
-        },
-        {
-          "id": "hazard-4",
-          "label": "Hazard 4 of 5",
-          "title": "Hazard record 4",
-          "intro": "Use one real project task and one hazard.",
-          "reminder": "Keep the task, hazard, harm and control connected."
-        },
-        {
-          "id": "hazard-5",
-          "label": "Hazard 5 of 5",
-          "title": "Hazard record 5",
-          "intro": "Use one real project task and one hazard.",
-          "reminder": "Keep the task, hazard, harm and control connected."
-        },
-        {
+          "type": "group",
           "id": "workplace-safe",
-          "label": "Keep the workplace safe",
-          "title": "Tidy, clean, check and report",
-          "intro": "Record the practical safety evidence that is not shown by the hazard table.",
-          "reminder": "If there was no damaged equipment, write N/A."
+          "group": {
+            "id": "workplace-safe",
+            "label": "Keep the workplace safe",
+            "title": "Tidy, clean, check and report",
+            "intro": "Record the practical safety evidence that is not shown by the hazard table.",
+            "reminder": "If there was no damaged equipment, write N/A."
+          },
+          "questions": [
+            {
+              "id": "tidy_during_work",
+              "part": "A",
+              "text": "How did you keep your work area tidy while you were working?",
+              "hint": "Include both what you DID and what you kept tidy/clear.",
+              "type": "long",
+              "maxPoints": 2,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b",
+                  "flags": "i",
+                  "hint": "Use an action such as tidy, clear, sweep, clean, put away, store, remove or dispose."
+                },
+                {
+                  "points": 1,
+                  "check": "\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b",
+                  "flags": "i",
+                  "hint": "Name what you managed, such as tools, offcuts, rubbish, dust, leads, a walkway, bench, floor or work area."
+                }
+              ]
+            },
+            {
+              "id": "cleaning_checks",
+              "part": "B",
+              "text": "What tools, equipment or PPE did you clean or check after use?",
+              "hint": "A good answer names the item and the cleaning/check you completed.",
+              "type": "long",
+              "maxPoints": 2,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:clean|cleaned|check|checked|inspect|inspected|wipe|wiped|charge|charged|sterilis(?:e|ed)|change|changed|wash|washed|sweep|swept)\\b",
+                  "flags": "i",
+                  "hint": "Use a cleaning/check action such as cleaned, checked, inspected, wiped, charged, washed or changed."
+                },
+                {
+                  "points": 1,
+                  "check": "\\b(?:tools?|equipment|PPE|safety glasses|goggles|earmuffs?|ear ?plugs?|gloves?|masks?|respirators?|boots?|shoes?|hard hats?|batteries?|lenses?|pads?|filters?|overalls?)\\b",
+                  "flags": "i",
+                  "hint": "Name the tool, equipment or PPE item you cleaned/checked."
+                }
+              ]
+            },
+            {
+              "id": "damaged_tools",
+              "part": "C",
+              "text": "Did you find damaged or dangerous tools or equipment?",
+              "hint": "If none were found, write N/A. If there was a problem, name the item and issue, give the date, and say who you reported it to.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?:^\\s*N\\s*/?\\s*A\\s*$|(?=[\\s\\S]*\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\b)(?=[\\s\\S]*\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\b)[\\s\\S]+)",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
         },
         {
+          "type": "group",
           "id": "portfolio-check",
-          "label": "Portfolio check",
-          "title": "Project instructions",
-          "intro": "The project instructions are part of the overall portfolio evidence.",
-          "reminder": "Use the same project named at the start."
+          "group": {
+            "id": "portfolio-check",
+            "label": "Portfolio check",
+            "title": "Project instructions",
+            "intro": "The project instructions are part of the overall portfolio evidence.",
+            "reminder": "Use the same project named at the start."
+          },
+          "questions": [
+            {
+              "id": "project_instructions",
+              "part": "A",
+              "text": "What project instruction sheet or plan is included in your portfolio?",
+              "hint": "Name or briefly describe it.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
         }
       ],
-      "questions": [
-        {
-          "id": "project_name",
-          "group": "project-details",
-          "part": "A",
-          "text": "What project are you completing?",
-          "hint": "Use the project name from your instructions.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_1_task",
-          "group": "hazard-1",
-          "part": "A",
-          "text": "Project task",
-          "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_1_hazard",
-          "group": "hazard-1",
-          "part": "B",
-          "text": "Hazard",
-          "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_1_harm",
-          "group": "hazard-1",
-          "part": "C",
-          "text": "How could it cause harm?",
-          "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_1_control",
-          "group": "hazard-1",
-          "part": "D",
-          "text": "What did you do to manage it?",
-          "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_2_task",
-          "group": "hazard-2",
-          "part": "A",
-          "text": "Project task",
-          "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_2_hazard",
-          "group": "hazard-2",
-          "part": "B",
-          "text": "Hazard",
-          "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_2_harm",
-          "group": "hazard-2",
-          "part": "C",
-          "text": "How could it cause harm?",
-          "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_2_control",
-          "group": "hazard-2",
-          "part": "D",
-          "text": "What did you do to manage it?",
-          "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_3_task",
-          "group": "hazard-3",
-          "part": "A",
-          "text": "Project task",
-          "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_3_hazard",
-          "group": "hazard-3",
-          "part": "B",
-          "text": "Hazard",
-          "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_3_harm",
-          "group": "hazard-3",
-          "part": "C",
-          "text": "How could it cause harm?",
-          "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_3_control",
-          "group": "hazard-3",
-          "part": "D",
-          "text": "What did you do to manage it?",
-          "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_4_task",
-          "group": "hazard-4",
-          "part": "A",
-          "text": "Project task",
-          "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_4_hazard",
-          "group": "hazard-4",
-          "part": "B",
-          "text": "Hazard",
-          "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_4_harm",
-          "group": "hazard-4",
-          "part": "C",
-          "text": "How could it cause harm?",
-          "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_4_control",
-          "group": "hazard-4",
-          "part": "D",
-          "text": "What did you do to manage it?",
-          "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_5_task",
-          "group": "hazard-5",
-          "part": "A",
-          "text": "Project task",
-          "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_5_hazard",
-          "group": "hazard-5",
-          "part": "B",
-          "text": "Hazard",
-          "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_5_harm",
-          "group": "hazard-5",
-          "part": "C",
-          "text": "How could it cause harm?",
-          "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "hazard_5_control",
-          "group": "hazard-5",
-          "part": "D",
-          "text": "What did you do to manage it?",
-          "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "tidy_during_work",
-          "group": "workplace-safe",
-          "part": "A",
-          "text": "How did you keep your work area tidy while you were working?",
-          "hint": "Include both what you DID and what you kept tidy/clear.",
-          "type": "long",
-          "maxPoints": 2,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b",
-              "flags": "i",
-              "hint": "Use an action such as tidy, clear, sweep, clean, put away, store, remove or dispose."
-            },
-            {
-              "points": 1,
-              "check": "\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b",
-              "flags": "i",
-              "hint": "Name what you managed, such as tools, offcuts, rubbish, dust, leads, a walkway, bench, floor or work area."
-            }
-          ]
-        },
-        {
-          "id": "cleaning_checks",
-          "group": "workplace-safe",
-          "part": "B",
-          "text": "What tools, equipment or PPE did you clean or check after use?",
-          "hint": "A good answer names the item and the cleaning/check you completed.",
-          "type": "long",
-          "maxPoints": 2,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "\\b(?:clean|cleaned|check|checked|inspect|inspected|wipe|wiped|charge|charged|sterilis(?:e|ed)|change|changed|wash|washed|sweep|swept)\\b",
-              "flags": "i",
-              "hint": "Use a cleaning/check action such as cleaned, checked, inspected, wiped, charged, washed or changed."
-            },
-            {
-              "points": 1,
-              "check": "\\b(?:tools?|equipment|PPE|safety glasses|goggles|earmuffs?|ear ?plugs?|gloves?|masks?|respirators?|boots?|shoes?|hard hats?|batteries?|lenses?|pads?|filters?|overalls?)\\b",
-              "flags": "i",
-              "hint": "Name the tool, equipment or PPE item you cleaned/checked."
-            }
-          ]
-        },
-        {
-          "id": "damaged_tools",
-          "group": "workplace-safe",
-          "part": "C",
-          "text": "Did you find damaged or dangerous tools or equipment?",
-          "hint": "If none were found, write N/A. If there was a problem, name the item and issue, give the date, and say who you reported it to.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?:^\\s*N\\s*/?\\s*A\\s*$|(?=[\\s\\S]*\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\b)(?=[\\s\\S]*\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\b)[\\s\\S]+)",
-              "flags": "i"
-            }
-          ]
-        },
-        {
-          "id": "project_instructions",
-          "group": "portfolio-check",
-          "part": "A",
-          "text": "What project instruction sheet or plan is included in your portfolio?",
-          "hint": "Name or briefly describe it.",
-          "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": "(?=^[\\s\\S]{3,}$).+",
-              "flags": "i"
-            }
-          ]
-        }
-      ]
+      "_flexibleEngine": "repeatGroup blocks are materialised at runtime by flexible-groups.js. Existing assessment grading/PDF/submission code then uses the generated normal question list."
     },
     {
       "id": "photo-evidence",
@@ -776,6 +519,8 @@
     }
   ],
   "_finalChecklistBeforePublishing": [
+    "Load flexible-groups.js after script.js and before photo-evidence.js.",
+    "Keep the five starting hazards as a PHS scaffold; + Add another hazard is available for projects needing more.",
     "Keep the questionSet metadata as SS 40540 (v1), 4 credits.",
     "Five hazard records are a local scaffold, not an official minimum.",
     "Project-stage evidence remains repeatable so the learner can cover all important stages.",
