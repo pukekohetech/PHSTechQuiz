@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "questionSet": {
+    "id": "us99999-test",
+    "label": "US 99999 - QuizMaster Test",
+    "title": "QuizMaster test standard",
+    "number": "99999",
+    "version": "test",
+    "credits": 0,
+    "standardType": "internal"
+  },
+  "deadline": { "day": 28, "month": 12, "label": "Submission deadline" },
+  "assessments": [
+    {
+      "id": "test-selfreflection",
+      "title": "Learner Self-reflection - Test",
+      "subtitle": "QuizMaster test: multiple-choice question",
+      "attachSignoff": false,
+      "questions": [
+        {
+          "id": "q1",
+          "text": "Which item is normally worn to protect your eyes in a workshop?",
+          "hint": "Choose the item designed to protect your eyes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [{ "points": 1, "check": "^Safety glasses$", "flags": "i" }],
+          "options": ["Safety glasses", "Apron", "Ear muffs", "Steel-cap boots"]
+        }
+      ]
+    },
+    {
+      "id": "test-assessment-record",
+      "title": "Assessment Record - Test",
+      "subtitle": "QuizMaster test: assessment record question",
+      "attachSignoff": false,
+      "questions": [
+        {
+          "id": "q1",
+          "text": "What project are you currently working on?",
+          "hint": "Enter the name of your project.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [{ "points": 1, "check": ".+", "flags": "" }]
+        }
+      ]
+    }
+  ]
+}

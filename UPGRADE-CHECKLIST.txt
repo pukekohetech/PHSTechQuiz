@@ -1,0 +1,45 @@
+QUIZMASTER v5 - UPGRADE CHECKLIST
+=================================
+
+GITHUB REPOSITORY
+-----------------
+1. Upload/replace the files from this package.
+2. DELETE the old root-level questions.json. It is no longer used.
+3. Keep all unit-standard question files inside /questions/.
+4. Commit the .github/workflows/build-question-catalog.yml workflow and
+   tools/build_question_catalog.py.
+5. In GitHub repository Settings > Actions > General, allow workflows Read and
+   write permission so the catalogue action can commit question-sets.json.
+
+APPS SCRIPT
+-----------
+The v5 gateway uses questionSetId in filenames and duplicate/register identity.
+Replace Code.gs with GoogleAppsScript-Code.gs, then:
+  Deploy > Manage deployments > Edit > New version > Deploy
+Keep:
+  Execute as: Me
+  Who has access: Anyone
+The existing /exec URL can stay the same.
+
+TEST
+----
+1. Open QuizMaster and hard refresh once.
+2. Select US 99999 - QuizMaster Test.
+3. Confirm two assessment sections appear.
+4. Complete both sections and download a backup after each.
+   Both downloads should have the same name:
+     <studentID>_us99999-test.puk
+   The second file should contain the saved answers from BOTH sections.
+5. Switch to US 24352.
+   Its backup should instead be:
+     <studentID>_us24352-v3.puk
+6. Submit an assessment and check Drive/register.
+
+ADDING A NEW UNIT STANDARD
+--------------------------
+1. Copy questions/_TEMPLATE.json.
+2. Rename it, for example questions/us24356-v2.json.
+3. Edit questionSet metadata and assessments.
+4. Commit the file.
+5. GitHub Action automatically reads its contents and updates question-sets.json.
+6. Refresh QuizMaster: the new unit appears in the Unit Standard selector.

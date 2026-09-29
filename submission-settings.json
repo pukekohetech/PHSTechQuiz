@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "gateway": {
+    "url": "https://script.google.com/macros/s/AKfycbzWrYPKGMzIC8MEVbvhIrcg-0V1Aruc2kCpOOGGC_X2sO2yIIshJNdsNBKiDFATS5vQ9Q/exec",
+    "provider": "apps-script"
+  },
+  "storage": {
+    "rootName": "PHS Building Evidence",
+    "year": "auto"
+  },
+  "features": {
+    "submitPdf": true,
+    "submitPuk": true
+  }
+}

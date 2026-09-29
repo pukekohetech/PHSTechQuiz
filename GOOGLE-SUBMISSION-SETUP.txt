@@ -1,0 +1,46 @@
+QUIZMASTER v5 - GOOGLE SUBMISSION SETUP
+=======================================
+
+If your v4 Dynamic QuizMaster gateway is already working, you do NOT need a new
+Apps Script deployment for the multi-standard front end. The v5 browser sends
+the currently selected unit standard with each submission and sends one complete
+.puk backup for that unit standard.
+
+CURRENT DRIVE STRUCTURE
+-----------------------
+<storage.rootName> - <Auckland year>
+  Teacher code - Teacher name
+    Student ID
+      StudentID_Name_US24352_assessment-id.pdf
+      StudentID_Name_US24352.puk
+      StudentID_Name_US24356_other-assessment.pdf
+      StudentID_Name_US24356.puk
+
+The PDF is per submitted assessment section.
+The .puk is per unit standard and contains the student's saved work across ALL
+assessment sections in that unit's question file.
+
+FIRST-TIME GATEWAY SETUP
+------------------------
+1. Create/open a Google Apps Script project under the account that should own evidence.
+2. Replace Code.gs with GoogleAppsScript-Code.gs supplied in this package.
+3. Save and run setup() once to authorise Drive/Sheets access.
+4. Deploy as a Web app:
+   - Execute as: Me
+   - Who has access: Anyone
+5. Copy the /exec deployment URL into submission-settings.json.
+6. If editing an existing deployment, choose New version before deploying.
+
+DESTINATION
+-----------
+submission-settings.json controls the evidence collection name:
+
+  "storage": {
+    "rootName": "PHS Building Evidence",
+    "year": "auto"
+  }
+
+The gateway automatically creates/reuses, for example:
+  PHS Building Evidence - 2026
+
+Changing rootName changes the evidence collection without changing Code.gs.

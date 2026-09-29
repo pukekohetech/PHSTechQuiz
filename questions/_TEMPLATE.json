@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "questionSet": {
+    "id": "us00000-v1",
+    "label": "US 00000 - Short name",
+    "title": "Full unit standard title",
+    "number": "00000",
+    "version": "v1",
+    "credits": 0,
+    "standardType": "internal"
+  },
+  "assessments": [
+    {
+      "id": "section-1",
+      "title": "Assessment Section 1",
+      "subtitle": "Optional student-facing description",
+      "attachSignoff": false,
+      "questions": [
+        {
+          "id": "q1",
+          "text": "Example question",
+          "hint": "Optional hint",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            { "points": 1, "check": ".+", "flags": "" }
+          ]
+        }
+      ]
+    }
+  ]
+}
