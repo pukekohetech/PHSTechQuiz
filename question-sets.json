@@ -11,6 +11,56 @@
       "credits": 4,
       "title": "Use safety practices for a BCATS project or related tasks",
       "assessmentCount": 3
+    },
+    {
+      "id": "us990001-test-basic",
+      "label": "US 990001 - TEST ONLY - Basic marking",
+      "file": "questions/test-990001-basic.json",
+      "number": "990001",
+      "version": "v1",
+      "credits": 0,
+      "title": "TEST ONLY - Basic QuizMaster marking",
+      "assessmentCount": 1
+    },
+    {
+      "id": "us990002-test-repeatable",
+      "label": "US 990002 - TEST ONLY - Repeatable trials",
+      "file": "questions/test-990002-repeatable.json",
+      "number": "990002",
+      "version": "v1",
+      "credits": 0,
+      "title": "TEST ONLY - Repeatable trial records",
+      "assessmentCount": 1
+    },
+    {
+      "id": "us990003-test-conditional",
+      "label": "US 990003 - TEST ONLY - Conditional questions",
+      "file": "questions/test-990003-conditional.json",
+      "number": "990003",
+      "version": "v1",
+      "credits": 0,
+      "title": "TEST ONLY - Conditional question branches",
+      "assessmentCount": 1
+    },
+    {
+      "id": "us990004-test-multi",
+      "label": "US 990004 - TEST ONLY - Multi-section submission",
+      "file": "questions/test-990004-multi.json",
+      "number": "990004",
+      "version": "v1",
+      "credits": 0,
+      "title": "TEST ONLY - Separate submission states",
+      "assessmentCount": 2
+    },
+    {
+      "id": "us990005-test-photo",
+      "label": "US 990005 - TEST ONLY - Photo evidence",
+      "file": "questions/test-990005-photo.json",
+      "number": "990005",
+      "version": "v1",
+      "credits": 0,
+      "title": "TEST ONLY - Photo evidence and register tracking",
+      "assessmentCount": 1
     }
   ]
 }
