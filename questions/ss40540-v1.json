@@ -1,13 +1,14 @@
 {
   "schemaVersion": 2,
-  "_templatePurpose": "QuizMaster question set for BCATS Skill Standard 40540 (v1), reorganised to separate learner self-reflection from direct assessment-workbook evidence and photo evidence.",
+  "_templatePurpose": "Streamlined QuizMaster question set for BCATS Skill Standard 40540 (v1). Designed to keep learner workload low while retaining the student evidence listed in the supplied Being safe assessment resource.",
   "_assessmentIntegrityNotes": [
-    "The formal assessment evidence section mirrors the supplied Being safe assessment resource: identify hazards and controls, work safely, keep the workplace safe, and complete the learner evidence checklist.",
-    "Ten connected hazard-record spaces are provided as a PHS scaffold. The official assessment schedule does not set a minimum number of hazards and controls; it requires sufficient coverage of the tasks, hazards and controls needed for the project.",
-    "The learner self-reflection section contains supporting safety-learning questions that are not direct written prompts from the supplied assessment workbook.",
-    "Project Process Evidence is repeatable: learners add as many project-stage records as needed to cover all important stages. Each stage can use a photo or a written record, so a mixed evidence approach is supported.",
-    "Workplace/storage before and after tidy-up remain separate photo evidence requirements.",
-    "Teacher sign-off is intentionally omitted in this version, as requested."
+    "Five hazard records are provided as a simple PHS scaffold. The official assessment schedule does not specify a minimum number of hazards; learners still need to cover the relevant tasks, hazards and controls for their own project.",
+    "Project-stage photo evidence is repeatable so learners can cover all important stages of their project without a fixed photo count.",
+    "Project-stage photo notes combine PPE, other controls and safe work into one short prompt so the photo and explanation remain together on one evidence page.",
+    "Workplace before/after tidy-up photos are included in the same Photo Evidence page as project-stage evidence.",
+    "Cleaning/check records, damaged-tool reporting and project-instruction evidence remain in the written evidence section.",
+    "Teacher observation/sign-off is intentionally omitted in this version, as requested.",
+    "The learner self-reflection is supporting learning, not a replacement for the formal practical evidence."
   ],
   "questionSet": {
     "id": "ss40540-v1",
@@ -20,299 +21,66 @@
   },
   "assessments": [
     {
-      "id": "learner-self-reflection",
-      "title": "Learner Self-reflection - Safety Knowledge",
-      "subtitle": "Reflection questions that support learning but are not direct written prompts from the SS 40540 assessment workbook",
-      "attachSignoff": false,
-      "questionGroups": [
-        {
-          "id": "self-reflection",
-          "label": "Learner self-reflection",
-          "title": "Reflect on what you learned about working safely",
-          "intro": "These questions help you explain what you learned and how it connected to your own project. They are separate from the formal workbook evidence questions.",
-          "reminder": "Use real examples from your own project wherever you can."
-        }
-      ],
-      "questions": [
-        {
-          "id": "reflection_hazard_meaning",
-          "group": "self-reflection",
-          "part": "A",
-          "text": "In your own words, what is a hazard? Give one example from your BCATS project.",
-          "hint": "Think about something or a situation that could cause harm.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_hazard_types",
-          "group": "self-reflection",
-          "part": "B",
-          "text": "What different types of hazards did you notice during your project? Give examples from your own work.",
-          "hint": "You could think about the work area, physical hazards, and the way people work.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_identify_first",
-          "group": "self-reflection",
-          "part": "C",
-          "text": "Before starting a task, what did you do to identify hazards and decide whether it was safe to begin?",
-          "hint": "Describe what you checked before starting work.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_take5",
-          "group": "self-reflection",
-          "part": "D",
-          "text": "How could a quick 'Take 5' or step-back check help you when returning to work after a break?",
-          "hint": "Think about what may have changed while you were away.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_signs",
-          "group": "self-reflection",
-          "part": "E",
-          "text": "Which safety signs or safety colours did you see in your work area, and what did they tell you to do?",
-          "hint": "Use examples you actually saw where possible.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_controls",
-          "group": "self-reflection",
-          "part": "F",
-          "text": "When you found a hazard, how did you decide whether to remove it, reduce it, or use another control? Give one example.",
-          "hint": "Explain the action you took and why.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_training",
-          "group": "self-reflection",
-          "part": "G",
-          "text": "What did you do before using a tool, machine, or piece of equipment you had not used before?",
-          "hint": "Think about instruction, demonstration, supervision, and showing you could use it safely.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_ppe",
-          "group": "self-reflection",
-          "part": "H",
-          "text": "Why is PPE important, and why should PPE not be the only safety control you rely on?",
-          "hint": "Think about what PPE protects and what other controls can reduce risk.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_hearing",
-          "group": "self-reflection",
-          "part": "I",
-          "text": "Describe one situation in your project where noise could be a hazard. What did you do to reduce the risk to your hearing and to other people?",
-          "hint": "Include both hearing protection and any other control you used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_eye",
-          "group": "self-reflection",
-          "part": "J",
-          "text": "Describe one situation where eye protection was needed. What eye protection did you use and what was the hazard?",
-          "hint": "Link the PPE to the actual task or hazard.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_lifting",
-          "group": "self-reflection",
-          "part": "K",
-          "text": "If you had to move a heavy or awkward item, how did you make the task safer?",
-          "hint": "Think about planning, body position, getting help, equipment, and the route.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_worker_role",
-          "group": "self-reflection",
-          "part": "L",
-          "text": "What responsibilities did you have for your own safety and the safety of others while working in the BCATS area?",
-          "hint": "Use examples from your own project work.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "reflection_hazard_register",
-          "group": "self-reflection",
-          "part": "M",
-          "text": "How can a hazard register or shared safety information help you work more safely in a BCATS workplace?",
-          "hint": "Think about knowing the hazards, controls, and who is responsible.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "being-safe-assessment-evidence",
-      "title": "Being Safe - Assessment Evidence",
-      "subtitle": "SS 40540 workbook evidence: hazards and controls, work safely, keep the workplace safe, and evidence checklist",
+      "id": "being-safe-written-evidence",
+      "title": "1. Written Evidence",
+      "subtitle": "Five hazards plus the short workplace-safety records required for SS 40540",
       "attachSignoff": false,
       "questionGroups": [
         {
           "id": "project-details",
-          "label": "Project details",
+          "label": "Start here",
           "title": "Your BCATS project",
-          "intro": "Use the same project throughout this assessment evidence section.",
-          "reminder": "Your answers should match the project instructions and the practical work you actually completed."
+          "intro": "Use the same project for all of this evidence.",
+          "reminder": "Keep answers short and based on what you actually did."
         },
         {
-          "id": "hazard-record-1",
-          "label": "Hazard record 1 of 5",
-          "title": "Project task and hazard record 1",
-          "intro": "Use ONE project task and ONE hazard for all four parts in this record.",
-          "reminder": "Keep the project task, hazard, possible harm, and control connected."
+          "id": "hazard-1",
+          "label": "Hazard 1 of 5",
+          "title": "Hazard record 1",
+          "intro": "Use one real project task and one hazard.",
+          "reminder": "Keep the task, hazard, harm and control connected."
         },
         {
-          "id": "hazard-record-2",
-          "label": "Hazard record 2 of 10",
-          "title": "Project task and hazard record 2",
-          "intro": "Use ONE project task and ONE hazard for all four parts in this record.",
-          "reminder": "Keep the project task, hazard, possible harm, and control connected."
+          "id": "hazard-2",
+          "label": "Hazard 2 of 5",
+          "title": "Hazard record 2",
+          "intro": "Use one real project task and one hazard.",
+          "reminder": "Keep the task, hazard, harm and control connected."
         },
         {
-          "id": "hazard-record-3",
-          "label": "Hazard record 3 of 10",
-          "title": "Project task and hazard record 3",
-          "intro": "Use ONE project task and ONE hazard for all four parts in this record.",
-          "reminder": "Keep the project task, hazard, possible harm, and control connected."
+          "id": "hazard-3",
+          "label": "Hazard 3 of 5",
+          "title": "Hazard record 3",
+          "intro": "Use one real project task and one hazard.",
+          "reminder": "Keep the task, hazard, harm and control connected."
         },
         {
-          "id": "hazard-record-4",
-          "label": "Hazard record 4 of 10",
-          "title": "Project task and hazard record 4",
-          "intro": "Use ONE project task and ONE hazard for all four parts in this record.",
-          "reminder": "Keep the project task, hazard, possible harm, and control connected."
+          "id": "hazard-4",
+          "label": "Hazard 4 of 5",
+          "title": "Hazard record 4",
+          "intro": "Use one real project task and one hazard.",
+          "reminder": "Keep the task, hazard, harm and control connected."
         },
         {
-          "id": "hazard-record-5",
-          "label": "Hazard record 5 of 10",
-          "title": "Project task and hazard record 5",
-          "intro": "Use ONE project task and ONE hazard for all four parts in this record.",
-          "reminder": "Keep the project task, hazard, possible harm, and control connected."
-        },
-       
-        {
-          "id": "work-safely",
-          "label": "Work safely",
-          "title": "Work safely throughout the project",
-          "intro": "Answer these using what you actually did during practical work. Your teacher observations and photo evidence support these answers.",
-          "reminder": "Think about your entire project, not just one lesson or one task."
+          "id": "hazard-5",
+          "label": "Hazard 5 of 5",
+          "title": "Hazard record 5",
+          "intro": "Use one real project task and one hazard.",
+          "reminder": "Keep the task, hazard, harm and control connected."
         },
         {
-          "id": "keep-workplace-safe",
+          "id": "workplace-safe",
           "label": "Keep the workplace safe",
-          "title": "Keep the workplace, tools, equipment and PPE safe",
-          "intro": "Record how you kept the work area safe during and after practical work.",
-          "reminder": "If no damaged or dangerous tools or equipment were found, write N/A for the report question."
+          "title": "Tidy, clean, check and report",
+          "intro": "Record the practical safety evidence that is not shown by the hazard table.",
+          "reminder": "If there was no damaged equipment, write N/A."
         },
         {
-          "id": "assessment-checklist",
-          "label": "Assessment checklist",
-          "title": "Final learner evidence check",
-          "intro": "Use this section to make sure your written evidence and practical evidence are all present.",
-          "reminder": "Teacher sign-off is intentionally not included in this version."
+          "id": "portfolio-check",
+          "label": "Portfolio check",
+          "title": "Project instructions",
+          "intro": "The project instructions are part of the overall portfolio evidence.",
+          "reminder": "Use the same project named at the start."
         }
       ],
       "questions": [
@@ -320,8 +88,8 @@
           "id": "project_name",
           "group": "project-details",
           "part": "A",
-          "text": "What BCATS project are you completing for this assessment?",
-          "hint": "Use the project name that appears on your project instructions.",
+          "text": "What project are you completing?",
+          "hint": "Use the project name from your instructions.",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -334,10 +102,10 @@
         },
         {
           "id": "hazard_1_task",
-          "group": "hazard-record-1",
+          "group": "hazard-1",
           "part": "A",
           "text": "Project task",
-          "hint": "Name the actual task you were completing.",
+          "hint": "What were you doing?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -350,10 +118,10 @@
         },
         {
           "id": "hazard_1_hazard",
-          "group": "hazard-record-1",
+          "group": "hazard-1",
           "part": "B",
           "text": "Hazard",
-          "hint": "Identify the hazard you came across while doing this task.",
+          "hint": "What could cause harm?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -366,10 +134,10 @@
         },
         {
           "id": "hazard_1_harm",
-          "group": "hazard-record-1",
+          "group": "hazard-1",
           "part": "C",
-          "text": "How might this hazard cause harm?",
-          "hint": "Explain a realistic injury, illness, damage, or other harmful outcome.",
+          "text": "How could it cause harm?",
+          "hint": "State the likely injury, illness or other harm.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -382,10 +150,10 @@
         },
         {
           "id": "hazard_1_control",
-          "group": "hazard-record-1",
+          "group": "hazard-1",
           "part": "D",
-          "text": "What did you do to manage this hazard?",
-          "hint": "Explain the control or controls you actually used, including PPE where relevant.",
+          "text": "What did you do to manage it?",
+          "hint": "Include the control you actually used, such as PPE, a guard, extraction, clamping, warning others, or keeping people clear.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -398,10 +166,10 @@
         },
         {
           "id": "hazard_2_task",
-          "group": "hazard-record-2",
+          "group": "hazard-2",
           "part": "A",
           "text": "Project task",
-          "hint": "Name the actual task you were completing.",
+          "hint": "What were you doing?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -414,10 +182,10 @@
         },
         {
           "id": "hazard_2_hazard",
-          "group": "hazard-record-2",
+          "group": "hazard-2",
           "part": "B",
           "text": "Hazard",
-          "hint": "Identify the hazard you came across while doing this task.",
+          "hint": "What could cause harm?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -430,10 +198,10 @@
         },
         {
           "id": "hazard_2_harm",
-          "group": "hazard-record-2",
+          "group": "hazard-2",
           "part": "C",
-          "text": "How might this hazard cause harm?",
-          "hint": "Explain a realistic injury, illness, damage, or other harmful outcome.",
+          "text": "How could it cause harm?",
+          "hint": "State the likely injury, illness or other harm.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -446,10 +214,10 @@
         },
         {
           "id": "hazard_2_control",
-          "group": "hazard-record-2",
+          "group": "hazard-2",
           "part": "D",
-          "text": "What did you do to manage this hazard?",
-          "hint": "Explain the control or controls you actually used, including PPE where relevant.",
+          "text": "What did you do to manage it?",
+          "hint": "Include the control you actually used, such as PPE, a guard, extraction, clamping, warning others, or keeping people clear.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -462,10 +230,10 @@
         },
         {
           "id": "hazard_3_task",
-          "group": "hazard-record-3",
+          "group": "hazard-3",
           "part": "A",
           "text": "Project task",
-          "hint": "Name the actual task you were completing.",
+          "hint": "What were you doing?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -478,10 +246,10 @@
         },
         {
           "id": "hazard_3_hazard",
-          "group": "hazard-record-3",
+          "group": "hazard-3",
           "part": "B",
           "text": "Hazard",
-          "hint": "Identify the hazard you came across while doing this task.",
+          "hint": "What could cause harm?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -494,10 +262,10 @@
         },
         {
           "id": "hazard_3_harm",
-          "group": "hazard-record-3",
+          "group": "hazard-3",
           "part": "C",
-          "text": "How might this hazard cause harm?",
-          "hint": "Explain a realistic injury, illness, damage, or other harmful outcome.",
+          "text": "How could it cause harm?",
+          "hint": "State the likely injury, illness or other harm.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -510,10 +278,10 @@
         },
         {
           "id": "hazard_3_control",
-          "group": "hazard-record-3",
+          "group": "hazard-3",
           "part": "D",
-          "text": "What did you do to manage this hazard?",
-          "hint": "Explain the control or controls you actually used, including PPE where relevant.",
+          "text": "What did you do to manage it?",
+          "hint": "Include the control you actually used, such as PPE, a guard, extraction, clamping, warning others, or keeping people clear.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -526,10 +294,10 @@
         },
         {
           "id": "hazard_4_task",
-          "group": "hazard-record-4",
+          "group": "hazard-4",
           "part": "A",
           "text": "Project task",
-          "hint": "Name the actual task you were completing.",
+          "hint": "What were you doing?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -542,10 +310,10 @@
         },
         {
           "id": "hazard_4_hazard",
-          "group": "hazard-record-4",
+          "group": "hazard-4",
           "part": "B",
           "text": "Hazard",
-          "hint": "Identify the hazard you came across while doing this task.",
+          "hint": "What could cause harm?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -558,10 +326,10 @@
         },
         {
           "id": "hazard_4_harm",
-          "group": "hazard-record-4",
+          "group": "hazard-4",
           "part": "C",
-          "text": "How might this hazard cause harm?",
-          "hint": "Explain a realistic injury, illness, damage, or other harmful outcome.",
+          "text": "How could it cause harm?",
+          "hint": "State the likely injury, illness or other harm.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -574,10 +342,10 @@
         },
         {
           "id": "hazard_4_control",
-          "group": "hazard-record-4",
+          "group": "hazard-4",
           "part": "D",
-          "text": "What did you do to manage this hazard?",
-          "hint": "Explain the control or controls you actually used, including PPE where relevant.",
+          "text": "What did you do to manage it?",
+          "hint": "Include the control you actually used, such as PPE, a guard, extraction, clamping, warning others, or keeping people clear.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -590,10 +358,10 @@
         },
         {
           "id": "hazard_5_task",
-          "group": "hazard-record-5",
+          "group": "hazard-5",
           "part": "A",
           "text": "Project task",
-          "hint": "Name the actual task you were completing.",
+          "hint": "What were you doing?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -606,10 +374,10 @@
         },
         {
           "id": "hazard_5_hazard",
-          "group": "hazard-record-5",
+          "group": "hazard-5",
           "part": "B",
           "text": "Hazard",
-          "hint": "Identify the hazard you came across while doing this task.",
+          "hint": "What could cause harm?",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
@@ -622,10 +390,10 @@
         },
         {
           "id": "hazard_5_harm",
-          "group": "hazard-record-5",
+          "group": "hazard-5",
           "part": "C",
-          "text": "How might this hazard cause harm?",
-          "hint": "Explain a realistic injury, illness, damage, or other harmful outcome.",
+          "text": "How could it cause harm?",
+          "hint": "State the likely injury, illness or other harm.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -638,10 +406,10 @@
         },
         {
           "id": "hazard_5_control",
-          "group": "hazard-record-5",
+          "group": "hazard-5",
           "part": "D",
-          "text": "What did you do to manage this hazard?",
-          "hint": "Explain the control or controls you actually used, including PPE where relevant.",
+          "text": "What did you do to manage it?",
+          "hint": "Include the control you actually used, such as PPE, a guard, extraction, clamping, warning others, or keeping people clear.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -653,11 +421,11 @@
           ]
         },
         {
-          "id": "work_safely_own_others",
-          "group": "work-safely",
+          "id": "tidy_during_work",
+          "group": "workplace-safe",
           "part": "A",
-          "text": "How did you carry out project tasks safely while considering your own safety and the safety of other people?",
-          "hint": "Give examples of safe actions you used consistently across the project.",
+          "text": "How did you keep your work area tidy while you were working?",
+          "hint": "A short answer is enough. Think about tools, offcuts, dust, leads and clear walkways.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -669,11 +437,11 @@
           ]
         },
         {
-          "id": "work_safely_ppe",
-          "group": "work-safely",
+          "id": "cleaning_checks",
+          "group": "workplace-safe",
           "part": "B",
-          "text": "What PPE did you choose for your project, when did you wear or use it, and what hazards did it protect you from?",
-          "hint": "Match each item of PPE to the task or hazard it was used for.",
+          "text": "What tools, equipment or PPE did you clean or check after use?",
+          "hint": "Name the item and what you cleaned or checked.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -685,107 +453,11 @@
           ]
         },
         {
-          "id": "work_safely_other_controls",
-          "group": "work-safely",
+          "id": "damaged_tools",
+          "group": "workplace-safe",
           "part": "C",
-          "text": "What other controls did you use for project-related hazards apart from PPE?",
-          "hint": "Examples could include guards, extraction, warnings, keeping others clear, barriers, ventilation, or changing how a task was done.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "work_safely_photo_explanation",
-          "group": "work-safely",
-          "part": "D",
-          "text": "For the project-stage photos you submitted, identify the task or stage shown and explain what PPE and other safety controls can be seen in the photo.",
-          "hint": "Use this answer to connect your photo evidence to the safe work you carried out.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "tidy_during_after",
-          "group": "keep-workplace-safe",
-          "part": "A",
-          "text": "How did you tidy the workplace during your work and after you finished?",
-          "hint": "Think about benches, floors, walkways, offcuts, rubbish, tools, cords, and storage.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "before_tidy_photo",
-          "group": "keep-workplace-safe",
-          "part": "B",
-          "text": "What does your BEFORE tidy-up photo show? Identify the work area or storage area and what still needed to be cleaned, cleared, or put away.",
-          "hint": "Describe what can actually be seen in the photo.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "after_tidy_photo",
-          "group": "keep-workplace-safe",
-          "part": "C",
-          "text": "What does your AFTER tidy-up photo show? Explain how the photo shows the area was left tidy and tools or equipment were put away appropriately.",
-          "hint": "Describe what changed from the before photo.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "cleaning_checks_record",
-          "group": "keep-workplace-safe",
-          "part": "D",
-          "text": "Record the cleaning and checks you completed on tools, equipment and PPE after use.",
-          "hint": "For each item, include what you cleaned or checked and what you found or did next.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "damaged_tools_report",
-          "group": "keep-workplace-safe",
-          "part": "E",
-          "text": "Did you find any damaged or dangerous tools or equipment? If yes, record the item, the date, the problem, and who you reported it to. If none were found, write N/A.",
-          "hint": "A complete report includes the item, date, issue, and the person it was reported to.",
+          "text": "Did you find damaged or dangerous tools or equipment?",
+          "hint": "If yes: name the item, date, problem and who you told. If none, write N/A.",
           "type": "long",
           "maxPoints": 1,
           "rubric": [
@@ -797,44 +469,12 @@
           ]
         },
         {
-          "id": "project_stage_photo_check",
-          "group": "assessment-checklist",
+          "id": "project_instructions",
+          "group": "portfolio-check",
           "part": "A",
-          "text": "List the main project stages covered by your submitted project-stage photos, or by your record of work if you used one instead.",
-          "hint": "Make sure the evidence covers the project process and identifies the safety procedures used.",
-          "type": "long",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "all_evidence_date",
-          "group": "assessment-checklist",
-          "part": "B",
-          "text": "What date did you finish collecting all the evidence for this assessment?",
-          "hint": "Use the date when your written work and practical evidence were complete.",
+          "text": "What project instruction sheet or plan is included in your portfolio?",
+          "hint": "Name or briefly describe it.",
           "type": "short",
-          "maxPoints": 1,
-          "rubric": [
-            {
-              "points": 1,
-              "check": ".+",
-              "flags": ""
-            }
-          ]
-        },
-        {
-          "id": "project_instructions_included",
-          "group": "assessment-checklist",
-          "part": "C",
-          "text": "What project instructions have you included in your overall portfolio of evidence?",
-          "hint": "Identify the instructions for the same project named at the start of this assessment.",
-          "type": "long",
           "maxPoints": 1,
           "rubric": [
             {
@@ -847,9 +487,9 @@
       ]
     },
     {
-      "id": "project-process-evidence",
-      "title": "Project Process Evidence",
-      "subtitle": "Add one evidence record for every important stage of your project. Use a photo, a written record, or a mixture across the project.",
+      "id": "photo-evidence",
+      "title": "2. Photo Evidence",
+      "subtitle": "Add project-stage photos, then the before and after tidy-up photos",
       "attachSignoff": false,
       "mode": "photo-evidence",
       "questions": [],
@@ -857,50 +497,66 @@
         "maxDimension": 1920,
         "jpegQuality": 0.8,
         "allowWrittenRecord": true,
-        "methodLabel": "Evidence method for this stage",
-        "photoMethodLabel": "Photo evidence",
+        "methodLabel": "Evidence method",
+        "photoMethodLabel": "Photo",
         "writtenMethodLabel": "Written record",
         "options": [
           {
             "id": "project-stage",
             "label": "Project stage / task",
-            "help": "Submit one record for each important stage of the project process. Repeat this as many times as needed to cover the whole project.",
+            "help": "Repeat this for each important stage of your project. The photo and your short explanation will stay together on one evidence page.",
             "repeatable": true,
             "fields": [
               {
                 "id": "stage",
-                "label": "Project stage / task",
+                "label": "What stage or task is this?",
                 "type": "text",
                 "required": true,
-                "placeholder": "e.g. Marking out the timber"
+                "placeholder": "e.g. Cutting the timber"
               },
               {
-                "id": "work",
-                "label": "What work are you doing?",
+                "id": "safety",
+                "label": "What safety is shown or used?",
                 "type": "textarea",
                 "required": true,
-                "placeholder": "Briefly describe the work being carried out at this stage."
-              },
+                "placeholder": "PPE, guards, extraction, clamping, warning others, clear area, etc."
+              }
+            ]
+          },
+          {
+            "id": "workplace-before",
+            "label": "Workplace / storage BEFORE tidy-up",
+            "help": "Take a clear photo of your work and storage area before you tidy it.",
+            "repeatable": false,
+            "fields": [
               {
-                "id": "safetyProcedures",
-                "label": "Safety procedures shown / used",
-                "type": "textarea",
-                "required": true,
-                "placeholder": "Describe the safe procedure you followed."
-              },
-              {
-                "id": "ppe",
-                "label": "PPE being used",
+                "id": "area",
+                "label": "What area is shown?",
                 "type": "text",
                 "required": true,
-                "placeholder": "e.g. Safety glasses and earmuffs, or N/A"
+                "placeholder": "e.g. My bench and tool area"
+              }
+            ]
+          },
+          {
+            "id": "workplace-after",
+            "label": "Workplace / storage AFTER tidy-up",
+            "help": "Take a photo of the same area after tidy-up, with tools and equipment put away appropriately.",
+            "repeatable": false,
+            "fields": [
+              {
+                "id": "area",
+                "label": "What area is shown?",
+                "type": "text",
+                "required": true,
+                "placeholder": "Use the same area as the BEFORE photo"
               },
               {
-                "id": "otherControls",
-                "label": "Other safety controls",
+                "id": "tidy",
+                "label": "What did you tidy, clean or put away?",
                 "type": "textarea",
                 "required": true,
-                "placeholder": "e.g. Guard fitted, extraction on, material clamped, warned others, or N/A"
+                "placeholder": "Keep this short."
               }
             ]
           }
@@ -908,77 +564,109 @@
       }
     },
     {
-      "id": "workplace-photo-evidence",
-      "title": "Keep the Workplace Safe - Photo Evidence",
-      "subtitle": "Upload the required before and after tidy-up evidence. Add short notes so the photo evidence is clear.",
+      "id": "learner-self-reflection",
+      "title": "3. Learner Self-reflection",
+      "subtitle": "A short supporting reflection on what you learned about working safely",
       "attachSignoff": false,
-      "mode": "photo-evidence",
-      "questions": [],
-      "photoEvidence": {
-        "maxDimension": 1920,
-        "jpegQuality": 0.8,
-        "allowWrittenRecord": false,
-        "options": [
-          {
-            "id": "workplace-before",
-            "label": "Workplace / storage - BEFORE tidy-up",
-            "help": "Show the area where you carried out project tasks before clean-up or tidy-up.",
-            "repeatable": false,
-            "fields": [
-              {
-                "id": "area",
-                "label": "What area is shown?",
-                "type": "text",
-                "required": true,
-                "placeholder": "e.g. My workbench and tool storage area"
-              },
-              {
-                "id": "beforeCondition",
-                "label": "What still needs to be tidied, cleaned, or put away?",
-                "type": "textarea",
-                "required": true,
-                "placeholder": "Identify tools, offcuts, dust, leads, equipment, or storage that still needs attention."
-              }
-            ]
-          },
-          {
-            "id": "workplace-after",
-            "label": "Workplace / storage - AFTER tidy-up",
-            "help": "Show the same area after tidy-up, left tidy with tools and equipment put away appropriately.",
-            "repeatable": false,
-            "fields": [
-              {
-                "id": "area",
-                "label": "What area is shown?",
-                "type": "text",
-                "required": true,
-                "placeholder": "Use the same area as your BEFORE photo."
-              },
-              {
-                "id": "afterActions",
-                "label": "What did you tidy, clean, or put away?",
-                "type": "textarea",
-                "required": true,
-                "placeholder": "Briefly describe what you did."
-              },
-              {
-                "id": "safeNow",
-                "label": "How does this show the area is safe and ready for the next person?",
-                "type": "textarea",
-                "required": true,
-                "placeholder": "e.g. Walkways clear, tools stored, dust removed, leads put away."
-              }
-            ]
-          }
-        ]
-      }
+      "questionGroups": [
+        {
+          "id": "reflection",
+          "label": "Quick reflection",
+          "title": "Five short safety reflections",
+          "intro": "Keep these brief and use examples from your own project.",
+          "reminder": "This supports your learning; your practical evidence remains the main evidence."
+        }
+      ],
+      "questions": [
+        {
+          "id": "reflection_before_work",
+          "group": "reflection",
+          "part": "A",
+          "text": "Before starting or returning to a task, what did you check to make sure it was safe?",
+          "hint": "Think about hazards, changes in the area, signs, shared safety information or a quick Take 5 check.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "reflection_controls",
+          "group": "reflection",
+          "part": "B",
+          "text": "How did you decide what safety controls to use?",
+          "hint": "You can mention removing/reducing the hazard, PPE, guards, extraction, hearing/eye protection or keeping others clear.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "reflection_training",
+          "group": "reflection",
+          "part": "C",
+          "text": "What did you do before using a tool or machine you were not confident with?",
+          "hint": "Think about instructions, demonstrations, supervision and checking you understood the safe procedure.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "reflection_manual_handling",
+          "group": "reflection",
+          "part": "D",
+          "text": "How would you safely move a heavy or awkward item?",
+          "hint": "Think about planning the route, getting help or equipment, and safe body position.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "reflection_others",
+          "group": "reflection",
+          "part": "E",
+          "text": "How did your safety actions protect other people as well as yourself?",
+          "hint": "Use one real example from your project.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        }
+      ]
     }
   ],
   "_finalChecklistBeforePublishing": [
     "Keep the questionSet metadata as SS 40540 (v1), 4 credits.",
-    "Confirm the live-camera photo-evidence plugin is still loaded by index.html.",
-    "Do not present the 10 hazard records as an NZQA/BCATS minimum requirement; they are a local scaffold.",
-    "Teacher observation remains part of the formal evidence requirements even though teacher sign-off fields are not included here.",
-    "Let the repository catalogue workflow update question-sets.json after this file is uploaded."
+    "Five hazard records are a local scaffold, not an official minimum.",
+    "Project-stage evidence remains repeatable so the learner can cover all important stages.",
+    "The Photo Evidence section keeps the photo and its short questions together on one page.",
+    "Teacher observation/sign-off remains outside this student-facing version for now.",
+    "The live-camera plugin photo-evidence.js v4 can be reused without code changes."
   ]
 }
