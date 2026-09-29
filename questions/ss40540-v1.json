@@ -14,7 +14,8 @@
     "Rubrics accept several valid BCATS terms and synonyms; they do not require one exact sentence.",
     "Photo-evidence notes can also require recognised safety terminology through field validation rules.",
     "The Learner Self-reflection questions are based directly on the supplied BCATS Safety learning resource: hazards, identifying/controlling hazards, PPE, care for tools/PPE, worker responsibilities and safety documents.",
-    "Damaged/unsafe equipment evidence is conditional: learners answer Yes/No, and the report fields only appear when Yes is selected."
+    "Damaged/unsafe equipment evidence is conditional: learners answer Yes/No, and the report fields only appear when Yes is selected.",
+    "The evidence progress tracker is configuration-driven. It checks rubric-complete written evidence and locally confirmed photo submissions without hard-coding SS 40540 into QuizMaster."
   ],
   "questionSet": {
     "id": "ss40540-v1",
@@ -23,7 +24,74 @@
     "number": "40540",
     "version": "v1",
     "credits": 4,
-    "standardType": "internal"
+    "standardType": "internal",
+    "evidenceTracker": {
+      "kicker": "Evidence progress",
+      "title": "Your SS 40540 evidence",
+      "intro": "This updates automatically as you work. Green checks show evidence QuizMaster can confirm. Project-stage evidence stays ongoing because you should keep adding records until all important stages are covered.",
+      "footer": "This is a progress guide, not teacher sign-off. Your teacher still decides whether your evidence covers the standard sufficiently.",
+      "items": [
+        {
+          "id": "hazards-controls",
+          "type": "repeatGroup",
+          "assessmentId": "being-safe-written-evidence",
+          "blockId": "hazard",
+          "label": "Hazards and controls",
+          "unitLabel": "hazard",
+          "require": "rubric",
+          "minimum": 5
+        },
+        {
+          "id": "written-safety-records",
+          "type": "groups",
+          "assessmentId": "being-safe-written-evidence",
+          "blockIds": [
+            "project-details",
+            "workplace-safe",
+            "damaged-equipment",
+            "portfolio-check"
+          ],
+          "label": "Written safety records",
+          "require": "rubric"
+        },
+        {
+          "id": "project-stage-evidence",
+          "type": "photoOption",
+          "assessmentId": "photo-evidence",
+          "optionId": "project-stage",
+          "label": "Project stage evidence",
+          "unitLabel": "stage",
+          "minimum": 1,
+          "ongoing": true,
+          "note": "Keep adding stages until all important stages of the project are covered."
+        },
+        {
+          "id": "workplace-before",
+          "type": "photoOption",
+          "assessmentId": "photo-evidence",
+          "optionId": "workplace-before",
+          "label": "Workplace BEFORE photo",
+          "unitLabel": "photo",
+          "minimum": 1
+        },
+        {
+          "id": "workplace-after",
+          "type": "photoOption",
+          "assessmentId": "photo-evidence",
+          "optionId": "workplace-after",
+          "label": "Workplace AFTER photo",
+          "unitLabel": "photo",
+          "minimum": 1
+        },
+        {
+          "id": "learning-reflection",
+          "type": "assessment",
+          "assessmentId": "learner-self-reflection",
+          "label": "Learning-resource reflection",
+          "require": "rubric"
+        }
+      ]
+    }
   },
   "assessments": [
     {

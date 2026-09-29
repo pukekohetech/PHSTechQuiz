@@ -1,10 +1,10 @@
 /*
- * QuizMaster Photo / Project Evidence plugin v6 - portrait one-page evidence sheet + terminology validation
+ * QuizMaster Photo / Project Evidence plugin v7 - portrait evidence + terminology validation + progress tracking
  * Uses the existing QuizMaster PDF + .puk + document-register submission route.
  * No Apps Script changes are required.
  *
  * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=6" defer></script>
+ *   <script src="photo-evidence.js?v=7" defer></script>
  *
  * Supports:
  * - live rear/front camera
@@ -747,6 +747,23 @@
       const status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
       if (!status || (status.state !== "confirmed" && status.state !== "duplicate")) {
         throw new Error("The evidence was sent, but confirmation was not received. Submit again to safely retry.");
+      }
+
+      try {
+        window.QuizMasterFlexible?.recordEvidence?.({
+          assessmentId: activeAssessment?.id || "",
+          optionId: option.id || "",
+          optionLabel: option.label || "",
+          descriptor: mainDescriptor,
+          method,
+          submissionId,
+          submittedAt: new Date().toISOString(),
+          state: status?.state || "confirmed",
+          pdfUrl: status?.pdfUrl || "",
+          repeatable: option.repeatable !== false,
+        });
+      } catch (trackerError) {
+        console.warn("Photo Evidence: progress tracker could not record the confirmed evidence", trackerError);
       }
 
       sessionSubmissions.push({ label: mainDescriptor, method, at: new Date(), url: status?.pdfUrl || "" });

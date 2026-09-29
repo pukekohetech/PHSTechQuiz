@@ -1,9 +1,9 @@
 /*
- * QuizMaster Flexible Groups plugin v2
- * Generic schema-v3 repeatable and conditional question groups for any standard.
+ * QuizMaster Flexible Groups plugin v3
+ * Generic schema-v3 repeatable groups, conditional questions, and evidence tracking for any standard.
  *
  * Load after script.js and BEFORE photo-evidence.js:
- *   <script src="flexible-groups.js?v=2" defer></script>
+ *   <script src="flexible-groups.js?v=3" defer></script>
  *
  * Existing schema-v2 standards continue to work unchanged.
  */
@@ -11,7 +11,7 @@
   "use strict";
 
   const FLEX_SCHEMA_MIN = 3;
-  const PLUGIN_VERSION = 2;
+  const PLUGIN_VERSION = 3;
   const originalLoadAssessment = window.loadAssessment;
 
   if (typeof originalLoadAssessment !== "function") {
@@ -30,7 +30,29 @@
       .flex-repeat-controls button.flex-repeat-add{background:#7a1f2b;border-color:#7a1f2b;color:#fff}
       .flex-repeat-controls button:disabled{opacity:.45;cursor:not-allowed}
       .flex-conditional-status{margin:10px 0 2px;padding:10px 12px;border:1px solid #d8e5dc;border-radius:10px;background:#f3faf5;color:#315b3b;font-size:.94rem;line-height:1.4}
-      @media (max-width:640px){.flex-repeat-controls__count{width:100%;margin-right:0}.flex-repeat-controls button{flex:1 1 auto}}
+      .qm-evidence-tracker{margin:14px 0 18px;border:1px solid #d8dee8;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.05);overflow:hidden}
+      .qm-evidence-tracker summary{display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px 16px;list-style:none;background:#f8fafc}
+      .qm-evidence-tracker summary::-webkit-details-marker{display:none}
+      .qm-evidence-tracker__summary-text{min-width:0;flex:1}
+      .qm-evidence-tracker__kicker{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:#64748b;font-weight:800}
+      .qm-evidence-tracker__title{margin:2px 0 0;font-size:1.05rem;color:#111827}
+      .qm-evidence-tracker__score{font-size:.9rem;font-weight:800;color:#475569;white-space:nowrap}
+      .qm-evidence-tracker__body{padding:14px 16px 16px}
+      .qm-evidence-tracker__intro{margin:0 0 12px;color:#475569;line-height:1.45}
+      .qm-evidence-tracker__bar{height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:0 0 14px}
+      .qm-evidence-tracker__bar span{display:block;height:100%;background:#7a1f2b;width:0;transition:width .2s ease}
+      .qm-evidence-tracker__list{display:grid;gap:8px}
+      .qm-evidence-tracker__item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}
+      .qm-evidence-tracker__item.is-complete{border-color:#bbd8c4;background:#f7fbf8}
+      .qm-evidence-tracker__item.is-ongoing{border-color:#ead6a5;background:#fffaf0}
+      .qm-evidence-tracker__icon{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:#eef2f7;color:#64748b;font-weight:900}
+      .qm-evidence-tracker__item.is-complete .qm-evidence-tracker__icon{background:#e5f3e9;color:#27633a}
+      .qm-evidence-tracker__item.is-ongoing .qm-evidence-tracker__icon{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__item strong{display:block;color:#111827}
+      .qm-evidence-tracker__item small{display:block;margin-top:2px;color:#64748b;line-height:1.35}
+      .qm-evidence-tracker__open{min-height:36px;padding:7px 11px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#111827;font:inherit;font-weight:750;cursor:pointer}
+      .qm-evidence-tracker__foot{margin:12px 0 0;color:#64748b;font-size:.84rem;line-height:1.4}
+      @media (max-width:640px){.flex-repeat-controls__count{width:100%;margin-right:0}.flex-repeat-controls button{flex:1 1 auto}.qm-evidence-tracker__item{grid-template-columns:28px minmax(0,1fr)}.qm-evidence-tracker__open{grid-column:2;justify-self:start}.qm-evidence-tracker__score{white-space:normal;text-align:right;max-width:44%}}
     `;
     document.head.appendChild(style);
   }
@@ -433,6 +455,352 @@
     });
   }
 
+
+  // ------------------------------------------------------------
+  // Generic evidence tracker
+  // ------------------------------------------------------------
+  let evidenceTrackerTimer = 0;
+
+  function ensureEvidenceRecords() {
+    if (!Array.isArray(data.evidenceRecords)) data.evidenceRecords = [];
+    return data.evidenceRecords;
+  }
+
+  function recordEvidence(record) {
+    const records = ensureEvidenceRecords();
+    const clean = {
+      assessmentId: String(record?.assessmentId || "").trim(),
+      optionId: String(record?.optionId || "").trim(),
+      optionLabel: String(record?.optionLabel || "").trim(),
+      descriptor: String(record?.descriptor || "").trim(),
+      method: String(record?.method || "photo").trim(),
+      submissionId: String(record?.submissionId || "").trim(),
+      submittedAt: String(record?.submittedAt || new Date().toISOString()),
+      state: String(record?.state || "confirmed").trim(),
+      pdfUrl: String(record?.pdfUrl || "").trim(),
+      repeatable: record?.repeatable !== false,
+    };
+    if (!clean.assessmentId || !clean.optionId) return null;
+
+    const duplicateIndex = clean.submissionId
+      ? records.findIndex((item) => item?.submissionId === clean.submissionId)
+      : -1;
+    if (duplicateIndex >= 0) records[duplicateIndex] = clean;
+    else if (!clean.repeatable) {
+      const existingIndex = records.findIndex((item) =>
+        item?.assessmentId === clean.assessmentId && item?.optionId === clean.optionId
+      );
+      if (existingIndex >= 0) records[existingIndex] = clean;
+      else records.push(clean);
+    } else records.push(clean);
+
+    data.lastSaved = new Date().toISOString();
+    if (STORAGE_KEY) storageSet(STORAGE_KEY, JSON.stringify(data));
+    scheduleEvidenceTrackerRender();
+    return clean;
+  }
+
+  function assessmentById(assessmentId) {
+    return (ASSESSMENTS || []).find((assessment) => String(assessment?.id || "") === String(assessmentId || "")) || null;
+  }
+
+  function answerForTracker(assessmentId, questionId) {
+    try {
+      if (currentAssessmentId === assessmentId) {
+        const field = document.getElementById("q" + questionId);
+        if (field) return String(field.value || "").trim();
+      }
+      const encoded = data.answers?.[assessmentId]?.[questionId];
+      return encoded ? String(xorDecode(encoded) || "").trim() : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function questionEarnedPoints(question, answer) {
+    const value = String(answer || "").trim();
+    if (!value) return 0;
+    const max = Number(question?.maxPoints ?? 1) || 1;
+    const rubric = Array.isArray(question?.rubric) ? question.rubric : [];
+    if (!rubric.length) return max;
+
+    let earned = 0;
+    rubric.forEach((rule) => {
+      let check = rule?.check;
+      try {
+        if (!(check instanceof RegExp)) check = new RegExp(String(check || ""), String(rule?.flags || "i"));
+        check.lastIndex = 0;
+        if (check.test(value)) {
+          if (max === 1) earned = Math.max(earned, Math.min(Number(rule?.points || 0), max));
+          else earned += Number(rule?.points || 0);
+        }
+      } catch (error) {
+        console.warn("Flexible Groups: tracker could not evaluate rubric", question?.id, error);
+      }
+    });
+    return Math.min(max, earned);
+  }
+
+  function questionIsComplete(question, assessmentId, requirement = "rubric") {
+    const answer = answerForTracker(assessmentId, question?.id);
+    if (!answer) return false;
+    if (String(requirement || "rubric") === "answered") return true;
+    const max = Number(question?.maxPoints ?? 1) || 1;
+    return questionEarnedPoints(question, answer) >= max;
+  }
+
+  function materialiseForTracker(assessment) {
+    if (assessment && Array.isArray(assessment.blocks)) materialiseFlexibleAssessment(assessment);
+    return assessment;
+  }
+
+  function evidenceRecordsFor(item) {
+    return ensureEvidenceRecords().filter((record) => {
+      if (String(record?.assessmentId || "") !== String(item?.assessmentId || "")) return false;
+      if (item?.optionId && String(record?.optionId || "") !== String(item.optionId)) return false;
+      return record?.state === "confirmed" || record?.state === "duplicate" || !record?.state;
+    });
+  }
+
+  function trackerResult(item) {
+    const type = String(item?.type || "assessment");
+    const assessment = materialiseForTracker(assessmentById(item?.assessmentId));
+    const label = String(item?.label || assessment?.title || "Evidence");
+    const required = item?.required !== false && item?.informational !== true;
+    const requirement = String(item?.require || "rubric");
+
+    if (!assessment && type !== "photoOption") {
+      return { label, met: false, required, detail: "Assessment section not found.", note: item?.note || "", assessmentId: item?.assessmentId || "" };
+    }
+
+    if (type === "repeatGroup") {
+      const meta = (assessment?.__flexRepeatMeta || []).find((entry) => entry.blockId === item.blockId);
+      if (!meta) return { label, met: false, required, detail: "Repeatable section not found.", note: item?.note || "", assessmentId: item?.assessmentId || "" };
+      let complete = 0;
+      for (let n = 1; n <= meta.count; n += 1) {
+        const prefix = `${meta.blockId}_${n}_`;
+        const questions = (assessment.questions || []).filter((q) => String(q.id || "").startsWith(prefix));
+        if (questions.length && questions.every((q) => questionIsComplete(q, assessment.id, requirement))) complete += 1;
+      }
+      const met = complete >= meta.count && meta.count >= Number(item?.minimum || meta.minimum || 1);
+      return {
+        label,
+        met,
+        required,
+        detail: `${complete}/${meta.count} ${String(item?.unitLabel || meta.block?.itemLabel || "record")}s complete`,
+        note: item?.note || "",
+        assessmentId: assessment.id,
+      };
+    }
+
+    if (type === "groups" || type === "questions" || type === "assessment") {
+      let questions = Array.from(assessment?.questions || []);
+      if (type === "groups" && Array.isArray(item?.blockIds)) {
+        const wanted = new Set(item.blockIds.map((value) => String(value)));
+        questions = questions.filter((q) => wanted.has(String(q.group || "")));
+      }
+      if (type === "questions" && Array.isArray(item?.questionIds)) {
+        const wanted = new Set(item.questionIds.map((value) => String(value)));
+        questions = questions.filter((q) => wanted.has(String(q.id || "")));
+      }
+      const complete = questions.filter((q) => questionIsComplete(q, assessment.id, requirement)).length;
+      const total = questions.length;
+      return {
+        label,
+        met: total > 0 && complete === total,
+        required,
+        detail: `${complete}/${total} answer${total === 1 ? "" : "s"} complete`,
+        note: item?.note || "",
+        assessmentId: assessment.id,
+      };
+    }
+
+    if (type === "photoOption") {
+      const records = evidenceRecordsFor(item);
+      const minimum = Math.max(1, Number(item?.minimum || 1) || 1);
+      const count = records.length;
+      const met = count >= minimum;
+      const noun = String(item?.unitLabel || "submission");
+      return {
+        label,
+        met,
+        ongoing: !!item?.ongoing && met,
+        required,
+        detail: item?.ongoing
+          ? `${count} ${noun}${count === 1 ? "" : "s"} submitted`
+          : `${Math.min(count, minimum)}/${minimum} ${noun}${minimum === 1 ? "" : "s"} submitted`,
+        note: item?.note || "",
+        assessmentId: item?.assessmentId || "",
+        optionId: item?.optionId || "",
+      };
+    }
+
+    return { label, met: false, required, detail: `Unsupported tracker item type: ${type}`, note: item?.note || "", assessmentId: item?.assessmentId || "" };
+  }
+
+  function openTrackerItem(result) {
+    const index = (ASSESSMENTS || []).findIndex((assessment) => assessment?.id === result.assessmentId);
+    if (index < 0) return;
+    const selector = document.getElementById("assessmentSelector");
+    if (!selector) return;
+    selector.value = String(index);
+    window.loadAssessment();
+    if (result.optionId) {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+        const criteria = document.getElementById("photoEvidenceCriteria");
+        if (!criteria) return;
+        criteria.value = String(result.optionId);
+        criteria.dispatchEvent(new Event("change", { bubbles: true }));
+        criteria.scrollIntoView({ behavior: "smooth", block: "center" });
+      }));
+    }
+  }
+
+  function trackerHost() {
+    const selection = document.querySelector(".quizmaster-selection-grid");
+    if (!selection) return null;
+    let tracker = document.getElementById("qmEvidenceTracker");
+    if (!tracker) {
+      tracker = document.createElement("details");
+      tracker.id = "qmEvidenceTracker";
+      tracker.className = "qm-evidence-tracker";
+      tracker.open = true;
+      selection.insertAdjacentElement("afterend", tracker);
+    }
+    return tracker;
+  }
+
+  function removeTracker() {
+    document.getElementById("qmEvidenceTracker")?.remove();
+  }
+
+  function getEvidenceProgress() {
+    const config = CURRENT_QUESTION_SET?.evidenceTracker;
+    if (!config || !Array.isArray(config.items) || !config.items.length) {
+      return { config: null, results: [], metCount: 0, requiredCount: 0, percent: 0 };
+    }
+    const results = config.items.map(trackerResult);
+    const requiredResults = results.filter((result) => result.required);
+    const metCount = requiredResults.filter((result) => result.met).length;
+    const requiredCount = requiredResults.length;
+    const percent = requiredCount ? Math.round((metCount / requiredCount) * 100) : 100;
+    return { config, results, metCount, requiredCount, percent };
+  }
+
+  function renderEvidenceTracker() {
+    const snapshot = getEvidenceProgress();
+    const { config, results, metCount, requiredCount, percent } = snapshot;
+    if (!config) {
+      removeTracker();
+      return;
+    }
+    injectStyles();
+    const tracker = trackerHost();
+    if (!tracker) return;
+    const wasOpen = tracker.open;
+    tracker.replaceChildren();
+    tracker.open = wasOpen;
+
+    const summary = document.createElement("summary");
+    const summaryText = document.createElement("div");
+    summaryText.className = "qm-evidence-tracker__summary-text";
+    const kicker = document.createElement("div");
+    kicker.className = "qm-evidence-tracker__kicker";
+    kicker.textContent = String(config.kicker || "Evidence progress");
+    const title = document.createElement("h3");
+    title.className = "qm-evidence-tracker__title";
+    title.textContent = String(config.title || "Your evidence");
+    summaryText.append(kicker, title);
+    const score = document.createElement("span");
+    score.className = "qm-evidence-tracker__score";
+    score.textContent = requiredCount ? `${metCount}/${requiredCount} minimum checks met` : `${results.length} progress checks`;
+    summary.append(summaryText, score);
+    tracker.appendChild(summary);
+
+    const body = document.createElement("div");
+    body.className = "qm-evidence-tracker__body";
+    if (config.intro) {
+      const intro = document.createElement("p");
+      intro.className = "qm-evidence-tracker__intro";
+      intro.textContent = String(config.intro);
+      body.appendChild(intro);
+    }
+    const bar = document.createElement("div");
+    bar.className = "qm-evidence-tracker__bar";
+    const fill = document.createElement("span");
+    fill.style.width = `${percent}%`;
+    bar.appendChild(fill);
+    body.appendChild(bar);
+
+    const list = document.createElement("div");
+    list.className = "qm-evidence-tracker__list";
+    results.forEach((result) => {
+      const row = document.createElement("div");
+      row.className = "qm-evidence-tracker__item";
+      if (result.ongoing) row.classList.add("is-ongoing");
+      else if (result.met) row.classList.add("is-complete");
+
+      const icon = document.createElement("span");
+      icon.className = "qm-evidence-tracker__icon";
+      icon.textContent = result.ongoing ? "•" : result.met ? "✓" : "○";
+      icon.setAttribute("aria-hidden", "true");
+
+      const textWrap = document.createElement("div");
+      const label = document.createElement("strong");
+      label.textContent = result.label;
+      const detail = document.createElement("small");
+      detail.textContent = result.detail;
+      textWrap.append(label, detail);
+      if (result.note) {
+        const note = document.createElement("small");
+        note.textContent = String(result.note);
+        textWrap.appendChild(note);
+      }
+
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "qm-evidence-tracker__open";
+      open.textContent = String(config.openLabel || "Open");
+      open.addEventListener("click", (event) => {
+        event.preventDefault();
+        openTrackerItem(result);
+      });
+      if (!result.assessmentId) open.disabled = true;
+
+      row.append(icon, textWrap, open);
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+
+    const foot = document.createElement("p");
+    foot.className = "qm-evidence-tracker__foot";
+    foot.textContent = String(config.footer || "This is a progress guide. Your teacher still decides whether the evidence is sufficient for the standard.");
+    body.appendChild(foot);
+    tracker.appendChild(body);
+  }
+
+  function scheduleEvidenceTrackerRender(delay = 60) {
+    clearTimeout(evidenceTrackerTimer);
+    evidenceTrackerTimer = window.setTimeout(renderEvidenceTracker, delay);
+  }
+
+  function initEvidenceTrackerObservers() {
+    document.addEventListener("input", (event) => {
+      if (event.target?.closest?.("#questions")) scheduleEvidenceTrackerRender();
+    });
+    document.addEventListener("change", (event) => {
+      if (event.target?.closest?.("#questions") || event.target?.id === "questionSetSelector") {
+        scheduleEvidenceTrackerRender(event.target?.id === "questionSetSelector" ? 250 : 60);
+      }
+    });
+    const selector = document.getElementById("assessmentSelector");
+    if (selector && window.MutationObserver) {
+      const observer = new MutationObserver(() => scheduleEvidenceTrackerRender(40));
+      observer.observe(selector, { childList: true, subtree: true, attributes: true });
+    }
+    scheduleEvidenceTrackerRender(100);
+  }
+
   window.loadAssessment = function flexibleLoadAssessment(...args) {
     const idx = document.getElementById("assessmentSelector")?.value;
     const assessment = idx === "" || idx == null ? null : ASSESSMENTS?.[idx];
@@ -441,6 +809,7 @@
     if (assessment?.__flexMaterialised) {
       window.requestAnimationFrame(() => renderFlexibleEnhancements(assessment));
     }
+    scheduleEvidenceTrackerRender();
     return result;
   };
 
@@ -453,5 +822,10 @@
     getRepeatCount,
     setRepeatCount,
     conditionMatches,
+    recordEvidence,
+    getEvidenceProgress,
+    renderEvidenceTracker,
   });
+
+  initEvidenceTrackerObservers();
 })();

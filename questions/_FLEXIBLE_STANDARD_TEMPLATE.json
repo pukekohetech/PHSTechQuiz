@@ -7,7 +7,42 @@
     "number": "00000",
     "version": "v1",
     "credits": 0,
-    "standardType": "internal"
+    "standardType": "internal",
+    "evidenceTracker": {
+      "title": "Example evidence progress",
+      "intro": "Tracker items are optional. They tell QuizMaster which parts of this standard to summarise for the learner.",
+      "items": [
+        {
+          "id": "trials",
+          "type": "repeatGroup",
+          "assessmentId": "example-flexible-assessment",
+          "blockId": "trial",
+          "label": "Trials",
+          "unitLabel": "trial",
+          "require": "rubric"
+        },
+        {
+          "id": "follow-up",
+          "type": "groups",
+          "assessmentId": "example-flexible-assessment",
+          "blockIds": [
+            "trial-follow-up"
+          ],
+          "label": "Trial follow-up",
+          "require": "rubric"
+        },
+        {
+          "id": "final-decision",
+          "type": "groups",
+          "assessmentId": "example-flexible-assessment",
+          "blockIds": [
+            "finish"
+          ],
+          "label": "Final decision",
+          "require": "rubric"
+        }
+      ]
+    }
   },
   "assessments": [
     {
