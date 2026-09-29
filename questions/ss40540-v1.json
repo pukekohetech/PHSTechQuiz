@@ -634,6 +634,45 @@
           ]
         }
       ]
+    },
+    {
+      "id": "photo-evidence-upload",
+      "title": "Photo Evidence Upload",
+      "subtitle": "Upload one photo at a time against the SS 40540 evidence requirement it supports.",
+      "attachSignoff": false,
+      "submissionMode": "photoEvidence",
+      "photoEvidence": {
+        "instructions": "Choose what the photo is evidence for, then take a photo or select one from your device. Submit one photo at a time and repeat this assessment for each required image.",
+        "criteria": [
+          {
+            "id": "project-stage-safety",
+            "label": "Project stage - PPE and safety controls visible",
+            "help": "Use for photos showing you working on a project stage with appropriate PPE and any other required controls visible."
+          },
+          {
+            "id": "before-tidy-up",
+            "label": "Workplace / storage - before tidy-up",
+            "help": "Use for a photo showing the work or storage area before clean-up or tidy-up."
+          },
+          {
+            "id": "after-tidy-up",
+            "label": "Workplace / storage - after tidy-up",
+            "help": "Use for a photo showing the area after clean-up, left tidy with tools put away appropriately."
+          }
+        ],
+        "maxImageDimension": 1800,
+        "jpegQuality": 0.82
+      },
+      "questions": [
+        {
+          "id": "photo_evidence",
+          "text": "Choose what this photo is evidence for, then take or upload one image.",
+          "hint": "Upload one photo at a time. You can reopen this section and submit more photos as you move through the project.",
+          "type": "photo",
+          "maxPoints": 0,
+          "rubric": []
+        }
+      ]
     }
   ],
   "_finalChecklistBeforePublishing": [
