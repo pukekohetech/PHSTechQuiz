@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 2,
+  "_templatePurpose": "QuizMaster question set for BCATS Skill Standard 40540 (v1), based on the supplied Being safe assessment resource, assessment schedule, and Safety learning resource.",
+  "_assessmentIntegrityNotes": [
+    "This file includes the student-facing written prompts and a supporting safety knowledge check.",
+    "It does not replace the practical evidence required by the assessment resource: teacher observation, project-stage photos or an equivalent work record, before/after tidy-up evidence, cleaning/check records where needed, damaged-tool reports where needed, and a copy of the project instructions must still be collected through the school's normal process.",
+    "Project-specific open responses use broad completion rubrics because the supplied assessment schedule makes teacher observation and judgement key evidence."
+  ],
+  "questionSet": {
+    "id": "ss40540-v1",
+    "label": "SS 40540 - BCATS Safety",
+    "title": "Use safety practices for a BCATS project or related tasks",
+    "number": "40540",
+    "version": "v1",
+    "credits": 4,
+    "standardType": "internal"
+  },
+  "assessments": [
+    {
+      "id": "bcats-safety-28",
+      "title": "BCATS Safety 28",
+      "subtitle": "Skill Standard 40540 (v1) - student assessment prompts and safety knowledge check",
+      "attachSignoff": true,
+      "questionGroups": [
+        {
+          "id": "project-hazards-controls",
+          "label": "Assessment section 1",
+          "title": "Identify hazards and controls",
+          "intro": "Use your own BCATS project. Keep the same project tasks and hazards connected across these questions.",
+          "reminder": "Your answers must relate to the project you actually completed. Include every task and hazard needed to show how you planned to work safely."
+        },
+        {
+          "id": "work-safely",
+          "label": "Assessment section 2",
+          "title": "Work safely",
+          "intro": "Describe the safety practices you actually used while carrying out your BCATS project.",
+          "reminder": "The written answers support, but do not replace, your teacher's observations and the practical evidence you collect."
+        },
+        {
+          "id": "keep-workplace-safe",
+          "label": "Assessment section 3",
+          "title": "Keep the workplace safe",
+          "intro": "Record how you kept the workplace, tools, equipment and PPE clean, tidy and safe.",
+          "reminder": "If no damaged or dangerous gear was found, write N/A where appropriate."
+        },
+        {
+          "id": "safety-knowledge",
+          "label": "Safety knowledge",
+          "title": "BCATS safety knowledge check",
+          "intro": "Answer these questions using the safety knowledge covered in the BCATS Safety learning resource.",
+          "reminder": "Read each question carefully and use the most specific safety term you know."
+        }
+      ],
+      "questions": [
+        {
+          "id": "project_name",
+          "group": "project-hazards-controls",
+          "part": "A",
+          "text": "What BCATS project are you completing for this assessment?",
+          "hint": "Use the same project name that appears on your project instructions.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "project_tasks",
+          "group": "project-hazards-controls",
+          "part": "B",
+          "text": "List the tasks you need to complete for your project.",
+          "hint": "Think through the project from preparation to the final tidy-up so you do not miss a stage.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/01_project_planning.webp",
+          "imageAlt": "Timber, a project drawing, measuring tools and a pencil on a workshop bench."
+        },
+        {
+          "id": "project_hazards",
+          "group": "project-hazards-controls",
+          "part": "C",
+          "text": "For the project tasks you listed, identify the hazards you came across while working on each task.",
+          "hint": "Consider the work area, materials, tools or machinery, and the behaviour of people around you.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/02_identify_hazards.webp",
+          "imageAlt": "Workshop floor with offcuts, a lead and a warning sign showing a potential trip hazard."
+        },
+        {
+          "id": "hazard_harm",
+          "group": "project-hazards-controls",
+          "part": "D",
+          "text": "Explain how each hazard you identified might cause harm.",
+          "hint": "Link each hazard to a realistic injury, illness, damage or other harmful outcome.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/14_electrical_hazards.webp",
+          "imageAlt": "Electrical leads and a damaged or exposed connection on a workshop floor."
+        },
+        {
+          "id": "hazard_controls",
+          "group": "project-hazards-controls",
+          "part": "E",
+          "text": "Explain what you did to manage each hazard, including the controls you used.",
+          "hint": "State the action you used to remove or reduce the risk, including PPE or other controls where relevant.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/15_dust_fumes.webp",
+          "imageAlt": "Dust extraction hose collecting sawdust beside workshop machinery."
+        },
+        {
+          "id": "work_safely_own_others",
+          "group": "work-safely",
+          "part": "A",
+          "text": "Describe how you carried out your project tasks safely, considering your own safety and the safety of other people.",
+          "hint": "Think about the safe actions you used every time you worked, not just one isolated example.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/18_emergency_procedures.webp",
+          "imageAlt": "Green first-aid box in a workshop safety area."
+        },
+        {
+          "id": "ppe_used",
+          "group": "work-safely",
+          "part": "B",
+          "text": "What PPE did you choose and wear or use for your project, and which hazards did it protect you from?",
+          "hint": "Match the PPE to the actual hazards in your project rather than listing every item in the workshop.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/04_ppe.webp",
+          "imageAlt": "Workshop PPE symbols for eye, hearing, foot and hand protection."
+        },
+        {
+          "id": "other_controls_used",
+          "group": "work-safely",
+          "part": "C",
+          "text": "What other controls did you use for project-related hazards, apart from PPE?",
+          "hint": "Examples of control types include guards, extraction, keeping people clear, warning others, barriers, ventilation or changing how a task is done.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/17_fire_safety.webp",
+          "imageAlt": "Fire extinguisher mounted beside a fire-safety sign."
+        },
+        {
+          "id": "stage_safety_record",
+          "group": "work-safely",
+          "part": "D",
+          "text": "Identify the safety procedures shown in your project-stage photos or in your record of work carried out.",
+          "hint": "For each main stage, name the safety action, PPE or control that can be seen or recorded.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/11_power_tool_safety.webp",
+          "imageAlt": "Worker using a guarded circular saw to cut timber."
+        },
+        {
+          "id": "tidy_during_work",
+          "group": "keep-workplace-safe",
+          "part": "A",
+          "text": "Describe how you kept your workplace tidy during your project work.",
+          "hint": "Think about rubbish, offcuts, tools, cords, walkways and your bench while work was in progress.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/13_slips_trips_falls.webp",
+          "imageAlt": "Yellow warning sign showing a slip or fall hazard."
+        },
+        {
+          "id": "tidy_after_work",
+          "group": "keep-workplace-safe",
+          "part": "B",
+          "text": "Describe how you left the workplace and storage areas after tidy-up.",
+          "hint": "Your before-and-after evidence should show the area left tidy and tools put away appropriately.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/19_clean_tidy_workplace.webp",
+          "imageAlt": "Clean workshop bench with tools organised on a wall and stored neatly."
+        },
+        {
+          "id": "cleaning_checks_record",
+          "group": "keep-workplace-safe",
+          "part": "C",
+          "text": "Record the cleaning and checks you completed on tools, equipment and PPE after use.",
+          "hint": "Include the checks that match the gear you actually used, such as cleaning, damage checks, battery charging, filters, pads, lenses or soles.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ],
+          "image": "images/ss40540-v1/20_tool_equipment_checks.webp",
+          "imageAlt": "Hand brush cleaning sawdust from a workshop surface and equipment area."
+        },
+        {
+          "id": "damaged_tools_report",
+          "group": "keep-workplace-safe",
+          "part": "D",
+          "text": "Did you find any damaged or dangerous tools or equipment? If yes, record the type of tool or equipment, the date, the issue, and who you reported it to. If none were found, write N/A.",
+          "hint": "A complete report identifies the item and what was wrong, then shows when and to whom it was reported.",
+          "type": "long",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "(?:\\bN\\/?A\\b|.{10,})",
+              "flags": "i"
+            }
+          ],
+          "image": "images/ss40540-v1/21_report_damaged_equipment.webp",
+          "imageAlt": "Damaged electrical tool lead with a red do-not-use tag attached."
+        },
+        {
+          "id": "evidence_collection_date",
+          "group": "keep-workplace-safe",
+          "part": "E",
+          "text": "What date did you finish collecting all the evidence required for this assessment?",
+          "hint": "Use the date when your written work and practical evidence were complete.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "project_instructions_included",
+          "group": "keep-workplace-safe",
+          "part": "F",
+          "text": "Name or briefly describe the project instructions that are included in your portfolio of evidence.",
+          "hint": "This should identify the instructions for the same project named at the start of this assessment.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "hazard_definition",
+          "group": "safety-knowledge",
+          "part": "A",
+          "text": "Which statement best describes a hazard?",
+          "hint": "Think about the difference between the thing that can cause harm and the chance that harm will happen.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A thing or situation with the potential to cause injury, illness, or death$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A thing or situation with the potential to cause injury, illness, or death",
+            "The chance that any harm will happen",
+            "A record of an incident after it has happened",
+            "Only a tool or machine that has already caused an injury"
+          ],
+          "image": "images/ss40540-v1/16_hazardous_substances.webp",
+          "imageAlt": "Several labelled workshop chemical containers with hazard pictograms."
+        },
+        {
+          "id": "hazard_types",
+          "group": "safety-knowledge",
+          "part": "B",
+          "text": "Name the three types of hazards described in the BCATS Safety learning resource.",
+          "hint": "One type relates to surroundings, one to direct physical harm, and one to how people act.",
+          "type": "short",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\benvironmental\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\bphysical\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\bbehavio(?:u)?ral\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "identify_hazards_first",
+          "group": "safety-knowledge",
+          "part": "C",
+          "text": "Before you start work, what is the first safety step identified in the learning resource?",
+          "hint": "This step comes before deciding how to control a risk.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Identify any hazards$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Identify any hazards",
+            "Start the task and look for problems later",
+            "Choose the fastest tool available",
+            "Wait until the end of the lesson to inspect the work area"
+          ]
+        },
+        {
+          "id": "take_5_method",
+          "group": "safety-knowledge",
+          "part": "D",
+          "text": "What does the 'Step back 5x5' or 'take 5' method ask you to do when returning from a break?",
+          "hint": "It is a short reset that helps you notice whether the workplace has changed while you were away.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Take 5 steps back and 5 minutes to look around the workplace$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Take 5 steps back and 5 minutes to look around the workplace",
+            "Check 5 tools and ask 5 people if they are safe",
+            "Work for 5 minutes before putting on PPE",
+            "Take 5 photographs before restarting the task"
+          ],
+          "image": "images/ss40540-v1/03_take_5.webp",
+          "imageAlt": "Five-step Take 5 safety reminder for stopping, looking, identifying, assessing and controlling hazards."
+        },
+        {
+          "id": "safety_sign_colours",
+          "group": "safety-knowledge",
+          "part": "E",
+          "text": "State the meaning of each safety sign colour: green, red, yellow, and blue.",
+          "hint": "Each colour communicates a different type of instruction or warning.",
+          "type": "long",
+          "maxPoints": 4,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "(?:\\bgreen\\b[\\s\\S]{0,40}\\b(?:safety|go)\\b|\\b(?:safety|go)\\b[\\s\\S]{0,40}\\bgreen\\b)",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?:\\bred\\b[\\s\\S]{0,40}\\b(?:stop|no)\\b|\\b(?:stop|no)\\b[\\s\\S]{0,40}\\bred\\b)",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?:\\byellow\\b[\\s\\S]{0,40}\\b(?:risk|danger)\\b|\\b(?:risk|danger)\\b[\\s\\S]{0,40}\\byellow\\b)",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?:\\bblue\\b[\\s\\S]{0,40}\\b(?:mandatory|must|do this)\\b|\\b(?:mandatory|must|do this)\\b[\\s\\S]{0,40}\\bblue\\b)",
+              "flags": "i"
+            }
+          ],
+          "image": "images/ss40540-v1/23_safety_signs.webp",
+          "imageAlt": "Workplace safety sign board using common mandatory and warning sign colours."
+        },
+        {
+          "id": "control_hierarchy",
+          "group": "safety-knowledge",
+          "part": "F",
+          "text": "Once you know the level of risk, what should you do with the hazard?",
+          "hint": "The preferred action deals with the hazard itself before relying on a weaker control.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Eliminate or remove it first; if that is not possible, minimise or reduce it$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Eliminate or remove it first; if that is not possible, minimise or reduce it",
+            "Leave it in place and rely only on signs",
+            "Accept the hazard if the task will only take a few minutes",
+            "Ask another person to work around it instead"
+          ]
+        },
+        {
+          "id": "tool_training",
+          "group": "safety-knowledge",
+          "part": "G",
+          "text": "What must happen before you use tools, equipment, or machinery that you have not used before?",
+          "hint": "The learning resource says you must be able to show that you understand the correct and safe way to use the equipment.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Be properly trained or instructed and demonstrate that you understand the safe procedure$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Be properly trained or instructed and demonstrate that you understand the safe procedure",
+            "Read the machine label and begin if it looks straightforward",
+            "Watch another student use it once and then try it alone",
+            "Use it only at low speed until you learn by experience"
+          ],
+          "image": "images/ss40540-v1/24_training_supervision.webp",
+          "imageAlt": "Teacher or supervisor guiding a learner during a practical workshop task."
+        },
+        {
+          "id": "ppe_definition",
+          "group": "safety-knowledge",
+          "part": "H",
+          "text": "What is PPE used for in the workplace?",
+          "hint": "Think about the purpose of items worn or used by a person around hazards.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^To minimise health or safety risks to the person wearing or using it$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "To minimise health or safety risks to the person wearing or using it",
+            "To replace all other hazard controls in the workplace",
+            "To make tools easier to store after use",
+            "To show which worker is responsible for a task"
+          ],
+          "image": "images/ss40540-v1/10_high_visibility.webp",
+          "imageAlt": "High-visibility safety vest hanging in a workshop."
+        },
+        {
+          "id": "hearing_protection",
+          "group": "safety-knowledge",
+          "part": "I",
+          "text": "State one way to reduce noise exposure and name one type of hearing protection used in a BCATS workplace.",
+          "hint": "One part is about reducing exposure; the other is about equipment worn on or in the ears.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(limit|reduce|distance|barrier|warn|notify|tell others|move away|keep away)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(ear[ -]?plugs?|ear[ -]?muffs?|ear protectors?|hearing protection)\\b",
+              "flags": "i"
+            }
+          ],
+          "image": "images/ss40540-v1/05_hearing_protection.webp",
+          "imageAlt": "Pair of over-ear hearing protectors resting on a workshop bench."
+        },
+        {
+          "id": "eye_protection",
+          "group": "safety-knowledge",
+          "part": "J",
+          "text": "When should eye protection be worn in a BCATS workplace, and name one suitable type of eye protection.",
+          "hint": "Think about both doing hazardous work yourself and being close to someone else creating an eye hazard.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(work(ing)?|using|near|close|hazard|grind|flying|splash|spark|dust|chip)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(safety glasses|goggles|face (shield|mask)|welding helmet)\\b",
+              "flags": "i"
+            }
+          ],
+          "image": "images/ss40540-v1/06_eye_protection.webp",
+          "imageAlt": "Clear wraparound safety glasses on a workshop bench."
+        },
+        {
+          "id": "safe_lifting",
+          "group": "safety-knowledge",
+          "part": "K",
+          "text": "Give three safe practices for moving a heavy or awkward load.",
+          "hint": "Think about planning the lift, body position, getting help or equipment, and the route you will walk.",
+          "type": "long",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(help|trolley|wheelbarrow|smaller load|lighter|team lift)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(knees|back straight|legs|close to (the )?load|body close)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(path|walkway|clear|gloves|splinters?|sharp edges?)\\b",
+              "flags": "i"
+            }
+          ],
+          "image": "images/ss40540-v1/12_manual_handling.webp",
+          "imageAlt": "Side-by-side example of safer and unsafe body positions when lifting a box."
+        },
+        {
+          "id": "hswa_worker_role",
+          "group": "safety-knowledge",
+          "part": "L",
+          "text": "Under the Health and Safety at Work Act 2015, who is treated as a worker in the BCATS workplace?",
+          "hint": "The resource identifies two people in the school BCATS setting as workers.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The learner and the teacher$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The learner and the teacher",
+            "Only the principal",
+            "Only paid tradespeople visiting the school",
+            "Only the learner's parent or caregiver"
+          ]
+        },
+        {
+          "id": "hazard_register",
+          "group": "safety-knowledge",
+          "part": "M",
+          "text": "Which safety document lists identified hazards and should also include their risks, controls, and who is responsible?",
+          "hint": "This document provides a shared record so people entering the workplace can know about the hazards and how they are managed.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Hazard register$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Hazard register",
+            "Incident report",
+            "Maintenance checklist",
+            "Toolbox record"
+          ]
+        }
+      ]
+    }
+  ],
+  "_finalChecklistBeforePublishing": [
+    "Keep the questionSet metadata as SS 40540 (v1), 4 credits.",
+    "Do not treat completion of this quiz as a replacement for the practical evidence and teacher observation required by the supplied assessment resource and assessment schedule.",
+    "Check QuizMaster's sign-off output matches the school's intended assessment workflow before publishing.",
+    "If a deadline is required, add the deadline block using the actual school due date rather than the example date from the template.",
+    "Run the repository catalogue builder or let the GitHub Action update question-sets.json."
+  ],
+  "_imageAssetNotes": [
+    "Images are stored at images/ss40540-v1/ and use repository-relative paths.",
+    "Only questions with a clear, relevant visual have an image field; unused WebP files remain in the image folder as optional future assets.",
+    "Keep imageAlt factual and short. Some images provide visual scaffolding and should not replace the learner response."
+  ]
+}
