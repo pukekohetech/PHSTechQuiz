@@ -1,0 +1,542 @@
+{
+  "schemaVersion": 3,
+  "_templatePurpose": "QuizMaster schema-v3 example for BCATS Skill Standard 40540 (v1): repeatable hazard records plus existing photo evidence and learning-resource reflection.",
+  "_assessmentIntegrityNotes": [
+    "Schema v3 uses generic repeatGroup blocks. SS 40540 starts with five hazard records and learners can add more hazards without changing QuizMaster code.",
+    "The repeatGroup feature is standard-agnostic: another standard can use the same engine for trials, stakeholders, tests, modifications, evaluations, or other repeated evidence records.",
+    "Five hazard records are provided as a simple PHS scaffold. The official assessment schedule does not specify a minimum number of hazards; learners still need to cover the relevant tasks, hazards and controls for their own project.",
+    "Project-stage photo evidence is repeatable so learners can cover all important stages of their project without a fixed photo count.",
+    "Project-stage photo notes combine PPE, other controls and safe work into one short prompt so the photo and explanation remain together on one evidence page.",
+    "Workplace before/after tidy-up photos are included in the same Photo Evidence page as project-stage evidence.",
+    "Cleaning/check records, damaged-tool reporting and project-instruction evidence remain in the written evidence section.",
+    "Teacher observation/sign-off is intentionally omitted in this version, as requested.",
+    "Written answers now use terminology-aware rubrics so a non-empty but unrelated answer will not receive full credit.",
+    "Rubrics accept several valid BCATS terms and synonyms; they do not require one exact sentence.",
+    "Photo-evidence notes can also require recognised safety terminology through field validation rules.",
+    "The Learner Self-reflection questions are based directly on the supplied BCATS Safety learning resource: hazards, identifying/controlling hazards, PPE, care for tools/PPE, worker responsibilities and safety documents."
+  ],
+  "questionSet": {
+    "id": "ss40540-v1",
+    "label": "SS 40540 - BCATS Safety",
+    "title": "Use safety practices for a BCATS project or related tasks",
+    "number": "40540",
+    "version": "v1",
+    "credits": 4,
+    "standardType": "internal"
+  },
+  "assessments": [
+    {
+      "id": "being-safe-written-evidence",
+      "title": "1. Written Evidence",
+      "subtitle": "Start with five hazards; add another hazard if your project needs more evidence",
+      "attachSignoff": false,
+      "questionGroups": [],
+      "questions": [],
+      "schemaVersion": 3,
+      "blocks": [
+        {
+          "type": "group",
+          "id": "project-details",
+          "group": {
+            "id": "project-details",
+            "label": "Start here",
+            "title": "Your BCATS project",
+            "intro": "Use the same project for all of this evidence.",
+            "reminder": "Keep answers short and based on what you actually did."
+          },
+          "questions": [
+            {
+              "id": "project_name",
+              "part": "A",
+              "text": "What project are you completing?",
+              "hint": "Use the project name from your instructions.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "repeatGroup",
+          "id": "hazard",
+          "itemLabel": "hazard",
+          "startWith": 5,
+          "minimum": 5,
+          "maximum": null,
+          "allowAdd": true,
+          "allowRemove": true,
+          "addLabel": "+ Add another hazard",
+          "removeLabel": "Remove last added hazard",
+          "group": {
+            "id": "hazard-1",
+            "label": "Hazard {n} of {count}",
+            "title": "Hazard record {n}",
+            "intro": "Use one real project task and one hazard.",
+            "reminder": "Keep the task, hazard, harm and control connected."
+          },
+          "questions": [
+            {
+              "id": "task",
+              "part": "A",
+              "text": "Project task",
+              "hint": "Name a real project task, for example measuring, marking out, cutting, drilling, assembly, sanding, finishing, or another task from your project.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "hazard",
+              "part": "B",
+              "text": "Hazard",
+              "hint": "Use a specific hazard term, for example noise, dust, flying debris, a sharp edge/blade, electricity, a trip hazard, chemicals, manual handling, or moving machinery.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "harm",
+              "part": "C",
+              "text": "How could it cause harm?",
+              "hint": "Name the actual harm, for example hearing loss, a cut, eye injury, breathing problems, a burn, electric shock, a strain, a fall, or another realistic injury/illness.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "control",
+              "part": "D",
+              "text": "What did you do to manage it?",
+              "hint": "Use a specific control term, for example eliminate/remove, minimise/reduce, guard, extraction, clamp/secure, safety glasses, earmuffs, respirator/dust mask, warn others, keep clear, or another control you actually used.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "workplace-safe",
+          "group": {
+            "id": "workplace-safe",
+            "label": "Keep the workplace safe",
+            "title": "Tidy, clean, check and report",
+            "intro": "Record the practical safety evidence that is not shown by the hazard table.",
+            "reminder": "If there was no damaged equipment, write N/A."
+          },
+          "questions": [
+            {
+              "id": "tidy_during_work",
+              "part": "A",
+              "text": "How did you keep your work area tidy while you were working?",
+              "hint": "Include both what you DID and what you kept tidy/clear.",
+              "type": "long",
+              "maxPoints": 2,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b",
+                  "flags": "i",
+                  "hint": "Use an action such as tidy, clear, sweep, clean, put away, store, remove or dispose."
+                },
+                {
+                  "points": 1,
+                  "check": "\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b",
+                  "flags": "i",
+                  "hint": "Name what you managed, such as tools, offcuts, rubbish, dust, leads, a walkway, bench, floor or work area."
+                }
+              ]
+            },
+            {
+              "id": "cleaning_checks",
+              "part": "B",
+              "text": "What tools, equipment or PPE did you clean or check after use?",
+              "hint": "A good answer names the item and the cleaning/check you completed.",
+              "type": "long",
+              "maxPoints": 2,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:clean|cleaned|check|checked|inspect|inspected|wipe|wiped|charge|charged|sterilis(?:e|ed)|change|changed|wash|washed|sweep|swept)\\b",
+                  "flags": "i",
+                  "hint": "Use a cleaning/check action such as cleaned, checked, inspected, wiped, charged, washed or changed."
+                },
+                {
+                  "points": 1,
+                  "check": "\\b(?:tools?|equipment|PPE|safety glasses|goggles|earmuffs?|ear ?plugs?|gloves?|masks?|respirators?|boots?|shoes?|hard hats?|batteries?|lenses?|pads?|filters?|overalls?)\\b",
+                  "flags": "i",
+                  "hint": "Name the tool, equipment or PPE item you cleaned/checked."
+                }
+              ]
+            },
+            {
+              "id": "damaged_tools",
+              "part": "C",
+              "text": "Did you find damaged or dangerous tools or equipment?",
+              "hint": "If none were found, write N/A. If there was a problem, name the item and issue, give the date, and say who you reported it to.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?:^\\s*N\\s*/?\\s*A\\s*$|(?=[\\s\\S]*\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\b)(?=[\\s\\S]*\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\b)[\\s\\S]+)",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "portfolio-check",
+          "group": {
+            "id": "portfolio-check",
+            "label": "Portfolio check",
+            "title": "Project instructions",
+            "intro": "The project instructions are part of the overall portfolio evidence.",
+            "reminder": "Use the same project named at the start."
+          },
+          "questions": [
+            {
+              "id": "project_instructions",
+              "part": "A",
+              "text": "What project instruction sheet or plan is included in your portfolio?",
+              "hint": "Name or briefly describe it.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?=^[\\s\\S]{3,}$).+",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "_flexibleEngine": "repeatGroup blocks are materialised at runtime by flexible-groups.js. Existing assessment grading/PDF/submission code then uses the generated normal question list."
+    },
+    {
+      "id": "photo-evidence",
+      "title": "2. Photo Evidence",
+      "subtitle": "Add project-stage photos, then the before and after tidy-up photos",
+      "attachSignoff": false,
+      "mode": "photo-evidence",
+      "questions": [],
+      "photoEvidence": {
+        "maxDimension": 1920,
+        "jpegQuality": 0.8,
+        "allowWrittenRecord": true,
+        "methodLabel": "Evidence method",
+        "photoMethodLabel": "Photo",
+        "writtenMethodLabel": "Written record",
+        "options": [
+          {
+            "id": "project-stage",
+            "label": "Project stage / task",
+            "help": "Repeat this for each important stage of your project. The photo and your short explanation will stay together on one evidence page.",
+            "repeatable": true,
+            "fields": [
+              {
+                "id": "stage",
+                "label": "What stage or task is this?",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g. Cutting the timber"
+              },
+              {
+                "id": "safety",
+                "label": "What safety is shown or used?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "PPE, guards, extraction, clamping, warning others, clear area, etc.",
+                "help": "Use a specific safety term from your project, such as safety glasses, earmuffs, guard, extraction, clamp/secure, respirator/dust mask, warn others, clear/tidy area, eliminate/remove, or minimise/reduce.",
+                "validation": {
+                  "pattern": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
+                  "flags": "i",
+                  "message": "Use at least one specific BCATS safety/control term, not just a general statement."
+                }
+              }
+            ]
+          },
+          {
+            "id": "workplace-before",
+            "label": "Workplace / storage BEFORE tidy-up",
+            "help": "Take a clear photo of your work and storage area before you tidy it.",
+            "repeatable": false,
+            "fields": [
+              {
+                "id": "area",
+                "label": "What area is shown?",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g. My bench and tool area"
+              }
+            ]
+          },
+          {
+            "id": "workplace-after",
+            "label": "Workplace / storage AFTER tidy-up",
+            "help": "Take a photo of the same area after tidy-up, with tools and equipment put away appropriately.",
+            "repeatable": false,
+            "fields": [
+              {
+                "id": "area",
+                "label": "What area is shown?",
+                "type": "text",
+                "required": true,
+                "placeholder": "Use the same area as the BEFORE photo"
+              },
+              {
+                "id": "tidy",
+                "label": "What did you tidy, clean or put away?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Keep this short.",
+                "help": "Say what you did and what you tidied/cleaned/put away.",
+                "validation": {
+                  "pattern": "(?=[\\s\\S]*\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b)(?=[\\s\\S]*\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b)[\\s\\S]+",
+                  "flags": "i",
+                  "message": "Include a tidy/clean action and what you tidied, cleaned or put away."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "learner-self-reflection",
+      "title": "3. Learner Self-reflection - Learning Resource",
+      "subtitle": "Five short questions based directly on the BCATS Safety learning resource",
+      "attachSignoff": false,
+      "questionGroups": [
+        {
+          "id": "reflection",
+          "label": "Learning resource reflection",
+          "title": "What have you learned about BCATS safety?",
+          "intro": "Answer these using the safety words and ideas from the BCATS Safety learning resource.",
+          "reminder": "Keep your answers short, but use the correct BCATS safety terms."
+        }
+      ],
+      "questions": [
+        {
+          "id": "reflection_hazards",
+          "group": "reflection",
+          "part": "A",
+          "text": "What is a hazard, and what are the THREE types of hazards in the BCATS learning resource?",
+          "hint": "Use the BCATS words: hazard, environmental, physical and behavioural.",
+          "type": "long",
+          "maxPoints": 4,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(?:potential\\s+to\\s+cause|can\\s+cause|could\\s+cause|may\\s+cause)\\b.{0,80}\\b(?:harm|injur(?:y|ies)|illness|death)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\benvironmental\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\bphysical\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\bbehavio(?:u)?ral\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "reflection_identify_control",
+          "group": "reflection",
+          "part": "B",
+          "text": "Before you start work, what must you do FIRST, and what order should you use to control a hazard?",
+          "hint": "Identify hazards first. Then eliminate/remove; if you cannot, minimise/reduce.",
+          "type": "long",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(?:identify|identifying|identified|find|finding|look\\s+for|check\\s+for)\\b.{0,60}\\bhazards?\\b|\\bhazards?\\b.{0,60}\\b(?:identify|identifying|identified|find|finding|look\\s+for|check\\s+for)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:eliminat(?:e|ed|ing|ion)|remove|removed|removing)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion))\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "reflection_ppe",
+          "group": "reflection",
+          "part": "C",
+          "text": "What is PPE for? Give TWO examples of PPE from the learning resource and say what each protects you from.",
+          "hint": "Examples include safety glasses/goggles, hearing protection, respirators or dust masks, gloves, safety boots, protective clothing and hard hats.",
+          "type": "long",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(?:protect|protects|protecting|minimis(?:e|es|ed|ing)|reduc(?:e|es|ed|ing))\\b.{0,90}\\b(?:risk|risks|harm|injur(?:y|ies)|health|safety)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\b(?:safety\\s+glasses|goggles|face\\s+shield|visor)\\b)(?=[\\s\\S]*\\b(?:eyes?|flying|chips?|splinters?|sparks?|dust|splash)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\b(?:earmuffs?|ear\\s*plugs?|hearing\\s+protection|ear\\s+protectors?)\\b)(?=[\\s\\S]*\\b(?:noise|loud|hearing|ears?)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\b(?:dust\\s*mask|respirator|respiratory\\s+protection|breathing\\s+protection)\\b)(?=[\\s\\S]*\\b(?:dust|fumes?|vapou?rs?|lungs?|breathing|respiratory)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\bgloves?\\b)(?=[\\s\\S]*\\b(?:cuts?|burns?|chemicals?|sharp|splinters?|hands?)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\b(?:safety\\s+boots?|safety\\s+shoes?|steel\\s*cap(?:ped)?\\s+(?:boots?|shoes?))\\b)(?=[\\s\\S]*\\b(?:feet|foot|toes?|falling|sharp|crush|slip)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\b(?:overalls?|protective\\s+clothing|dust\\s+coat|welding\\s+jacket)\\b)(?=[\\s\\S]*\\b(?:body|dust|sparks?|heat|chemicals?|paint|skin)\\b)[\\s\\S]+",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "(?=[\\s\\S]*\\bhard\\s*hat\\b)(?=[\\s\\S]*\\b(?:head|falling\\s+objects?)\\b)[\\s\\S]+",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "reflection_care",
+          "group": "reflection",
+          "part": "D",
+          "text": "Give THREE actions from the learning resource that keep the workplace, tools or PPE safe during and after work.",
+          "hint": "Think about rubbish, clear work areas, inspecting/cleaning tools, checking PPE, storing gear, and reporting damage.",
+          "type": "long",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(?:collect|dispose|remove|clean|tidy|sweep|wipe|clear)\\w*\\b.{0,80}\\b(?:rubbish|waste|scraps?|offcuts?|bench|floor|walkways?|workplace|work\\s+area)\\b|\\b(?:rubbish|waste|scraps?|offcuts?|bench|floor|walkways?|workplace|work\\s+area)\\b.{0,80}\\b(?:collect|dispose|remove|clean|tidy|sweep|wipe|clear)\\w*\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:inspect|check|clean|charge|put\\s+away|store)\\w*\\b.{0,80}\\b(?:tools?|equipment|batter(?:y|ies))\\b|\\b(?:tools?|equipment|batter(?:y|ies))\\b.{0,80}\\b(?:inspect|check|clean|charge|put\\s+away|store)\\w*\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:clean|check|inspect|sterilis(?:e|ed|ing)|change|wash|store)\\w*\\b.{0,90}\\b(?:PPE|safety\\s+glasses|earmuffs?|ear\\s*plugs?|gloves?|respirator|mask|overalls?|boots?|hard\\s*hat)\\b|\\b(?:PPE|safety\\s+glasses|earmuffs?|ear\\s*plugs?|gloves?|respirator|mask|overalls?|boots?|hard\\s*hat)\\b.{0,90}\\b(?:clean|check|inspect|sterilis(?:e|ed|ing)|change|wash|store)\\w*\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:report|reported|tell|told|inform|informed)\\b.{0,90}\\b(?:damage|damaged|issue|issues|faulty|unsafe|broken|teacher)\\b|\\b(?:damage|damaged|issue|issues|faulty|unsafe|broken)\\b.{0,90}\\b(?:report|reported|tell|told|inform|informed|teacher)\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "reflection_worker_document",
+          "group": "reflection",
+          "part": "E",
+          "text": "What is ONE responsibility you have as a BCATS worker? Name ONE safety document from the learning resource and explain what it is used for.",
+          "hint": "Worker responsibilities include identifying/reporting hazards, protecting yourself and others, controlling hazards and following instructions. Safety documents include the hazard register, SOP, emergency response plan, maintenance checklist and incident report.",
+          "type": "long",
+          "maxPoints": 3,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(?:identify|report|control|protect|listen|follow|ask|tell|honest)\\w*\\b.{0,100}\\b(?:hazards?|yourself|others|safety\\s+instructions?|teacher|unsure|task|equipment)\\b|\\b(?:hazards?|yourself|others|safety\\s+instructions?|teacher|unsure)\\b.{0,100}\\b(?:identify|report|control|protect|listen|follow|ask|tell|honest)\\w*\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:induction|training\\s+records?|hazard\\s+register|toolbox\\s+records?|standard\\s+operating\\s+procedures?|SOPs?|emergency\\s+response\\s+plan|maintenance\\s+checklist|incident\\s+report)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(?:hazards?|risks?|controls?|responsib(?:le|ility)|instructions?|procedures?|emergenc(?:y|ies)|evacuat(?:e|ion)|assembly\\s+point|inspect|maintain|maintenance|damage|incident|accident|near\\s+miss|training|record|check|safe(?:ty)?)\\b",
+              "flags": "i"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_finalChecklistBeforePublishing": [
+    "Load flexible-groups.js after script.js and before photo-evidence.js.",
+    "Keep the five starting hazards as a PHS scaffold; + Add another hazard is available for projects needing more.",
+    "Keep the questionSet metadata as SS 40540 (v1), 4 credits.",
+    "Five hazard records are a local scaffold, not an official minimum.",
+    "Project-stage evidence remains repeatable so the learner can cover all important stages.",
+    "The Photo Evidence section keeps the photo and its short questions together on one page.",
+    "Teacher observation/sign-off remains outside this student-facing version for now.",
+    "The live-camera plugin photo-evidence.js v4 can be reused without code changes.",
+    "Keep the Learner Self-reflection aligned to the supplied BCATS Safety learning resource; do not replace it with unrelated general safety questions."
+  ],
+  "_markingRubricSummary": {
+    "principle": "Answers must use relevant BCATS safety terminology. Valid synonyms are accepted; unrelated filler text should not receive full credit.",
+    "hazardRecord": {
+      "Project task": "Real project task; project-specific wording accepted.",
+      "Hazard": "Must name a recognisable hazard such as noise, dust, electricity, sharp/moving equipment, trip/fall, chemicals, manual handling, etc.",
+      "How it could cause harm": "Must name a realistic harm/injury/illness such as hearing loss, cut, eye injury, breathing problem, burn, electric shock, strain, fall, etc.",
+      "What did you do to manage it": "Must name a specific control such as eliminate/remove, minimise/reduce, guard, extraction, clamp, PPE, warning others, tidy/clear area, training/supervision, etc."
+    },
+    "photoEvidence": "Safety notes must contain a recognised control/PPE/safe-work term before the evidence can be submitted."
+  }
+}
