@@ -28,8 +28,8 @@
     "evidenceTracker": {
       "kicker": "Evidence progress",
       "title": "Your SS 40540 evidence",
-      "intro": "This updates automatically as you work. Green checks show evidence QuizMaster can confirm. Project-stage evidence stays ongoing because you should keep adding records until all important stages are covered.",
-      "footer": "This is a progress guide, not teacher sign-off. Your teacher still decides whether your evidence covers the standard sufficiently.",
+      "intro": "This updates automatically as you work. Blue READY means the work is complete on this device but has not been submitted. Green SUBMITTED is reserved for evidence QuizMaster has confirmed in the teacher register.",
+      "footer": "READY is not the same as submitted. Green SUBMITTED only appears after QuizMaster receives confirmation from the teacher register. This tracker is still a progress guide, not teacher sign-off.",
       "items": [
         {
           "id": "hazards-controls",
@@ -677,7 +677,7 @@
     "Project-stage evidence remains repeatable so the learner can cover all important stages.",
     "The Photo Evidence section keeps the photo and its short questions together on one page.",
     "Teacher observation/sign-off remains outside this student-facing version for now.",
-    "The live-camera plugin photo-evidence.js v4 can be reused without code changes.",
+    "Keep photo-evidence.js v7 for confirmed evidence submissions and tracker integration.",
     "Keep the Learner Self-reflection aligned to the supplied BCATS Safety learning resource; do not replace it with unrelated general safety questions."
   ],
   "_markingRubricSummary": {

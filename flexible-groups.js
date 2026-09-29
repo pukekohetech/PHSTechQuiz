@@ -1,9 +1,9 @@
 /*
- * QuizMaster Flexible Groups plugin v3
+ * QuizMaster Flexible Groups plugin v4
  * Generic schema-v3 repeatable groups, conditional questions, and evidence tracking for any standard.
  *
  * Load after script.js and BEFORE photo-evidence.js:
- *   <script src="flexible-groups.js?v=3" defer></script>
+ *   <script src="flexible-groups.js?v=4" defer></script>
  *
  * Existing schema-v2 standards continue to work unchanged.
  */
@@ -11,7 +11,7 @@
   "use strict";
 
   const FLEX_SCHEMA_MIN = 3;
-  const PLUGIN_VERSION = 3;
+  const PLUGIN_VERSION = 4;
   const originalLoadAssessment = window.loadAssessment;
 
   if (typeof originalLoadAssessment !== "function") {
@@ -43,13 +43,25 @@
       .qm-evidence-tracker__bar span{display:block;height:100%;background:#7a1f2b;width:0;transition:width .2s ease}
       .qm-evidence-tracker__list{display:grid;gap:8px}
       .qm-evidence-tracker__item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}
-      .qm-evidence-tracker__item.is-complete{border-color:#bbd8c4;background:#f7fbf8}
+      .qm-evidence-tracker__item.is-ready{border-color:#b9cfe7;background:#f6faff}
+      .qm-evidence-tracker__item.is-submitted{border-color:#bbd8c4;background:#f7fbf8}
       .qm-evidence-tracker__item.is-ongoing{border-color:#ead6a5;background:#fffaf0}
       .qm-evidence-tracker__icon{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:#eef2f7;color:#64748b;font-weight:900}
-      .qm-evidence-tracker__item.is-complete .qm-evidence-tracker__icon{background:#e5f3e9;color:#27633a}
+      .qm-evidence-tracker__item.is-ready .qm-evidence-tracker__icon{background:#e7f0fa;color:#285f91}
+      .qm-evidence-tracker__item.is-submitted .qm-evidence-tracker__icon{background:#e5f3e9;color:#27633a}
       .qm-evidence-tracker__item.is-ongoing .qm-evidence-tracker__icon{background:#fff0c9;color:#855f00}
       .qm-evidence-tracker__item strong{display:block;color:#111827}
       .qm-evidence-tracker__item small{display:block;margin-top:2px;color:#64748b;line-height:1.35}
+      .qm-evidence-tracker__status{display:inline-block;margin-top:5px;padding:3px 7px;border-radius:999px;background:#eef2f7;color:#596273;font-size:.72rem;font-weight:850;letter-spacing:.02em}
+      .qm-evidence-tracker__status.is-ready{background:#e7f0fa;color:#285f91}
+      .qm-evidence-tracker__status.is-submitted{background:#e5f3e9;color:#27633a}
+      .qm-evidence-tracker__status.is-ongoing{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__legend{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
+      .qm-evidence-tracker__legend span{padding:5px 8px;border-radius:999px;font-size:.75rem;font-weight:800}
+      .qm-evidence-tracker__legend .is-ready{background:#e7f0fa;color:#285f91}
+      .qm-evidence-tracker__legend .is-submitted{background:#e5f3e9;color:#27633a}
+      .qm-evidence-tracker__legend .is-ongoing{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__legend .is-incomplete{background:#eef2f7;color:#596273}
       .qm-evidence-tracker__open{min-height:36px;padding:7px 11px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#111827;font:inherit;font-weight:750;cursor:pointer}
       .qm-evidence-tracker__foot{margin:12px 0 0;color:#64748b;font-size:.84rem;line-height:1.4}
       @media (max-width:640px){.flex-repeat-controls__count{width:100%;margin-right:0}.flex-repeat-controls button{flex:1 1 auto}.qm-evidence-tracker__item{grid-template-columns:28px minmax(0,1fr)}.qm-evidence-tracker__open{grid-column:2;justify-self:start}.qm-evidence-tracker__score{white-space:normal;text-align:right;max-width:44%}}
@@ -586,8 +598,9 @@
       return {
         label,
         met,
+        state: met ? "ready" : "incomplete",
         required,
-        detail: `${complete}/${meta.count} ${String(item?.unitLabel || meta.block?.itemLabel || "record")}s complete`,
+        detail: `${complete}/${meta.count} ${String(item?.unitLabel || meta.block?.itemLabel || "record")}s complete on this device`,
         note: item?.note || "",
         assessmentId: assessment.id,
       };
@@ -608,8 +621,9 @@
       return {
         label,
         met: total > 0 && complete === total,
+        state: total > 0 && complete === total ? "ready" : "incomplete",
         required,
-        detail: `${complete}/${total} answer${total === 1 ? "" : "s"} complete`,
+        detail: `${complete}/${total} answer${total === 1 ? "" : "s"} complete on this device`,
         note: item?.note || "",
         assessmentId: assessment.id,
       };
@@ -625,10 +639,11 @@
         label,
         met,
         ongoing: !!item?.ongoing && met,
+        state: met ? (item?.ongoing ? "ongoing" : "submitted") : "incomplete",
         required,
         detail: item?.ongoing
-          ? `${count} ${noun}${count === 1 ? "" : "s"} submitted`
-          : `${Math.min(count, minimum)}/${minimum} ${noun}${minimum === 1 ? "" : "s"} submitted`,
+          ? `${count} ${noun}${count === 1 ? "" : "s"} confirmed in the teacher register`
+          : `${Math.min(count, minimum)}/${minimum} ${noun}${minimum === 1 ? "" : "s"} confirmed in the teacher register`,
         note: item?.note || "",
         assessmentId: item?.assessmentId || "",
         optionId: item?.optionId || "",
@@ -682,14 +697,17 @@
     const results = config.items.map(trackerResult);
     const requiredResults = results.filter((result) => result.required);
     const metCount = requiredResults.filter((result) => result.met).length;
+    const readyCount = requiredResults.filter((result) => result.state === "ready").length;
+    const submittedCount = requiredResults.filter((result) => result.state === "submitted" || result.state === "ongoing").length;
     const requiredCount = requiredResults.length;
+    const pendingCount = Math.max(0, requiredCount - metCount);
     const percent = requiredCount ? Math.round((metCount / requiredCount) * 100) : 100;
-    return { config, results, metCount, requiredCount, percent };
+    return { config, results, metCount, readyCount, submittedCount, pendingCount, requiredCount, percent };
   }
 
   function renderEvidenceTracker() {
     const snapshot = getEvidenceProgress();
-    const { config, results, metCount, requiredCount, percent } = snapshot;
+    const { config, results, readyCount, submittedCount, pendingCount, requiredCount, percent } = snapshot;
     if (!config) {
       removeTracker();
       return;
@@ -713,7 +731,9 @@
     summaryText.append(kicker, title);
     const score = document.createElement("span");
     score.className = "qm-evidence-tracker__score";
-    score.textContent = requiredCount ? `${metCount}/${requiredCount} minimum checks met` : `${results.length} progress checks`;
+    score.textContent = requiredCount
+      ? `${readyCount} ready · ${submittedCount} submitted · ${pendingCount} to do`
+      : `${results.length} progress checks`;
     summary.append(summaryText, score);
     tracker.appendChild(summary);
 
@@ -725,6 +745,15 @@
       intro.textContent = String(config.intro);
       body.appendChild(intro);
     }
+    const legend = document.createElement("div");
+    legend.className = "qm-evidence-tracker__legend";
+    [["Ready — not submitted", "is-ready"], ["Submitted", "is-submitted"], ["Submitted — ongoing", "is-ongoing"], ["To do", "is-incomplete"]].forEach(([text, className]) => {
+      const chip = document.createElement("span");
+      chip.className = className;
+      chip.textContent = text;
+      legend.appendChild(chip);
+    });
+    body.appendChild(legend);
     const bar = document.createElement("div");
     bar.className = "qm-evidence-tracker__bar";
     const fill = document.createElement("span");
@@ -737,12 +766,12 @@
     results.forEach((result) => {
       const row = document.createElement("div");
       row.className = "qm-evidence-tracker__item";
-      if (result.ongoing) row.classList.add("is-ongoing");
-      else if (result.met) row.classList.add("is-complete");
+      const state = result.state || (result.ongoing ? "ongoing" : result.met ? "ready" : "incomplete");
+      row.classList.add(`is-${state}`);
 
       const icon = document.createElement("span");
       icon.className = "qm-evidence-tracker__icon";
-      icon.textContent = result.ongoing ? "•" : result.met ? "✓" : "○";
+      icon.textContent = state === "ongoing" ? "•" : (state === "ready" || state === "submitted") ? "✓" : "○";
       icon.setAttribute("aria-hidden", "true");
 
       const textWrap = document.createElement("div");
@@ -750,7 +779,16 @@
       label.textContent = result.label;
       const detail = document.createElement("small");
       detail.textContent = result.detail;
-      textWrap.append(label, detail);
+      const status = document.createElement("span");
+      status.className = `qm-evidence-tracker__status is-${state}`;
+      status.textContent = state === "submitted"
+        ? "SUBMITTED"
+        : state === "ongoing"
+        ? "SUBMITTED — ONGOING"
+        : state === "ready"
+        ? "READY — NOT SUBMITTED"
+        : "TO DO";
+      textWrap.append(label, detail, status);
       if (result.note) {
         const note = document.createElement("small");
         note.textContent = String(result.note);
@@ -774,7 +812,7 @@
 
     const foot = document.createElement("p");
     foot.className = "qm-evidence-tracker__foot";
-    foot.textContent = String(config.footer || "This is a progress guide. Your teacher still decides whether the evidence is sufficient for the standard.");
+    foot.textContent = String(config.footer || "Ready means complete on this device only. Green Submitted appears only after QuizMaster receives confirmation from the teacher register. Your teacher still decides whether the evidence is sufficient for the standard.");
     body.appendChild(foot);
     tracker.appendChild(body);
   }
