@@ -5,7 +5,8 @@
     "The formal assessment evidence section mirrors the supplied Being safe assessment resource: identify hazards and controls, work safely, keep the workplace safe, and complete the learner evidence checklist.",
     "Ten connected hazard-record spaces are provided as a PHS scaffold. The official assessment schedule does not set a minimum number of hazards and controls; it requires sufficient coverage of the tasks, hazards and controls needed for the project.",
     "The learner self-reflection section contains supporting safety-learning questions that are not direct written prompts from the supplied assessment workbook.",
-    "Photo evidence remains practical evidence and does not replace teacher observation of the learner working safely throughout the project.",
+    "Project Process Evidence is repeatable: learners add as many project-stage records as needed to cover all important stages. Each stage can use a photo or a written record, so a mixed evidence approach is supported.",
+    "Workplace/storage before and after tidy-up remain separate photo evidence requirements.",
     "Teacher sign-off is intentionally omitted in this version, as requested."
   ],
   "questionSet": {
@@ -1200,36 +1201,131 @@
       ]
     },
     {
-      "id": "photo-evidence-upload",
-      "title": "Photo Evidence Upload",
-      "subtitle": "Upload the practical photo evidence required for SS 40540",
+      "id": "project-process-evidence",
+      "title": "Project Process Evidence",
+      "subtitle": "Add one evidence record for every important stage of your project. Use a photo, a written record, or a mixture across the project.",
       "attachSignoff": false,
       "mode": "photo-evidence",
+      "questions": [],
       "photoEvidence": {
         "maxDimension": 1920,
         "jpegQuality": 0.8,
+        "allowWrittenRecord": true,
+        "methodLabel": "Evidence method for this stage",
+        "photoMethodLabel": "Photo evidence",
+        "writtenMethodLabel": "Written record",
         "options": [
           {
             "id": "project-stage",
-            "label": "Project stage - PPE / safety controls visible",
-            "help": "Use this repeatedly across the stages of your project. The task or stage, appropriate PPE, and any other required safety controls should be clearly visible.",
-            "repeatable": true
-          },
+            "label": "Project stage / task",
+            "help": "Submit one record for each important stage of the project process. Repeat this as many times as needed to cover the whole project.",
+            "repeatable": true,
+            "fields": [
+              {
+                "id": "stage",
+                "label": "Project stage / task",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g. Marking out the timber"
+              },
+              {
+                "id": "work",
+                "label": "What work are you doing?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Briefly describe the work being carried out at this stage."
+              },
+              {
+                "id": "safetyProcedures",
+                "label": "Safety procedures shown / used",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Describe the safe procedure you followed."
+              },
+              {
+                "id": "ppe",
+                "label": "PPE being used",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g. Safety glasses and earmuffs, or N/A"
+              },
+              {
+                "id": "otherControls",
+                "label": "Other safety controls",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "e.g. Guard fitted, extraction on, material clamped, warned others, or N/A"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "workplace-photo-evidence",
+      "title": "Keep the Workplace Safe - Photo Evidence",
+      "subtitle": "Upload the required before and after tidy-up evidence. Add short notes so the photo evidence is clear.",
+      "attachSignoff": false,
+      "mode": "photo-evidence",
+      "questions": [],
+      "photoEvidence": {
+        "maxDimension": 1920,
+        "jpegQuality": 0.8,
+        "allowWrittenRecord": false,
+        "options": [
           {
             "id": "workplace-before",
-            "label": "Workplace / storage - before tidy-up",
+            "label": "Workplace / storage - BEFORE tidy-up",
             "help": "Show the area where you carried out project tasks before clean-up or tidy-up.",
-            "repeatable": false
+            "repeatable": false,
+            "fields": [
+              {
+                "id": "area",
+                "label": "What area is shown?",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g. My workbench and tool storage area"
+              },
+              {
+                "id": "beforeCondition",
+                "label": "What still needs to be tidied, cleaned, or put away?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Identify tools, offcuts, dust, leads, equipment, or storage that still needs attention."
+              }
+            ]
           },
           {
             "id": "workplace-after",
-            "label": "Workplace / storage - after tidy-up",
+            "label": "Workplace / storage - AFTER tidy-up",
             "help": "Show the same area after tidy-up, left tidy with tools and equipment put away appropriately.",
-            "repeatable": false
+            "repeatable": false,
+            "fields": [
+              {
+                "id": "area",
+                "label": "What area is shown?",
+                "type": "text",
+                "required": true,
+                "placeholder": "Use the same area as your BEFORE photo."
+              },
+              {
+                "id": "afterActions",
+                "label": "What did you tidy, clean, or put away?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Briefly describe what you did."
+              },
+              {
+                "id": "safeNow",
+                "label": "How does this show the area is safe and ready for the next person?",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "e.g. Walkways clear, tools stored, dust removed, leads put away."
+              }
+            ]
           }
         ]
-      },
-      "questions": []
+      }
     }
   ],
   "_finalChecklistBeforePublishing": [
