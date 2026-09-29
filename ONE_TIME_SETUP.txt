@@ -1,0 +1,45 @@
+PHSTechQuiz - ONE-TIME SIMPLIFICATION
+
+GOAL
+----
+After this setup, the normal update process is simply:
+
+    PUT/REPLACE/DELETE A JSON IN /questions/ -> COMMIT -> IT APPEARS IN QUIZMASTER
+
+ONE-TIME FILES TO UPLOAD/REPLACE
+--------------------------------
+1. .github/workflows/update-question-catalogue.yml
+2. tools/build_question_catalog.py
+3. question-sets.json
+4. questions/BCATS_SAFETY_28_SS40540_v1.json
+   (this replaces the current image-less copy with the 20-image version)
+5. questions/DROP_JSON_FILES_HERE.txt (optional helper note)
+
+ONE-TIME CLEANUP RECOMMENDED
+----------------------------
+These belong to the abandoned second catalogue system and should be removed
+to avoid future confusion:
+
+- assessments/ss40540-v1.json
+- assessments/question-sets.json
+- scripts/build-assessment-catalogue.mjs
+
+Keep:
+- /questions/ as the ONLY folder for assessment JSON files.
+- /images/ for image files.
+- root /question-sets.json as generated output only.
+
+HOW IT WORKS
+------------
+The webpage already loads root question-sets.json.
+The existing catalogue builder already scans /questions/.
+The new GitHub Action runs that builder whenever a JSON under /questions/
+is added, edited, renamed, or deleted, and commits the rebuilt catalogue.
+
+IMPORTANT
+---------
+If the Action gets a permission error:
+Repo Settings > Actions > General > Workflow permissions >
+Read and write permissions > Save.
+
+You should no longer manually edit question-sets.json.

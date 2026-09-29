@@ -1,0 +1,23 @@
+QUIZMASTER - ADDING OR UPDATING AN ASSESSMENT
+
+After the one-time setup is installed:
+
+1. Put the assessment JSON in this /questions/ folder.
+2. Commit/upload it to GitHub.
+3. Wait for the "Update QuizMaster question catalogue" Action to finish.
+4. Refresh QuizMaster. The standard will appear automatically.
+
+You DO NOT edit question-sets.json by hand.
+
+Rules:
+- One standard per JSON file.
+- questionSet.id must be unique.
+- Files beginning with "_" are ignored (for example _TEMPLATE.json).
+- Local question images can live under /images/ and use paths such as:
+  images/ss40540-v1/04_ppe.webp
+- Editing, renaming, adding, or deleting a JSON under /questions/ automatically
+  triggers a catalogue rebuild.
+
+If the Action cannot push question-sets.json:
+GitHub repo > Settings > Actions > General > Workflow permissions >
+select "Read and write permissions", then Save.

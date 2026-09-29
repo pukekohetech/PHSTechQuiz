@@ -82,7 +82,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/01_project_planning.webp",
+          "imageAlt": "Timber, a project drawing, measuring tools and a pencil on a workshop bench."
         },
         {
           "id": "project_hazards",
@@ -98,7 +100,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/02_identify_hazards.webp",
+          "imageAlt": "Workshop floor with offcuts, a lead and a warning sign showing a potential trip hazard."
         },
         {
           "id": "hazard_harm",
@@ -114,7 +118,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/14_electrical_hazards.webp",
+          "imageAlt": "Electrical leads and a damaged or exposed connection on a workshop floor."
         },
         {
           "id": "hazard_controls",
@@ -130,7 +136,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/15_dust_fumes.webp",
+          "imageAlt": "Dust extraction hose collecting sawdust beside workshop machinery."
         },
         {
           "id": "work_safely_own_others",
@@ -146,7 +154,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/18_emergency_procedures.webp",
+          "imageAlt": "Green first-aid box in a workshop safety area."
         },
         {
           "id": "ppe_used",
@@ -162,7 +172,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/04_ppe.webp",
+          "imageAlt": "Workshop PPE symbols for eye, hearing, foot and hand protection."
         },
         {
           "id": "other_controls_used",
@@ -178,7 +190,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/17_fire_safety.webp",
+          "imageAlt": "Fire extinguisher mounted beside a fire-safety sign."
         },
         {
           "id": "stage_safety_record",
@@ -194,7 +208,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/11_power_tool_safety.webp",
+          "imageAlt": "Worker using a guarded circular saw to cut timber."
         },
         {
           "id": "tidy_during_work",
@@ -210,7 +226,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/13_slips_trips_falls.webp",
+          "imageAlt": "Yellow warning sign showing a slip or fall hazard."
         },
         {
           "id": "tidy_after_work",
@@ -226,7 +244,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/19_clean_tidy_workplace.webp",
+          "imageAlt": "Clean workshop bench with tools organised on a wall and stored neatly."
         },
         {
           "id": "cleaning_checks_record",
@@ -242,7 +262,9 @@
               "check": ".+",
               "flags": ""
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/20_tool_equipment_checks.webp",
+          "imageAlt": "Hand brush cleaning sawdust from a workshop surface and equipment area."
         },
         {
           "id": "damaged_tools_report",
@@ -258,7 +280,9 @@
               "check": "(?:\\bN\\/?A\\b|.{10,})",
               "flags": "i"
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/21_report_damaged_equipment.webp",
+          "imageAlt": "Damaged electrical tool lead with a red do-not-use tag attached."
         },
         {
           "id": "evidence_collection_date",
@@ -312,7 +336,9 @@
             "The chance that any harm will happen",
             "A record of an incident after it has happened",
             "Only a tool or machine that has already caused an injury"
-          ]
+          ],
+          "image": "images/ss40540-v1/16_hazardous_substances.webp",
+          "imageAlt": "Several labelled workshop chemical containers with hazard pictograms."
         },
         {
           "id": "hazard_types",
@@ -382,7 +408,9 @@
             "Check 5 tools and ask 5 people if they are safe",
             "Work for 5 minutes before putting on PPE",
             "Take 5 photographs before restarting the task"
-          ]
+          ],
+          "image": "images/ss40540-v1/03_take_5.webp",
+          "imageAlt": "Five-step Take 5 safety reminder for stopping, looking, identifying, assessing and controlling hazards."
         },
         {
           "id": "safety_sign_colours",
@@ -413,7 +441,9 @@
               "check": "(?:\\bblue\\b[\\s\\S]{0,40}\\b(?:mandatory|must|do this)\\b|\\b(?:mandatory|must|do this)\\b[\\s\\S]{0,40}\\bblue\\b)",
               "flags": "i"
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/23_safety_signs.webp",
+          "imageAlt": "Workplace safety sign board using common mandatory and warning sign colours."
         },
         {
           "id": "control_hierarchy",
@@ -457,7 +487,9 @@
             "Read the machine label and begin if it looks straightforward",
             "Watch another student use it once and then try it alone",
             "Use it only at low speed until you learn by experience"
-          ]
+          ],
+          "image": "images/ss40540-v1/24_training_supervision.webp",
+          "imageAlt": "Teacher or supervisor guiding a learner during a practical workshop task."
         },
         {
           "id": "ppe_definition",
@@ -479,7 +511,9 @@
             "To replace all other hazard controls in the workplace",
             "To make tools easier to store after use",
             "To show which worker is responsible for a task"
-          ]
+          ],
+          "image": "images/ss40540-v1/10_high_visibility.webp",
+          "imageAlt": "High-visibility safety vest hanging in a workshop."
         },
         {
           "id": "hearing_protection",
@@ -500,7 +534,9 @@
               "check": "\\b(ear[ -]?plugs?|ear[ -]?muffs?|ear protectors?|hearing protection)\\b",
               "flags": "i"
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/05_hearing_protection.webp",
+          "imageAlt": "Pair of over-ear hearing protectors resting on a workshop bench."
         },
         {
           "id": "eye_protection",
@@ -521,7 +557,9 @@
               "check": "\\b(safety glasses|goggles|face (shield|mask)|welding helmet)\\b",
               "flags": "i"
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/06_eye_protection.webp",
+          "imageAlt": "Clear wraparound safety glasses on a workshop bench."
         },
         {
           "id": "safe_lifting",
@@ -547,7 +585,9 @@
               "check": "\\b(path|walkway|clear|gloves|splinters?|sharp edges?)\\b",
               "flags": "i"
             }
-          ]
+          ],
+          "image": "images/ss40540-v1/12_manual_handling.webp",
+          "imageAlt": "Side-by-side example of safer and unsafe body positions when lifting a box."
         },
         {
           "id": "hswa_worker_role",
@@ -602,5 +642,10 @@
     "Check QuizMaster's sign-off output matches the school's intended assessment workflow before publishing.",
     "If a deadline is required, add the deadline block using the actual school due date rather than the example date from the template.",
     "Run the repository catalogue builder or let the GitHub Action update question-sets.json."
+  ],
+  "_imageAssetNotes": [
+    "Images are stored at images/ss40540-v1/ and use repository-relative paths.",
+    "Only questions with a clear, relevant visual have an image field; unused WebP files remain in the image folder as optional future assets.",
+    "Keep imageAlt factual and short. Some images provide visual scaffolding and should not replace the learner response."
   ]
 }
