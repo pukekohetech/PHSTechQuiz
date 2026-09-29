@@ -1,0 +1,47 @@
+name: Update QuizMaster question catalogue
+
+on:
+  push:
+    paths:
+      - "questions/**/*.json"
+      - "tools/build_question_catalog.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: quizmaster-question-catalogue
+  cancel-in-progress: true
+
+jobs:
+  rebuild-catalogue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate question files and rebuild catalogue
+        run: python tools/build_question_catalog.py
+
+      - name: Commit catalogue if it changed
+        shell: bash
+        run: |
+          if git diff --quiet -- question-sets.json; then
+            echo "question-sets.json is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add question-sets.json
+          git commit -m "Auto-update QuizMaster question catalogue"
+          git push
