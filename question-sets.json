@@ -23,15 +23,14 @@
       "assessmentCount": 2
     },
     {
-"id": "usNew-test",
-      "label": "SS Safety",
-      "file": "assessments/SS40540-v1.json",
+      "id": "ss40540-v1",
+      "label": "SS 40540 - BCATS Safety",
+      "file": "assessments/ss40540-v1.json",
       "number": "40540",
-      "version": "1",
-      "credits": 0,
-      "title": "Safety",
-      "assessmentCount": 2
-      
+      "version": "v1",
+      "credits": 4,
+      "title": "Use safety practices for a BCATS project or related tasks",
+      "assessmentCount": 1
     }
   ]
 }
