@@ -21,6 +21,17 @@
       "credits": 0,
       "title": "QuizMaster test standard",
       "assessmentCount": 2
+    },
+    {
+"id": "us99999-test",
+      "label": "SS Safety",
+      "file": "questions/BCATS_SAFETY_28_SS40540_v1.json",
+      "number": "40540",
+      "version": "1",
+      "credits": 0,
+      "title": "Safety",
+      "assessmentCount": 2
+      
     }
   ]
 }
