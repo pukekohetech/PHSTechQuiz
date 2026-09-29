@@ -98,7 +98,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -114,7 +114,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -130,7 +130,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\\\b",
+              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
               "flags": "i"
             }
           ]
@@ -146,7 +146,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\\\b",
+              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
               "flags": "i"
             }
           ]
@@ -162,7 +162,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -178,7 +178,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -194,7 +194,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\\\b",
+              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
               "flags": "i"
             }
           ]
@@ -210,7 +210,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\\\b",
+              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
               "flags": "i"
             }
           ]
@@ -226,7 +226,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -242,7 +242,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -258,7 +258,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\\\b",
+              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
               "flags": "i"
             }
           ]
@@ -274,7 +274,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\\\b",
+              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
               "flags": "i"
             }
           ]
@@ -290,7 +290,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -306,7 +306,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -322,7 +322,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\\\b",
+              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
               "flags": "i"
             }
           ]
@@ -338,7 +338,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\\\b",
+              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
               "flags": "i"
             }
           ]
@@ -354,7 +354,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -370,7 +370,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -386,7 +386,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\\\b",
+              "check": "\\b(?:noise|noisy|dust|fumes?|smoke|flying (?:objects?|debris|chips?)|sparks?|splashes?|chemicals?|paint|varnish|glue|solvents?|electric(?:al|ity)?|wires?|cords?|sharp (?:edge|edges|object|objects)|blades?|saws?|drills?|grinders?|moving parts?|rotating parts?|machinery|trip(?:ping)?|slip(?:ping)?|fall(?:ing)?|clutter|obstruction|heavy|awkward|manual handling|lifting|heat|hot|welding|poor lighting|bright light|dim light|long hair|loose clothing|risky behaviour|dangerous behaviour|fatigue|stress|pinch|crush|entanglement|falling objects?|contaminat(?:ed|ion)|biological)\\b",
               "flags": "i"
             }
           ]
@@ -402,7 +402,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\\\b",
+              "check": "\\b(?:cut(?:s|ting)?|lacerat(?:e|ed|ion)|amputat(?:e|ed|ion)|hearing (?:loss|damage)|deaf(?:ness)?|eye (?:injury|damage)|loss of vision|blind(?:ness)?|breathing (?:problem|problems|issues?)|respiratory|lung (?:damage|disease)|asthma|burns?|electric shock|electrocut(?:e|ed|ion)|sprains?|strains?|broken bones?|fractures?|falls?|crush(?:ed|ing)?|bruises?|poison(?:ing)?|irritat(?:e|ed|ion)|headaches?|dizz(?:y|iness)|collapse|back injur(?:y|ies)|repetitive strain|caught|entangl(?:e|ed|ement)|infection|injur(?:y|ies)|illness|death|fatal)\\b",
               "flags": "i"
             }
           ]
@@ -418,7 +418,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -434,13 +434,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\\\b",
+              "check": "\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b",
               "flags": "i",
               "hint": "Use an action such as tidy, clear, sweep, clean, put away, store, remove or dispose."
             },
             {
               "points": 1,
-              "check": "\\\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\\\b",
+              "check": "\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b",
               "flags": "i",
               "hint": "Name what you managed, such as tools, offcuts, rubbish, dust, leads, a walkway, bench, floor or work area."
             }
@@ -457,13 +457,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:clean|cleaned|check|checked|inspect|inspected|wipe|wiped|charge|charged|sterilis(?:e|ed)|change|changed|wash|washed|sweep|swept)\\\\b",
+              "check": "\\b(?:clean|cleaned|check|checked|inspect|inspected|wipe|wiped|charge|charged|sterilis(?:e|ed)|change|changed|wash|washed|sweep|swept)\\b",
               "flags": "i",
               "hint": "Use a cleaning/check action such as cleaned, checked, inspected, wiped, charged, washed or changed."
             },
             {
               "points": 1,
-              "check": "\\\\b(?:tools?|equipment|PPE|safety glasses|goggles|earmuffs?|ear ?plugs?|gloves?|masks?|respirators?|boots?|shoes?|hard hats?|batteries?|lenses?|pads?|filters?|overalls?)\\\\b",
+              "check": "\\b(?:tools?|equipment|PPE|safety glasses|goggles|earmuffs?|ear ?plugs?|gloves?|masks?|respirators?|boots?|shoes?|hard hats?|batteries?|lenses?|pads?|filters?|overalls?)\\b",
               "flags": "i",
               "hint": "Name the tool, equipment or PPE item you cleaned/checked."
             }
@@ -480,7 +480,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?:^\\\\s*N\\\\s*/?\\\\s*A\\\\s*$|(?=[\\\\s\\\\S]*\\\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\\\b)(?=[\\\\s\\\\S]*\\\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\\\b)[\\\\s\\\\S]+)",
+              "check": "(?:^\\s*N\\s*/?\\s*A\\s*$|(?=[\\s\\S]*\\b(?:damaged?|broken|cracked?|frayed|loose|missing|faulty|unsafe|worn|wear|exposed|not working|guard missing|split|torn|tears?)\\b)(?=[\\s\\S]*\\b(?:reported|told|teacher|technician|staff|HOD|head of department|supervisor)\\b)[\\s\\S]+)",
               "flags": "i"
             }
           ]
@@ -496,7 +496,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "(?=^[\\\\s\\\\S]{3,}$).+",
+              "check": "(?=^[\\s\\S]{3,}$).+",
               "flags": "i"
             }
           ]
@@ -539,7 +539,7 @@
                 "placeholder": "PPE, guards, extraction, clamping, warning others, clear area, etc.",
                 "help": "Use a specific safety term from your project, such as safety glasses, earmuffs, guard, extraction, clamp/secure, respirator/dust mask, warn others, clear/tidy area, eliminate/remove, or minimise/reduce.",
                 "validation": {
-                  "pattern": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+                  "pattern": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
                   "flags": "i",
                   "message": "Use at least one specific BCATS safety/control term, not just a general statement."
                 }
@@ -582,7 +582,7 @@
                 "placeholder": "Keep this short.",
                 "help": "Say what you did and what you tidied/cleaned/put away.",
                 "validation": {
-                  "pattern": "(?=[\\\\s\\\\S]*\\\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\\\b)(?=[\\\\s\\\\S]*\\\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\\\b)[\\\\s\\\\S]+",
+                  "pattern": "(?=[\\s\\S]*\\b(?:tidy|tidied|clean|cleaned|clear|cleared|sweep|swept|put away|store|stored|remove|removed|dispose|disposed|collect|collected|organise|organised|wipe|wiped)\\b)(?=[\\s\\S]*\\b(?:tools?|equipment|offcuts?|scraps?|rubbish|waste|dust|leads?|cords?|walkways?|bench|floor|work area|workplace|storage|materials?)\\b)[\\s\\S]+",
                   "flags": "i",
                   "message": "Include a tidy/clean action and what you tidied, cleaned or put away."
                 }
@@ -618,12 +618,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:check|checked|inspect|inspected|identify|identified|look|looked|take 5|step back)\\\\b",
+              "check": "\\b(?:check|checked|inspect|inspected|identify|identified|look|looked|take 5|step back)\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:hazards?|guards?|equipment|tools?|workplace|work area|risk|controls?|safe|safety)\\\\b",
+              "check": "\\b(?:hazards?|guards?|equipment|tools?|workplace|work area|risk|controls?|safe|safety)\\b",
               "flags": "i"
             }
           ]
@@ -639,12 +639,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion))\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion))\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\\\b",
+              "check": "\\b(?:eliminat(?:e|ed|ion)|remove|removing|minimis(?:e|ed|ing|ation)|reduc(?:e|ed|ing|tion)|isolat(?:e|ed|ion)|guards?|extraction|extractor|ventilat(?:e|ed|ion)|clamp(?:ed|ing)?|secur(?:e|ed|ing)|barriers?|warn(?:ed|ing)?|warning|tell(?:ing)?|communicat(?:e|ed|ing|ion)|keep (?:people|others|area|walkways?) clear|clear (?:area|walkway|space)|distance|safety glasses|goggles|earmuffs?|ear ?plugs?|hearing protection|dust masks?|respirators?|respiratory protection|gloves?|protective clothing|overalls?|safety boots?|steel caps?|hard hats?|tie(?:d|ing)? (?:back )?hair|close-fitting clothing|unplug(?:ged|ging)?|lock ?out|turn(?:ed|ing)? off|train(?:ed|ing)|instruct(?:ed|ion)|supervis(?:e|ed|ion)|SOP|standard operating procedure|buddy system|tidy|clean|sweep|put away|store(?:d|ing)?|proper lifting|trolley|wheelbarrow|ask(?:ed|ing)? for help|limit(?:ed|ing)? time)\\b",
               "flags": "i"
             }
           ]
@@ -660,12 +660,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:train(?:ed|ing)|instruct(?:ed|ion)|teacher|supervis(?:e|ed|ion)|SOP|standard operating procedure|demonstrat(?:e|ed|ion))\\\\b",
+              "check": "\\b(?:train(?:ed|ing)|instruct(?:ed|ion)|teacher|supervis(?:e|ed|ion)|SOP|standard operating procedure|demonstrat(?:e|ed|ion))\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:ask|asked|questions?|repeat|repeated|demonstrat(?:e|ed)|show|shown|stop|unsure|understand|confident)\\\\b",
+              "check": "\\b(?:ask|asked|questions?|repeat|repeated|demonstrat(?:e|ed)|show|shown|stop|unsure|understand|confident)\\b",
               "flags": "i"
             }
           ]
@@ -681,17 +681,17 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:help|team lift|trolley|wheelbarrow|smaller load|lighter load)\\\\b",
+              "check": "\\b(?:help|team lift|trolley|wheelbarrow|smaller load|lighter load)\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:knees|back straight|legs|close to (?:the )?load|body close|leg muscles)\\\\b",
+              "check": "\\b(?:knees|back straight|legs|close to (?:the )?load|body close|leg muscles)\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:path|walkway|route|clear)\\\\b",
+              "check": "\\b(?:path|walkway|route|clear)\\b",
               "flags": "i"
             }
           ]
@@ -707,12 +707,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "\\\\b(?:warn|warned|tell|told|communicat(?:e|ed|ing)|barrier|keep clear|distance|buddy|hearing protection|earmuffs?|ear ?plugs?)\\\\b",
+              "check": "\\b(?:warn|warned|tell|told|communicat(?:e|ed|ing)|barrier|keep clear|distance|buddy|hearing protection|earmuffs?|ear ?plugs?)\\b",
               "flags": "i"
             },
             {
               "points": 1,
-              "check": "\\\\b(?:others|other people|people|classmates?|students?|nearby|someone|anyone)\\\\b",
+              "check": "\\b(?:others|other people|people|classmates?|students?|nearby|someone|anyone)\\b",
               "flags": "i"
             }
           ]
