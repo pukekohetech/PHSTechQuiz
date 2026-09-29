@@ -6,6 +6,8 @@ questionSet object. The browser uses the generated catalogue; teachers only
 need to add/remove/edit files in questions/.
 """
 from __future__ import annotations
+import base64
+import binascii
 import json
 import re
 from pathlib import Path
@@ -68,6 +70,27 @@ def main() -> None:
                 if question_id in question_ids:
                     fail(f"{path.name} / {aid}: duplicate question id {question_id}")
                 question_ids.add(question_id)
+
+                image = (question or {}).get("image")
+                if image is not None:
+                    if not isinstance(image, str) or not image.strip():
+                        fail(f"{path.name} / {aid} / {question_id}: image must be a non-empty string")
+                    image = image.strip()
+                    if image.lower().startswith("data:"):
+                        match = re.fullmatch(
+                            r"data:image/(webp|png|jpeg|jpg|gif);base64,([A-Za-z0-9+/=\s]+)",
+                            image,
+                            flags=re.IGNORECASE,
+                        )
+                        if not match:
+                            fail(f"{path.name} / {aid} / {question_id}: unsupported embedded image data URL")
+                        encoded = re.sub(r"\s+", "", match.group(2))
+                        try:
+                            decoded = base64.b64decode(encoded, validate=True)
+                        except (binascii.Error, ValueError):
+                            fail(f"{path.name} / {aid} / {question_id}: embedded image base64 is invalid")
+                        if not decoded:
+                            fail(f"{path.name} / {aid} / {question_id}: embedded image is empty")
 
         seen_ids.add(qid)
         entries.append({

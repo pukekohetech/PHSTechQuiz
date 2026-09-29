@@ -773,6 +773,30 @@ function saveStudentInfo() {
   saveGlobalProfile({ name, id, teacher, idLocked: !!data.idLocked, lastQuestionSetId: CURRENT_QUESTION_SET?.id || "" });
 }
 
+function normaliseQuestionImageSource(value) {
+  const source = String(value || "").trim();
+  if (!source) return "";
+
+  // Embedded images are deliberately limited to common raster formats.
+  // WebP is recommended because it keeps self-contained question files small.
+  if (source.toLowerCase().startsWith("data:")) {
+    const match = source.match(/^data:image\/(webp|png|jpeg|jpg|gif);base64,([A-Za-z0-9+/=\s]+)$/i);
+    if (!match) return "";
+    const mime = match[1].toLowerCase() === "jpg" ? "jpeg" : match[1].toLowerCase();
+    const payload = match[2].replace(/\s+/g, "");
+    if (!payload || !/^[A-Za-z0-9+/]+={0,2}$/.test(payload)) return "";
+    return `data:image/${mime};base64,${payload}`;
+  }
+
+  // Existing relative paths and normal http(s)/blob image URLs remain supported.
+  try {
+    const resolved = new URL(source, window.location.href);
+    if (["http:", "https:", "blob:"].includes(resolved.protocol)) return resolved.href;
+  } catch (_) {}
+
+  return "";
+}
+
 function shuffledCopy(items) {
   const shuffled = Array.from(items || []);
   for (let i = shuffled.length - 1; i > 0; i -= 1) {
@@ -984,21 +1008,27 @@ function loadAssessment() {
     wrap.appendChild(p);
 
     if (q.image) {
-      const img = document.createElement("img");
-      img.alt = "Question image";
-      img.loading = "lazy";
+      const imageSource = normaliseQuestionImageSource(q.image);
+      if (imageSource) {
+        const img = document.createElement("img");
+        img.alt = String(q.imageAlt || "Question image").trim() || "Question image";
+        img.loading = imageSource.startsWith("data:") ? "eager" : "lazy";
+        img.decoding = "async";
 
-      img.onerror = function () {
-        if (!this.dataset.fallbackTried) {
-          this.dataset.fallbackTried = "1";
-          this.src = "blank.jpg";
-        } else {
-          this.style.display = "none";
-        }
-      };
+        img.onerror = function () {
+          if (!this.dataset.fallbackTried) {
+            this.dataset.fallbackTried = "1";
+            this.src = "blank.jpg";
+          } else {
+            this.style.display = "none";
+          }
+        };
 
-      img.src = q.image;
-      wrap.appendChild(img);
+        img.src = imageSource;
+        wrap.appendChild(img);
+      } else if (DEBUG) {
+        console.warn(`Question ${q.id || "(unknown)"} has an unsupported image source.`);
+      }
     }
 
     let field;

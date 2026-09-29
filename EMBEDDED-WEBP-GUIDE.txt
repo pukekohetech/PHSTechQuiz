@@ -1,0 +1,21 @@
+QUIZMASTER v5.1 - EMBEDDED WEBP
+================================
+
+Normal external WebP (recommended for large/reused images):
+  "image": "images/us24352/example.webp"
+
+Embedded WebP (one self-contained JSON file):
+  "image": "data:image/webp;base64,<REAL_BASE64_WEBP_DATA>"
+
+Optional accessibility text:
+  "imageAlt": "Short factual description of the image"
+
+Rules:
+- Do not invent base64. It must be produced from real image bytes.
+- WebP is preferred because it is usually smaller than JPG/PNG for this use.
+- Base64 increases size by roughly one third, so keep embedded images reasonably small.
+- Use external WebP for large photos or images reused by several questions.
+- QuizMaster rejects embedded SVG/non-image data URLs.
+- Existing JPG/PNG/WebP file paths continue to work.
+
+See questions/_TEMPLATE.json for working examples.

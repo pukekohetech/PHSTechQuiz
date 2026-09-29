@@ -1,32 +1,397 @@
 {
   "schemaVersion": 2,
+  "_templatePurpose": "Instructional QuizMaster question-set template. Copy this file, rename it for one Unit Standard, then replace the example content. Keep the structure unless you intentionally need a supported variation.",
+  "_instructions": [
+    "ONE FILE = ONE UNIT STANDARD. Every assessment in this file belongs to the questionSet defined below.",
+    "Do not repeat unit-standard metadata inside each assessment unless QuizMaster is specifically changed to require it.",
+    "Each assessment needs a unique id within this file. Each question needs a unique id within its own assessment.",
+    "Question ids may repeat in different assessments because QuizMaster stores answers under assessment id first, but descriptive unique ids are easier to maintain.",
+    "Supported question types demonstrated here: mc, short, long.",
+    "Images are optional. Omit the image field entirely when no image is needed. The image field may contain either a normal image path/URL or an embedded base64 raster image data URL.",
+    "For normal repository images, WebP is recommended: images/<question-set-folder>/<filename>.webp. JPG and PNG paths still work.",
+    "For a self-contained question file, embed WebP using image: data:image/webp;base64,<REAL_BASE64_WEBP_DATA>. Do not invent placeholder base64 in a published assessment.",
+    "Optional imageAlt provides accessible alternative text. Use a short factual description of what the image shows; do not reveal the answer.",
+    "For multiple-choice questions, provide an options array. QuizMaster randomises option positions when the assessment is loaded.",
+    "Rubric check values are regular-expression strings. Remember that backslashes must be doubled inside JSON, for example \\b becomes \\\\b in the JSON source.",
+    "For a simple 'any non-empty answer' check, use .+ with no flags.",
+    "Use questionGroups when several prompts are parts of one connected scenario or task. Add group and part to each related question.",
+    "part is optional. If omitted, QuizMaster can assign A, B, C... in question order.",
+    "Question-group metadata is for presentation only; each part still saves and grades as a normal question.",
+    "Keep maxPoints consistent with the total points available from the rubric rules.",
+    "Use attachSignoff only when that assessment needs the existing QuizMaster sign-off behaviour.",
+    "Before publishing, delete or replace the example assessments below with your real assessments. Unknown keys beginning with _ are documentation only."
+  ],
+  "_aiAuthoringRules": {
+    "goal": "When generating a new QuizMaster question file, preserve this structure and create clear, student-friendly NZ English assessment content.",
+    "mustDo": [
+      "Keep exactly one questionSet per file.",
+      "Use the Unit Standard number/version from the supplied source material; do not invent them.",
+      "Give every assessment a stable lowercase-hyphenated id.",
+      "Give every question a stable descriptive id.",
+      "Only include image when a real image file or real embedded image data is available. Prefer WebP. Use imageAlt when an image is included.",
+      "Use mc only when there is one clearly markable option or the supplied rubric supports the intended marking.",
+      "Make hints helpful without directly giving away the answer.",
+      "Keep rubric regex broad enough to accept reasonable student wording but narrow enough to avoid obviously wrong answers.",
+      "Use groups for connected multi-part questions instead of presenting them as unrelated cards.",
+      "When embedding an image, use exactly data:image/webp;base64,<real base64> (or another supported raster MIME) in the image field; never create fake base64 text."
+    ],
+    "mustNotDo": [
+      "Do not place multiple Unit Standards in one file.",
+      "Do not invent credits, versions, assessment requirements or standard titles.",
+      "Do not put comments such as // or /* */ inside JSON because JSON comments are invalid.",
+      "Do not reuse the same assessment id twice in one file.",
+      "Do not assume every question needs an image.",
+      "Do not add an options array to short or long questions.",
+      "Do not embed SVG, HTML, JavaScript or non-image data URLs in the image field."
+    ]
+  },
   "questionSet": {
     "id": "us00000-v1",
-    "label": "US 00000 - Short name",
-    "title": "Full unit standard title",
+    "label": "US 00000 - Example Unit Standard",
+    "title": "Replace this with the official Unit Standard title",
     "number": "00000",
     "version": "v1",
     "credits": 0,
     "standardType": "internal"
   },
+  "deadline": {
+    "day": 28,
+    "month": 12,
+    "label": "Submission deadline"
+  },
+  "_assessmentStructureGuide": [
+    "assessments is an array. Add as many assessment sections as the Unit Standard needs.",
+    "Students select an assessment from this file after selecting the Unit Standard.",
+    "All sections in this file share the same Unit Standard .puk backup.",
+    "Each submitted assessment section still produces its own PDF and its own register row."
+  ],
   "assessments": [
     {
-      "id": "section-1",
-      "title": "Assessment Section 1",
-      "subtitle": "Optional student-facing description",
+      "id": "example-question-types",
+      "title": "Example 1 - Common Question Types",
+      "subtitle": "Demonstrates short, long and multiple-choice questions with and without images.",
       "attachSignoff": false,
       "questions": [
         {
-          "id": "q1",
-          "text": "Example question",
-          "hint": "Optional hint",
+          "id": "short_no_image",
+          "text": "Name the project you are currently working on.",
+          "hint": "Example: stool, toolbox, picture frame or coffee table.",
           "type": "short",
           "maxPoints": 1,
           "rubric": [
-            { "points": 1, "check": ".+", "flags": "" }
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "short_with_image",
+          "text": "Name the hand tool shown in the image.",
+          "image": "images/us00000/example-hand-tool.webp",
+          "hint": "Use the common workshop name for the tool.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(chisel|wood\\s?chisel)\\b",
+              "flags": "i"
+            }
+          ],
+          "imageAlt": "Example image related to this question"
+        },
+        {
+          "id": "mc_no_image",
+          "text": "Which item is normally worn to protect your eyes in a workshop?",
+          "hint": "Choose the item designed to protect your eyes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Safety glasses$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Safety glasses",
+            "Apron",
+            "Ear muffs",
+            "Steel-cap boots"
+          ]
+        },
+        {
+          "id": "mc_with_image",
+          "text": "What is the safest action for the situation shown?",
+          "image": "images/us00000/example-hazard.webp",
+          "hint": "Look for the action that removes or controls the hazard before work continues.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Stop work and make the area safe$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Ignore it and continue",
+            "Stop work and make the area safe",
+            "Work faster",
+            "Ask another student to take the risk"
+          ],
+          "imageAlt": "Example image related to this question"
+        },
+        {
+          "id": "long_no_image",
+          "text": "Explain why a work area should be kept clear of offcuts and loose cables.",
+          "hint": "Link the condition of the work area to a realistic risk or injury.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(offcuts?|cables?|cords?|leads?|clutter|walkway|floor)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(trip|fall|injur(y|ies)|accident|damage|hazard|risk)\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "long_with_image",
+          "text": "Describe two safety concerns visible in the image and explain what should be done about them.",
+          "image": "images/us00000/example-workshop-scene.webp",
+          "hint": "Identify what is wrong, then state an appropriate action or control.",
+          "type": "long",
+          "maxPoints": 4,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(hazard|unsafe|risk|danger|problem)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(PPE|glasses|goggles|ear\\s?muffs|mask|guard|clutter|cable|offcut|spill)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(remove|clear|wear|use|guard|stop|isolate|clean|secure|report)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(injury|hurt|cut|trip|fall|hearing|eye|damage|accident)\\b",
+              "flags": "i"
+            }
+          ],
+          "imageAlt": "Example image related to this question"
+        }
+      ]
+    },
+    {
+      "id": "example-grouped-question",
+      "title": "Example 2 - Connected Multi-part Hazard Record",
+      "subtitle": "Demonstrates a question group where all parts refer to the same hazard.",
+      "attachSignoff": false,
+      "questionGroups": [
+        {
+          "id": "hazard-1",
+          "label": "Hazard record 1",
+          "title": "One hazard - four connected parts",
+          "intro": "Think about ONE hazard you actually encountered while working on your project. Answer all four parts about that same hazard.",
+          "reminder": "Keep using the SAME hazard for Parts A-D. Do not switch to a different hazard halfway through."
+        }
+      ],
+      "questions": [
+        {
+          "id": "project_name_1",
+          "group": "hazard-1",
+          "part": "A",
+          "text": "What project were you working on when you encountered this hazard?",
+          "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": ".+",
+              "flags": ""
+            }
+          ]
+        },
+        {
+          "id": "hazard_identified_1",
+          "group": "hazard-1",
+          "part": "B",
+          "text": "What hazard did you encounter?",
+          "image": "images/us00000/example-hazard-closeup.webp",
+          "hint": "Name a real hazard you noticed, such as dust, noise, a sharp edge or a loose cable.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(dust|noise|sharp|blade|cable|cord|clutter|spill|heat|spark|unguarded|broken|faulty|heavy|trip|slip)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(saw|sander|router|drill|lathe|grinder|machine|tool|workshop|floor|walkway|timber|wood)\\b",
+              "flags": "i"
+            }
+          ],
+          "imageAlt": "Example image related to this question"
+        },
+        {
+          "id": "ppe_required_1",
+          "group": "hazard-1",
+          "part": "C",
+          "text": "What PPE did you use to protect yourself from this hazard? (Specify or N/A.)",
+          "hint": "List the PPE you actually used, such as safety glasses, ear muffs or a dust mask.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(safety (glasses|goggles)|face shield|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?|N\\/?A)\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "comments_1",
+          "group": "hazard-1",
+          "part": "D",
+          "text": "What could have happened if this hazard had been left unchecked?",
+          "image": "images/us00000/example-consequence.webp",
+          "hint": "Describe a realistic outcome such as injury, damage or an accident.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
+              "flags": "i"
+            }
+          ],
+          "imageAlt": "Example image related to this question"
+        }
+      ]
+    },
+    {
+      "id": "example-image-analysis",
+      "title": "Example 3 - Image-led Assessment",
+      "subtitle": "Demonstrates external WebP, embedded WebP, and a question with no image.",
+      "attachSignoff": false,
+      "questions": [
+        {
+          "id": "identify_machine",
+          "text": "Identify the machine shown.",
+          "image": "images/us00000/example-machine.webp",
+          "hint": "Use the normal workshop name.",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(drill press|pedestal drill|pillar drill)\\b",
+              "flags": "i"
+            }
+          ],
+          "imageAlt": "Pedestal drill in a school workshop"
+        },
+        {
+          "id": "machine_ppe",
+          "text": "This question demonstrates an embedded WebP image. Which PPE is most directly required for eye protection when using a workshop machine?",
+          "image": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBQCdASowACAAPpFCmUglpKKhNVv4ALASCWYAyFkAACcsINGHGk3O4q76XJ1grAkwAP70GfP0XH7Q+8uffNd4Gg7m/T8HwXEg3Lgv+H/1p/rC5uPTABfYAHHED095xaf9GH//hOPM330xAo0AAA==",
+          "hint": "Choose the item that protects the eyes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Safety glasses$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Safety glasses",
+            "Apron",
+            "Ear muffs",
+            "Steel-cap boots"
+          ],
+          "imageAlt": "Small embedded demonstration image used to show the base64 WebP format"
+        },
+        {
+          "id": "machine_safety_explanation",
+          "text": "Explain one safe working practice that should be followed before using the machine.",
+          "hint": "State the action and why it matters.",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(clamp|secure|guard|check|remove|tie|wear|adjust|isolate|switch off)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(safe|safety|injury|risk|hazard|move|caught|contact|damage)\\b",
+              "flags": "i"
+            }
           ]
         }
       ]
     }
-  ]
+  ],
+  "_finalChecklistBeforePublishing": [
+    "Rename the file, for example us24352-v3.json.",
+    "Replace questionSet.id, label, title, number, version, credits and standardType with verified values.",
+    "Replace or remove the example assessments.",
+    "Make every assessment id unique in this file.",
+    "Check every external image path exists and every embedded image contains real base64 image data.",
+    "Check every MC question has an options array and one intended correct answer/rubric match.",
+    "Check rubric regex strings are valid JSON strings with escaped backslashes.",
+    "Check grouped questions use matching group ids.",
+    "Confirm maxPoints matches the intended rubric total.",
+    "For images, prefer .webp; add imageAlt; keep embedded images reasonably small.",
+    "Run the repository catalogue builder or let the GitHub Action update question-sets.json."
+  ],
+  "_imageGuide": {
+    "summary": "The image field supports no image, a normal external/repository image, or an embedded base64 raster image. WebP is the preferred format for both external and embedded images.",
+    "noImage": {
+      "rule": "Omit the image field entirely.",
+      "exampleQuestionFields": {
+        "text": "Explain one safe working practice.",
+        "type": "long"
+      }
+    },
+    "externalWebP": {
+      "recommendedFor": "Large images, images reused by several questions, and files you want to edit/replace independently.",
+      "image": "images/us00000/example-machine.webp",
+      "imageAlt": "Pedestal drill in a school workshop"
+    },
+    "embeddedWebP": {
+      "recommendedFor": "Small images or a completely self-contained Unit Standard JSON file.",
+      "format": "data:image/webp;base64,<base64 encoded WebP bytes>",
+      "important": "The base64 must come from a real WebP file. Do not ask an AI to guess or fabricate the bytes.",
+      "workingExample": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBQCdASowACAAPpFCmUglpKKhNVv4ALASCWYAyFkAACcsINGHGk3O4q76XJ1grAkwAP70GfP0XH7Q+8uffNd4Gg7m/T8HwXEg3Lgv+H/1p/rC5uPTABfYAHHED095xaf9GH//hOPM330xAo0AAA==",
+      "imageAlt": "Small embedded demonstration image"
+    },
+    "compatibility": "QuizMaster v5.1 accepts embedded WebP, PNG, JPEG/JPG and GIF data URLs. Embedded SVG and arbitrary data URLs are intentionally rejected.",
+    "sizeAdvice": "Base64 adds roughly one third to the binary image size. Prefer external WebP for large photographs or many repeated images; embedded WebP is best for small or portability-critical images."
+  }
 }
