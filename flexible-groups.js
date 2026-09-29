@@ -1,9 +1,9 @@
 /*
- * QuizMaster Flexible Groups plugin v4
- * Generic schema-v3 repeatable groups, conditional questions, and evidence tracking for any standard.
+ * QuizMaster Flexible Groups plugin v5
+ * Generic schema-v3 repeatable groups, conditional questions, evidence tracking, and persistent submission-state tracking for any standard.
  *
  * Load after script.js and BEFORE photo-evidence.js:
- *   <script src="flexible-groups.js?v=4" defer></script>
+ *   <script src="flexible-groups.js?v=5" defer></script>
  *
  * Existing schema-v2 standards continue to work unchanged.
  */
@@ -11,8 +11,9 @@
   "use strict";
 
   const FLEX_SCHEMA_MIN = 3;
-  const PLUGIN_VERSION = 4;
+  const PLUGIN_VERSION = 5;
   const originalLoadAssessment = window.loadAssessment;
+  const originalSubmitToTeacher = window.submitToTeacher;
 
   if (typeof originalLoadAssessment !== "function") {
     console.warn("Flexible Groups: QuizMaster loadAssessment() was not available.");
@@ -46,21 +47,25 @@
       .qm-evidence-tracker__item.is-ready{border-color:#b9cfe7;background:#f6faff}
       .qm-evidence-tracker__item.is-submitted{border-color:#bbd8c4;background:#f7fbf8}
       .qm-evidence-tracker__item.is-ongoing{border-color:#ead6a5;background:#fffaf0}
+      .qm-evidence-tracker__item.is-pending{border-color:#d9c68f;background:#fffdf4}
       .qm-evidence-tracker__icon{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:#eef2f7;color:#64748b;font-weight:900}
       .qm-evidence-tracker__item.is-ready .qm-evidence-tracker__icon{background:#e7f0fa;color:#285f91}
       .qm-evidence-tracker__item.is-submitted .qm-evidence-tracker__icon{background:#e5f3e9;color:#27633a}
       .qm-evidence-tracker__item.is-ongoing .qm-evidence-tracker__icon{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__item.is-pending .qm-evidence-tracker__icon{background:#fff4cc;color:#7a5b00}
       .qm-evidence-tracker__item strong{display:block;color:#111827}
       .qm-evidence-tracker__item small{display:block;margin-top:2px;color:#64748b;line-height:1.35}
       .qm-evidence-tracker__status{display:inline-block;margin-top:5px;padding:3px 7px;border-radius:999px;background:#eef2f7;color:#596273;font-size:.72rem;font-weight:850;letter-spacing:.02em}
       .qm-evidence-tracker__status.is-ready{background:#e7f0fa;color:#285f91}
       .qm-evidence-tracker__status.is-submitted{background:#e5f3e9;color:#27633a}
       .qm-evidence-tracker__status.is-ongoing{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__status.is-pending{background:#fff4cc;color:#7a5b00}
       .qm-evidence-tracker__legend{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
       .qm-evidence-tracker__legend span{padding:5px 8px;border-radius:999px;font-size:.75rem;font-weight:800}
       .qm-evidence-tracker__legend .is-ready{background:#e7f0fa;color:#285f91}
       .qm-evidence-tracker__legend .is-submitted{background:#e5f3e9;color:#27633a}
       .qm-evidence-tracker__legend .is-ongoing{background:#fff0c9;color:#855f00}
+      .qm-evidence-tracker__legend .is-pending{background:#fff4cc;color:#7a5b00}
       .qm-evidence-tracker__legend .is-incomplete{background:#eef2f7;color:#596273}
       .qm-evidence-tracker__open{min-height:36px;padding:7px 11px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#111827;font:inherit;font-weight:750;cursor:pointer}
       .qm-evidence-tracker__foot{margin:12px 0 0;color:#64748b;font-size:.84rem;line-height:1.4}
@@ -529,6 +534,169 @@
     }
   }
 
+  function ensureSubmissionRecords() {
+    if (!Array.isArray(data.submissionRecords)) data.submissionRecords = [];
+    return data.submissionRecords;
+  }
+
+  function submissionStateIsConfirmed(state) {
+    return state === "confirmed" || state === "duplicate";
+  }
+
+  function simpleHash(value) {
+    let hash = 2166136261;
+    const input = String(value || "");
+    for (let i = 0; i < input.length; i += 1) {
+      hash ^= input.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(16).padStart(8, "0");
+  }
+
+  function assessmentAnswerSignature(assessmentId) {
+    const assessment = materialiseForTracker(assessmentById(assessmentId));
+    if (!assessment) return "";
+    const serialised = (assessment.questions || []).map((question) => {
+      const id = String(question?.id || "");
+      const answer = answerForTracker(assessment.id, id);
+      return `${id}\u001f${answer}`;
+    }).join("\u001e");
+    return `v1:${simpleHash(serialised)}`;
+  }
+
+  function recordSubmission(record) {
+    const records = ensureSubmissionRecords();
+    const assessmentId = String(record?.assessmentId || "").trim();
+    const submissionId = String(record?.submissionId || "").trim();
+    if (!submissionId || !assessmentId) return null;
+
+    const kind = String(record?.kind || "assessment").trim() || "assessment";
+    const existingIndex = records.findIndex((item) => String(item?.submissionId || "") === submissionId);
+    const previous = existingIndex >= 0 ? records[existingIndex] : {};
+    const clean = {
+      ...previous,
+      submissionId,
+      kind,
+      questionSetId: String(record?.questionSetId ?? previous.questionSetId ?? CURRENT_QUESTION_SET?.id ?? "").trim(),
+      assessmentId,
+      assessmentTitle: String(record?.assessmentTitle ?? previous.assessmentTitle ?? "").trim(),
+      optionId: String(record?.optionId ?? previous.optionId ?? "").trim(),
+      optionLabel: String(record?.optionLabel ?? previous.optionLabel ?? "").trim(),
+      descriptor: String(record?.descriptor ?? previous.descriptor ?? "").trim(),
+      method: String(record?.method ?? previous.method ?? "").trim(),
+      state: String(record?.state ?? previous.state ?? "pending").trim() || "pending",
+      rootName: String(record?.rootName ?? previous.rootName ?? "").trim(),
+      repeatable: record?.repeatable ?? previous.repeatable ?? true,
+      startedAt: String(record?.startedAt ?? previous.startedAt ?? new Date().toISOString()),
+      confirmedAt: String(record?.confirmedAt ?? previous.confirmedAt ?? ""),
+      pdfUrl: String(record?.pdfUrl ?? previous.pdfUrl ?? "").trim(),
+      answerSignature: String(
+        record?.answerSignature ?? previous.answerSignature ?? (kind === "assessment" ? assessmentAnswerSignature(assessmentId) : "")
+      ).trim(),
+      lastError: String(record?.lastError ?? previous.lastError ?? "").trim(),
+    };
+
+    if (existingIndex >= 0) records[existingIndex] = clean;
+    else records.push(clean);
+
+    data.lastSaved = new Date().toISOString();
+    if (STORAGE_KEY) storageSet(STORAGE_KEY, JSON.stringify(data));
+    scheduleEvidenceTrackerRender();
+    return clean;
+  }
+
+  function updateSubmissionState(submissionId, state, extra = {}) {
+    const existing = ensureSubmissionRecords().find((item) => String(item?.submissionId || "") === String(submissionId || ""));
+    if (!existing) return null;
+    return recordSubmission({
+      ...existing,
+      ...extra,
+      submissionId: existing.submissionId,
+      assessmentId: existing.assessmentId,
+      state: String(state || existing.state || "pending"),
+    });
+  }
+
+  function latestAssessmentSubmission(assessmentId) {
+    const signature = assessmentAnswerSignature(assessmentId);
+    const matching = ensureSubmissionRecords()
+      .filter((record) => record?.kind === "assessment" && String(record?.assessmentId || "") === String(assessmentId || ""))
+      .sort((a, b) => Date.parse(b?.confirmedAt || b?.startedAt || 0) - Date.parse(a?.confirmedAt || a?.startedAt || 0));
+
+    const exactConfirmed = matching.find((record) => submissionStateIsConfirmed(record?.state) && record?.answerSignature === signature);
+    if (exactConfirmed) return { state: "submitted", record: exactConfirmed, changedSinceSubmission: false };
+
+    const exactPending = matching.find((record) => record?.state === "pending" && record?.answerSignature === signature);
+    if (exactPending) return { state: "pending", record: exactPending, changedSinceSubmission: false };
+
+    const hasOlderConfirmed = matching.some((record) => submissionStateIsConfirmed(record?.state));
+    return { state: "ready", record: null, changedSinceSubmission: hasOlderConfirmed };
+  }
+
+  let submissionReconcileBusy = false;
+  const submissionReconcileLastAttempt = new Map();
+
+  async function reconcilePendingSubmissions({ force = false } = {}) {
+    if (submissionReconcileBusy || !navigator.onLine) return;
+    let endpoint = "";
+    try { endpoint = getSubmissionEndpoint(); } catch (_) {}
+    if (!endpoint || typeof jsonpRequest !== "function") return;
+
+    const pending = ensureSubmissionRecords().filter((record) => record?.state === "pending" && record?.submissionId);
+    if (!pending.length) return;
+
+    submissionReconcileBusy = true;
+    try {
+      for (const record of pending) {
+        const now = Date.now();
+        const lastAttempt = submissionReconcileLastAttempt.get(record.submissionId) || 0;
+        if (!force && now - lastAttempt < 10000) continue;
+        submissionReconcileLastAttempt.set(record.submissionId, now);
+
+        let rootName = String(record.rootName || "").trim();
+        if (!rootName) {
+          try { rootName = getSubmissionRootName(); } catch (_) {}
+        }
+        if (!rootName) continue;
+
+        try {
+          const status = await jsonpRequest(
+            endpoint,
+            { action: "status", submissionId: record.submissionId, fast: "0", rootName },
+            6500
+          );
+          if (!submissionStateIsConfirmed(status?.state)) continue;
+
+          updateSubmissionState(record.submissionId, status.state, {
+            confirmedAt: new Date().toISOString(),
+            pdfUrl: status?.pdfUrl || record.pdfUrl || "",
+            lastError: "",
+          });
+
+          if (record.kind === "photoEvidence" && record.optionId) {
+            recordEvidence({
+              assessmentId: record.assessmentId,
+              optionId: record.optionId,
+              optionLabel: record.optionLabel,
+              descriptor: record.descriptor,
+              method: record.method || "photo",
+              submissionId: record.submissionId,
+              submittedAt: record.startedAt || new Date().toISOString(),
+              state: status.state,
+              pdfUrl: status?.pdfUrl || record.pdfUrl || "",
+              repeatable: record.repeatable !== false,
+            });
+          }
+        } catch (error) {
+          if (window.DEBUG) console.warn("Flexible Groups: submission reconciliation failed", record.submissionId, error);
+        }
+      }
+    } finally {
+      submissionReconcileBusy = false;
+      scheduleEvidenceTrackerRender();
+    }
+  }
+
   function questionEarnedPoints(question, answer) {
     const value = String(answer || "").trim();
     if (!value) return 0;
@@ -595,12 +763,21 @@
         if (questions.length && questions.every((q) => questionIsComplete(q, assessment.id, requirement))) complete += 1;
       }
       const met = complete >= meta.count && meta.count >= Number(item?.minimum || meta.minimum || 1);
+      const submission = met ? latestAssessmentSubmission(assessment.id) : { state: "incomplete", changedSinceSubmission: false };
+      const noun = String(item?.unitLabel || meta.block?.itemLabel || "record");
+      const suffix = submission.state === "submitted"
+        ? " · confirmed in the teacher register"
+        : submission.state === "pending"
+        ? " · awaiting register confirmation"
+        : submission.changedSinceSubmission
+        ? " · changed since the last submission"
+        : " · complete on this device";
       return {
         label,
         met,
-        state: met ? "ready" : "incomplete",
+        state: met ? submission.state : "incomplete",
         required,
-        detail: `${complete}/${meta.count} ${String(item?.unitLabel || meta.block?.itemLabel || "record")}s complete on this device`,
+        detail: `${complete}/${meta.count} ${noun}s complete${suffix}`,
         note: item?.note || "",
         assessmentId: assessment.id,
       };
@@ -618,12 +795,21 @@
       }
       const complete = questions.filter((q) => questionIsComplete(q, assessment.id, requirement)).length;
       const total = questions.length;
+      const met = total > 0 && complete === total;
+      const submission = met ? latestAssessmentSubmission(assessment.id) : { state: "incomplete", changedSinceSubmission: false };
+      const suffix = submission.state === "submitted"
+        ? " · confirmed in the teacher register"
+        : submission.state === "pending"
+        ? " · awaiting register confirmation"
+        : submission.changedSinceSubmission
+        ? " · changed since the last submission"
+        : " · complete on this device";
       return {
         label,
-        met: total > 0 && complete === total,
-        state: total > 0 && complete === total ? "ready" : "incomplete",
+        met,
+        state: met ? submission.state : "incomplete",
         required,
-        detail: `${complete}/${total} answer${total === 1 ? "" : "s"} complete on this device`,
+        detail: `${complete}/${total} answer${total === 1 ? "" : "s"} complete${suffix}`,
         note: item?.note || "",
         assessmentId: assessment.id,
       };
@@ -699,15 +885,16 @@
     const metCount = requiredResults.filter((result) => result.met).length;
     const readyCount = requiredResults.filter((result) => result.state === "ready").length;
     const submittedCount = requiredResults.filter((result) => result.state === "submitted" || result.state === "ongoing").length;
+    const awaitingCount = requiredResults.filter((result) => result.state === "pending").length;
     const requiredCount = requiredResults.length;
-    const pendingCount = Math.max(0, requiredCount - metCount);
+    const todoCount = requiredResults.filter((result) => result.state === "incomplete").length;
     const percent = requiredCount ? Math.round((metCount / requiredCount) * 100) : 100;
-    return { config, results, metCount, readyCount, submittedCount, pendingCount, requiredCount, percent };
+    return { config, results, metCount, readyCount, submittedCount, awaitingCount, todoCount, pendingCount: todoCount, requiredCount, percent };
   }
 
   function renderEvidenceTracker() {
     const snapshot = getEvidenceProgress();
-    const { config, results, readyCount, submittedCount, pendingCount, requiredCount, percent } = snapshot;
+    const { config, results, readyCount, submittedCount, awaitingCount, todoCount, requiredCount, percent } = snapshot;
     if (!config) {
       removeTracker();
       return;
@@ -732,7 +919,7 @@
     const score = document.createElement("span");
     score.className = "qm-evidence-tracker__score";
     score.textContent = requiredCount
-      ? `${readyCount} ready · ${submittedCount} submitted · ${pendingCount} to do`
+      ? `${readyCount} ready · ${submittedCount} submitted${awaitingCount ? ` · ${awaitingCount} awaiting confirmation` : ""} · ${todoCount} to do`
       : `${results.length} progress checks`;
     summary.append(summaryText, score);
     tracker.appendChild(summary);
@@ -747,7 +934,7 @@
     }
     const legend = document.createElement("div");
     legend.className = "qm-evidence-tracker__legend";
-    [["Ready — not submitted", "is-ready"], ["Submitted", "is-submitted"], ["Submitted — ongoing", "is-ongoing"], ["To do", "is-incomplete"]].forEach(([text, className]) => {
+    [["Ready — not submitted", "is-ready"], ["Awaiting confirmation", "is-pending"], ["Submitted", "is-submitted"], ["Submitted — ongoing", "is-ongoing"], ["To do", "is-incomplete"]].forEach(([text, className]) => {
       const chip = document.createElement("span");
       chip.className = className;
       chip.textContent = text;
@@ -771,7 +958,7 @@
 
       const icon = document.createElement("span");
       icon.className = "qm-evidence-tracker__icon";
-      icon.textContent = state === "ongoing" ? "•" : (state === "ready" || state === "submitted") ? "✓" : "○";
+      icon.textContent = state === "ongoing" ? "•" : state === "pending" ? "…" : (state === "ready" || state === "submitted") ? "✓" : "○";
       icon.setAttribute("aria-hidden", "true");
 
       const textWrap = document.createElement("div");
@@ -785,6 +972,8 @@
         ? "SUBMITTED"
         : state === "ongoing"
         ? "SUBMITTED — ONGOING"
+        : state === "pending"
+        ? "AWAITING CONFIRMATION"
         : state === "ready"
         ? "READY — NOT SUBMITTED"
         : "TO DO";
@@ -837,6 +1026,8 @@
       observer.observe(selector, { childList: true, subtree: true, attributes: true });
     }
     scheduleEvidenceTrackerRender(100);
+    window.setTimeout(() => reconcilePendingSubmissions(), 700);
+    window.setTimeout(() => reconcilePendingSubmissions(), 10000);
   }
 
   window.loadAssessment = function flexibleLoadAssessment(...args) {
@@ -848,8 +1039,75 @@
       window.requestAnimationFrame(() => renderFlexibleEnhancements(assessment));
     }
     scheduleEvidenceTrackerRender();
+    window.setTimeout(() => reconcilePendingSubmissions(), 500);
     return result;
   };
+
+  async function trackedSubmitToTeacher(...args) {
+    if (typeof originalSubmitToTeacher !== "function") return undefined;
+
+    let trackedSubmissionId = "";
+    let trackedAssessmentId = "";
+    try {
+      if (!submissionInProgress && !lastConfirmedSubmission && finalData && preparedPdfResult && preparedPukResult) {
+        if (!currentSubmissionId) currentSubmissionId = makeSubmissionId();
+        trackedSubmissionId = String(currentSubmissionId || "");
+        trackedAssessmentId = String(finalData.assessmentId || "");
+        if (trackedSubmissionId && trackedAssessmentId) {
+          recordSubmission({
+            submissionId: trackedSubmissionId,
+            kind: "assessment",
+            questionSetId: CURRENT_QUESTION_SET?.id || "",
+            assessmentId: trackedAssessmentId,
+            assessmentTitle: finalData.assessmentTitle || "",
+            state: "pending",
+            rootName: getSubmissionRootName(),
+            startedAt: new Date().toISOString(),
+            answerSignature: assessmentAnswerSignature(trackedAssessmentId),
+          });
+
+          // Rebuild the encrypted backup after the pending submission record has
+          // been saved, so the uploaded .puk contains the submission ID needed
+          // to reconcile against the register when it is restored later.
+          preparedPukResult = await createProgressBackupForSubmission();
+          try { updatePdfActionState(); } catch (_) {}
+        }
+      }
+    } catch (trackingError) {
+      console.warn("Flexible Groups: could not add the submission record to the .puk", trackingError);
+    }
+
+    const result = await originalSubmitToTeacher.apply(this, args);
+
+    if (trackedSubmissionId) {
+      try {
+        if (submissionStateIsConfirmed(lastConfirmedSubmission?.state)) {
+          updateSubmissionState(trackedSubmissionId, lastConfirmedSubmission.state, {
+            confirmedAt: new Date().toISOString(),
+            lastError: "",
+          });
+
+          // Refresh the downloadable .puk so a backup downloaded after the
+          // confirmation already contains the confirmed submission state.
+          preparedPukResult = await createProgressBackupForSubmission();
+          try { updatePdfActionState(); } catch (_) {}
+        } else {
+          updateSubmissionState(trackedSubmissionId, "pending", {
+            lastError: "Confirmation was not received yet. QuizMaster will check the register again when this backup is loaded.",
+          });
+        }
+      } catch (trackingError) {
+        console.warn("Flexible Groups: could not update the confirmed submission record", trackingError);
+      }
+      scheduleEvidenceTrackerRender();
+    }
+
+    return result;
+  }
+
+  if (typeof originalSubmitToTeacher === "function") {
+    window.submitToTeacher = trackedSubmitToTeacher;
+  }
 
   // Public helpers are intentionally small so future plugins can reuse the engine
   // without knowing how QuizMaster stores repeat counts internally.
@@ -861,6 +1119,10 @@
     setRepeatCount,
     conditionMatches,
     recordEvidence,
+    recordSubmission,
+    updateSubmissionState,
+    reconcilePendingSubmissions,
+    assessmentAnswerSignature,
     getEvidenceProgress,
     renderEvidenceTracker,
   });

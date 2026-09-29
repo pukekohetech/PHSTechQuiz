@@ -1,10 +1,10 @@
 /*
- * QuizMaster Photo / Project Evidence plugin v7 - portrait evidence + terminology validation + progress tracking
+ * QuizMaster Photo / Project Evidence plugin v8 - portrait evidence + terminology validation + progress tracking
  * Uses the existing QuizMaster PDF + .puk + document-register submission route.
  * No Apps Script changes are required.
  *
  * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=7" defer></script>
+ *   <script src="photo-evidence.js?v=8" defer></script>
  *
  * Supports:
  * - live rear/front camera
@@ -702,13 +702,37 @@
         fieldValues,
       };
 
+      const mainDescriptor = fieldValues.stage || fieldValues.area || option.label;
+
+      // Save the submission ID into QuizMaster progress BEFORE the encrypted
+      // .puk is created. The server-side copy can therefore reconcile this
+      // record against the teacher register when the .puk is restored later.
+      try {
+        window.QuizMasterFlexible?.recordSubmission?.({
+          submissionId,
+          kind: "photoEvidence",
+          questionSetId: identity.questionSetId,
+          assessmentId: activeAssessment?.id || "",
+          assessmentTitle: activeAssessment?.title || "Photo Evidence",
+          optionId: option.id || "",
+          optionLabel: option.label || "",
+          descriptor: mainDescriptor,
+          method,
+          state: "pending",
+          rootName: storageRootName,
+          startedAt: new Date().toISOString(),
+          repeatable: option.repeatable !== false,
+        });
+      } catch (trackingError) {
+        console.warn("Photo Evidence: could not add the pending submission record", trackingError);
+      }
+
       const [pdfBlob, pukResult] = await Promise.all([
         createEvidencePdf(method === "written" ? null : capturedBlob, details),
         createProgressBackupForSubmission(),
       ]);
       const pdfBase64 = await blobToBase64(pdfBlob);
       const shortRef = submissionId.replace(/^evidence_/, "").slice(0, 24);
-      const mainDescriptor = fieldValues.stage || fieldValues.area || option.label;
       const dynamicAssessmentId = `${activeAssessment?.id || "evidence"}-${option.id}-${safePart(mainDescriptor).slice(0,40)}-${shortRef}`;
       const payload = {
         submissionId,
@@ -750,6 +774,11 @@
       }
 
       try {
+        window.QuizMasterFlexible?.updateSubmissionState?.(submissionId, status?.state || "confirmed", {
+          confirmedAt: new Date().toISOString(),
+          pdfUrl: status?.pdfUrl || "",
+          lastError: "",
+        });
         window.QuizMasterFlexible?.recordEvidence?.({
           assessmentId: activeAssessment?.id || "",
           optionId: option.id || "",
@@ -774,6 +803,11 @@
       clearEvidenceFields();
       updateSubmitState();
     } catch (error) {
+      try {
+        window.QuizMasterFlexible?.updateSubmissionState?.(submissionId, "pending", {
+          lastError: String(error?.message || "Evidence submission was not confirmed yet."),
+        });
+      } catch (_) {}
       console.error("Evidence submission failed", error);
       setStatus(error.message || "Evidence submission failed. Try again.", "error");
     } finally {
