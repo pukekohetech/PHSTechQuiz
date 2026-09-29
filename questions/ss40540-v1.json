@@ -638,41 +638,34 @@
     {
       "id": "photo-evidence-upload",
       "title": "Photo Evidence Upload",
-      "subtitle": "Upload one photo at a time against the SS 40540 evidence requirement it supports.",
+      "subtitle": "Take or upload the photographic evidence required for SS 40540.",
+      "mode": "photo-evidence",
       "attachSignoff": false,
-      "submissionMode": "photoEvidence",
       "photoEvidence": {
-        "instructions": "Choose what the photo is evidence for, then take a photo or select one from your device. Submit one photo at a time and repeat this assessment for each required image.",
-        "criteria": [
+        "maxDimension": 1920,
+        "jpegQuality": 0.8,
+        "options": [
           {
-            "id": "project-stage-safety",
-            "label": "Project stage - PPE and safety controls visible",
-            "help": "Use for photos showing you working on a project stage with appropriate PPE and any other required controls visible."
+            "id": "project-stage",
+            "label": "Project stage - PPE / safety controls visible",
+            "help": "Use this for photos across the stages of your project. The learner, appropriate PPE and any other required safety controls should be clearly visible. You can submit this option more than once.",
+            "repeatable": true
           },
           {
-            "id": "before-tidy-up",
+            "id": "workplace-before",
             "label": "Workplace / storage - before tidy-up",
-            "help": "Use for a photo showing the work or storage area before clean-up or tidy-up."
+            "help": "Show the area where you carried out the project tasks before clean-up.",
+            "repeatable": false
           },
           {
-            "id": "after-tidy-up",
+            "id": "workplace-after",
             "label": "Workplace / storage - after tidy-up",
-            "help": "Use for a photo showing the area after clean-up, left tidy with tools put away appropriately."
+            "help": "Show the same area after clean-up, left tidy with tools put away appropriately.",
+            "repeatable": false
           }
-        ],
-        "maxImageDimension": 1800,
-        "jpegQuality": 0.82
+        ]
       },
-      "questions": [
-        {
-          "id": "photo_evidence",
-          "text": "Choose what this photo is evidence for, then take or upload one image.",
-          "hint": "Upload one photo at a time. You can reopen this section and submit more photos as you move through the project.",
-          "type": "photo",
-          "maxPoints": 0,
-          "rubric": []
-        }
-      ]
+      "questions": []
     }
   ],
   "_finalChecklistBeforePublishing": [
