@@ -1,394 +1,415 @@
 /*
- * QuizMaster photo evidence extension - test build
+ * QuizMaster Photo Evidence plugin v1
+ * Live camera behaviour adapted from the user's PHS Evidence Camera workflow.
  *
- * Adds support for assessments with:
- *   submissionMode: "photoEvidence"
- * and one or more questions with:
- *   type: "photo"
+ * Add after script.js in index.html:
+ *   <script src="photo-evidence.js?v=1" defer></script>
  *
- * This test deliberately uses the EXISTING QuizMaster submission gateway.
- * The selected image is compressed, placed on a one-page PDF with its evidence
- * label, and submitted with the normal encrypted .puk backup. No Apps Script
- * changes are required for this test.
+ * A question-set assessment enables this UI with:
+ *   "mode": "photo-evidence",
+ *   "photoEvidence": { "options": [...] },
+ *   "questions": []
  */
 (() => {
   "use strict";
 
-  const PHOTO_MODE = "photoEvidence";
-  const DEFAULT_MAX_DIMENSION = 1800;
-  const DEFAULT_JPEG_QUALITY = 0.82;
+  const PHOTO_MODE = "photo-evidence";
+  const DEFAULT_MAX_DIMENSION = 1920;
+  const DEFAULT_JPEG_QUALITY = 0.8;
+  const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
-  let photoBusy = false;
-  let previewObjectUrl = "";
-  let pendingSubmission = null;
+  let stream = null;
+  let useFrontCamera = false;
+  let capturedBlob = null;
+  let capturedAt = "";
+  let capturedObjectUrl = "";
+  let activeAssessment = null;
+  let elements = null;
+  let sessionSubmissions = [];
 
   const originalLoadAssessment = window.loadAssessment;
-  const originalSubmitWork = window.submitWork;
-
-  function getSelectedAssessment() {
-    const selector = document.getElementById("assessmentSelector");
-    if (!selector || selector.value === "") return null;
-    return ASSESSMENTS?.[Number(selector.value)] || null;
+  if (typeof originalLoadAssessment !== "function") {
+    console.warn("Photo Evidence plugin: QuizMaster loadAssessment() was not available.");
+    return;
   }
 
-  function isPhotoAssessment(assessment) {
-    return assessment?.submissionMode === PHOTO_MODE;
-  }
-
-  function getPhotoQuestion(assessment) {
-    return (assessment?.questions || []).find((q) => q.type === "photo") || null;
-  }
-
-  function getSubmitButton() {
-    return document.querySelector('#form button[onclick="submitWork()"]');
-  }
-
-  function setNormalSubmitLabel() {
-    const button = getSubmitButton();
-    if (button) button.textContent = "Submit & Grade";
-  }
-
-  function setPhotoSubmitLabel() {
-    const button = getSubmitButton();
-    if (button) button.textContent = photoBusy ? "Submitting Photo..." : "Submit Photo Evidence";
-  }
-
-  function injectPhotoStyles() {
-    if (document.getElementById("quizmaster-photo-evidence-styles")) return;
+  function injectStyles() {
+    if (document.getElementById("photoEvidenceStyles")) return;
     const style = document.createElement("style");
-    style.id = "quizmaster-photo-evidence-styles";
+    style.id = "photoEvidenceStyles";
     style.textContent = `
-      .photo-evidence-card {
-        display: grid;
-        gap: 14px;
-      }
-      .photo-evidence-intro {
-        margin: 0;
-        color: #475569;
-        line-height: 1.5;
-      }
-      .photo-evidence-label {
-        display: grid;
-        gap: 7px;
-        font-weight: 700;
-      }
-      .photo-evidence-label small {
-        font-weight: 400;
-        color: #64748b;
-        line-height: 1.45;
-      }
-      .photo-evidence-select,
-      .photo-evidence-file {
-        width: 100%;
-        box-sizing: border-box;
-      }
-      .photo-evidence-preview-wrap {
-        display: none;
-        border: 1px solid #d7dce3;
-        border-radius: 12px;
-        padding: 10px;
-        background: #f8fafc;
-      }
-      .photo-evidence-preview-wrap.is-visible {
-        display: block;
-      }
-      .photo-evidence-preview {
-        display: block;
-        width: 100%;
-        max-height: 460px;
-        object-fit: contain;
-        border-radius: 8px;
-        background: #fff;
-      }
-      .photo-evidence-file-meta {
-        margin: 8px 0 0;
-        font-size: 0.88rem;
-        color: #64748b;
-      }
-      .photo-evidence-status {
-        min-height: 1.5em;
-        margin: 0;
-        font-weight: 650;
-      }
-      .photo-evidence-status.success { color: #166534; }
-      .photo-evidence-status.error { color: #b91c1c; }
-      .photo-evidence-status.busy { color: #334155; }
-      .photo-evidence-recent {
-        margin: 0;
-        padding-left: 20px;
-        color: #475569;
-      }
-      .photo-evidence-recent:empty { display: none; }
+      .photo-evidence-card{border:1px solid #d8dee8;border-radius:18px;padding:18px;background:#fff;box-shadow:0 8px 28px rgba(15,23,42,.06)}
+      .photo-evidence-card h3{margin:0 0 6px;font-size:1.2rem}
+      .photo-evidence-intro{margin:0 0 16px;color:#475569;line-height:1.45}
+      .photo-evidence-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.8fr);gap:18px;align-items:start}
+      .photo-evidence-field label{display:block;font-weight:750;margin-bottom:7px}
+      .photo-evidence-field select{width:100%;min-height:48px}
+      .photo-evidence-help{min-height:2.8em;margin:8px 0 0;color:#64748b;font-size:.92rem;line-height:1.4}
+      .photo-camera-shell{margin-top:16px;border-radius:18px;overflow:hidden;background:#0b0c0f;border:1px solid #20242b}
+      .photo-camera-stage{position:relative;aspect-ratio:16/9;display:grid;place-items:center;background:#050607;overflow:hidden}
+      .photo-camera-stage video,.photo-camera-stage img{width:100%;height:100%;object-fit:contain;background:#050607}
+      .photo-camera-empty{padding:24px;text-align:center;color:#cbd5e1;line-height:1.45}
+      .photo-camera-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:12px;background:#111318;border-top:1px solid #252a33}
+      .photo-camera-actions button,.photo-evidence-submit-row button{min-height:44px;padding:10px 16px;border-radius:12px;border:1px solid #d4d9e1;font-weight:750;cursor:pointer}
+      .photo-camera-actions button{background:#fff;color:#111827}
+      .photo-camera-actions .photo-shutter{background:#7a1f2b;color:#fff;border-color:#7a1f2b}
+      .photo-camera-actions button:disabled,.photo-evidence-submit-row button:disabled{opacity:.48;cursor:not-allowed}
+      .photo-preview-meta{display:none;padding:12px 14px;background:#f8fafc;border-top:1px solid #e2e8f0;color:#334155;font-size:.92rem}
+      .photo-evidence-submit-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+      .photo-evidence-submit{background:#7a1f2b;color:#fff;border-color:#7a1f2b!important}
+      .photo-evidence-status{margin-top:12px;padding:11px 13px;border-radius:12px;background:#f1f5f9;color:#334155;line-height:1.4}
+      .photo-evidence-status.success{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
+      .photo-evidence-status.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+      .photo-evidence-session{margin-top:16px;border-top:1px solid #e2e8f0;padding-top:13px}
+      .photo-evidence-session strong{display:block;margin-bottom:7px}
+      .photo-evidence-session ul{margin:0;padding-left:20px;color:#475569}
+      .photo-evidence-camera-note{margin-top:8px;font-size:.82rem;color:#64748b}
+      @media (max-width:760px){.photo-evidence-grid{grid-template-columns:1fr}.photo-evidence-card{padding:14px}.photo-camera-stage{aspect-ratio:4/3}}
     `;
     document.head.appendChild(style);
   }
 
-  function clearPreview() {
-    if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-    previewObjectUrl = "";
-    const wrap = document.getElementById("photoEvidencePreviewWrap");
-    const img = document.getElementById("photoEvidencePreview");
-    const meta = document.getElementById("photoEvidenceFileMeta");
-    if (img) img.removeAttribute("src");
-    if (meta) meta.textContent = "";
-    wrap?.classList.remove("is-visible");
+  function currentAssessment() {
+    const idx = document.getElementById("assessmentSelector")?.value;
+    if (idx === "" || idx == null) return null;
+    try { return ASSESSMENTS?.[idx] || null; } catch (_) { return null; }
   }
 
-  function resetPendingSubmission() {
-    pendingSubmission = null;
+  function isPhotoAssessment(assessment) {
+    return String(assessment?.mode || "").toLowerCase() === PHOTO_MODE || !!assessment?.photoEvidence;
   }
 
-  function renderPhotoEvidenceUi(assessment) {
-    injectPhotoStyles();
-    const q = getPhotoQuestion(assessment);
-    if (!q) {
-      showToast("Photo evidence assessment is missing its photo question.", false);
+  function setStandardSubmitVisible(visible) {
+    const button = document.querySelector('#form button[onclick="submitWork()"]');
+    const group = button?.closest(".btn-group");
+    if (group) group.style.display = visible ? "" : "none";
+  }
+
+  function revokeCapturedUrl() {
+    if (!capturedObjectUrl) return;
+    try { URL.revokeObjectURL(capturedObjectUrl); } catch (_) {}
+    capturedObjectUrl = "";
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach((track) => {
+        try { track.stop(); } catch (_) {}
+      });
+    }
+    stream = null;
+    if (elements?.video) elements.video.srcObject = null;
+    if (elements?.shootBtn) elements.shootBtn.disabled = true;
+    if (elements?.flipBtn) elements.flipBtn.disabled = true;
+  }
+
+  function resetCapturedPhoto() {
+    capturedBlob = null;
+    capturedAt = "";
+    revokeCapturedUrl();
+    if (!elements) return;
+    elements.preview.removeAttribute("src");
+    elements.preview.hidden = true;
+    elements.video.hidden = !stream;
+    elements.empty.hidden = !!stream;
+    elements.previewMeta.style.display = "none";
+    elements.submitBtn.disabled = true;
+  }
+
+  function endPhotoSession({ restoreSubmit = true } = {}) {
+    stopCamera();
+    resetCapturedPhoto();
+    activeAssessment = null;
+    elements = null;
+    sessionSubmissions = [];
+    if (restoreSubmit) setStandardSubmitVisible(true);
+  }
+
+  function selectedEvidence() {
+    if (!elements?.criteria) return null;
+    const id = elements.criteria.value;
+    const options = activeAssessment?.photoEvidence?.options || [];
+    return options.find((item) => String(item.id) === String(id)) || null;
+  }
+
+  function updateEvidenceHelp() {
+    if (!elements) return;
+    const option = selectedEvidence();
+    elements.help.textContent = option?.help || "Choose what this photo is evidence for.";
+    elements.submitBtn.disabled = !(capturedBlob && option);
+  }
+
+  async function startCamera() {
+    if (!elements) return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setStatus("This browser cannot open the live camera. Use Choose existing photo instead.", "error");
+      return;
+    }
+    if (!window.isSecureContext && location.hostname !== "localhost" && location.protocol !== "file:") {
+      setStatus("Live camera access needs HTTPS. Use Choose existing photo or open the secure QuizMaster site.", "error");
       return;
     }
 
-    const wrap = document.getElementById("q-" + String(q.id).toLowerCase());
-    if (!wrap) return;
-
-    clearPreview();
-    resetPendingSubmission();
-    wrap.replaceChildren();
-    wrap.className = "question photo-evidence-card";
-
-    const header = document.createElement("div");
-    header.className = "question-header";
-    const left = document.createElement("span");
-    left.textContent = "Photo evidence";
-    const right = document.createElement("span");
-    right.textContent = "Upload 1 photo";
-    header.append(left, right);
-    wrap.appendChild(header);
-
-    const prompt = document.createElement("p");
-    prompt.textContent = q.text || "Choose what this photo is evidence for, then take or upload one image.";
-    wrap.appendChild(prompt);
-
-    const intro = document.createElement("p");
-    intro.className = "photo-evidence-intro";
-    intro.textContent = assessment.photoEvidence?.instructions ||
-      "Choose the evidence type, then take a photo or select one from your device. Submit one photo at a time.";
-    wrap.appendChild(intro);
-
-    const criteriaLabel = document.createElement("label");
-    criteriaLabel.className = "photo-evidence-label";
-    criteriaLabel.htmlFor = "q" + q.id;
-    criteriaLabel.appendChild(document.createTextNode("What is this photo evidence for?"));
-
-    const criteriaSelect = document.createElement("select");
-    criteriaSelect.id = "q" + q.id;
-    criteriaSelect.className = "answer-field photo-evidence-select";
-    criteriaSelect.appendChild(new Option("Select the evidence type", ""));
-    (assessment.photoEvidence?.criteria || []).forEach((criterion) => {
-      criteriaSelect.appendChild(new Option(criterion.label, criterion.id));
-    });
-    const saved = getAnswer(q.id);
-    if (saved) criteriaSelect.value = saved;
-    criteriaSelect.addEventListener("change", () => {
-      saveAnswer(q.id);
-      updateCriterionHelp(assessment, criteriaSelect.value);
-      resetPendingSubmission();
-    });
-    criteriaLabel.appendChild(criteriaSelect);
-
-    const criteriaHelp = document.createElement("small");
-    criteriaHelp.id = "photoEvidenceCriterionHelp";
-    criteriaLabel.appendChild(criteriaHelp);
-    wrap.appendChild(criteriaLabel);
-
-    const fileLabel = document.createElement("label");
-    fileLabel.className = "photo-evidence-label";
-    fileLabel.htmlFor = "photoEvidenceFile";
-    fileLabel.appendChild(document.createTextNode("Take or upload a photo"));
-
-    const fileInput = document.createElement("input");
-    fileInput.id = "photoEvidenceFile";
-    fileInput.className = "photo-evidence-file";
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.setAttribute("capture", "environment");
-    fileInput.addEventListener("change", () => {
-      resetPendingSubmission();
-      showPhotoPreview(fileInput.files?.[0] || null);
-    });
-    fileLabel.appendChild(fileInput);
-
-    const fileHelp = document.createElement("small");
-    fileHelp.textContent = "On a phone or tablet you can take a new photo or choose one already saved on the device.";
-    fileLabel.appendChild(fileHelp);
-    wrap.appendChild(fileLabel);
-
-    const previewWrap = document.createElement("div");
-    previewWrap.id = "photoEvidencePreviewWrap";
-    previewWrap.className = "photo-evidence-preview-wrap";
-    const preview = document.createElement("img");
-    preview.id = "photoEvidencePreview";
-    preview.className = "photo-evidence-preview";
-    preview.alt = "Selected photo preview";
-    const fileMeta = document.createElement("p");
-    fileMeta.id = "photoEvidenceFileMeta";
-    fileMeta.className = "photo-evidence-file-meta";
-    previewWrap.append(preview, fileMeta);
-    wrap.appendChild(previewWrap);
-
-    const status = document.createElement("p");
-    status.id = "photoEvidenceStatus";
-    status.className = "photo-evidence-status";
-    status.setAttribute("aria-live", "polite");
-    wrap.appendChild(status);
-
-    const recent = document.createElement("ul");
-    recent.id = "photoEvidenceRecent";
-    recent.className = "photo-evidence-recent";
-    wrap.appendChild(recent);
-
-    updateCriterionHelp(assessment, criteriaSelect.value);
-    setPhotoSubmitLabel();
-  }
-
-  function updateCriterionHelp(assessment, value) {
-    const help = document.getElementById("photoEvidenceCriterionHelp");
-    if (!help) return;
-    const criterion = (assessment.photoEvidence?.criteria || []).find((item) => item.id === value);
-    help.textContent = criterion?.help || "Choose the requirement that this photo supports.";
-  }
-
-  function showPhotoPreview(file) {
-    clearPreview();
-    if (!file) return;
-    if (!String(file.type || "").startsWith("image/")) {
-      setPhotoStatus("Please choose an image file.", "error");
-      return;
+    stopCamera();
+    resetCapturedPhoto();
+    setStatus("Opening camera…");
+    try {
+      const facingMode = useFrontCamera ? "user" : "environment";
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: facingMode },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+        },
+        audio: false,
+      });
+      elements.video.srcObject = stream;
+      elements.video.setAttribute("playsinline", "");
+      elements.video.muted = true;
+      await new Promise((resolve) => {
+        if (elements.video.readyState >= 1 && elements.video.videoWidth) return resolve();
+        elements.video.onloadedmetadata = () => resolve();
+      });
+      await elements.video.play();
+      elements.empty.hidden = true;
+      elements.video.hidden = false;
+      elements.shootBtn.disabled = false;
+      elements.flipBtn.disabled = false;
+      setStatus("Camera ready. Choose the evidence type, then take the photo.");
+    } catch (error) {
+      console.error("Photo Evidence camera error", error);
+      stopCamera();
+      elements.empty.hidden = false;
+      setStatus("Camera access was denied or failed. You can still choose an existing photo.", "error");
     }
-    previewObjectUrl = URL.createObjectURL(file);
-    const wrap = document.getElementById("photoEvidencePreviewWrap");
-    const img = document.getElementById("photoEvidencePreview");
-    const meta = document.getElementById("photoEvidenceFileMeta");
-    if (img) img.src = previewObjectUrl;
-    if (meta) meta.textContent = `${file.name || "Photo"} · ${formatBytes(file.size || 0)}`;
-    wrap?.classList.add("is-visible");
-    setPhotoStatus("", "");
   }
 
-  function formatBytes(bytes) {
-    if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
-    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  async function flipCamera() {
+    useFrontCamera = !useFrontCamera;
+    await startCamera();
   }
 
-  function setPhotoStatus(message, state) {
-    const status = document.getElementById("photoEvidenceStatus");
-    if (!status) return;
-    status.textContent = message || "";
-    status.className = "photo-evidence-status" + (state ? ` ${state}` : "");
+  function fitDimensions(width, height, maxDimension) {
+    const max = Math.max(width, height);
+    if (!max || max <= maxDimension) return { width, height };
+    const scale = maxDimension / max;
+    return {
+      width: Math.max(1, Math.round(width * scale)),
+      height: Math.max(1, Math.round(height * scale)),
+    };
   }
 
-  async function loadImageForCanvas(file) {
-    if (window.createImageBitmap) {
-      try {
-        const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-        return {
-          width: bitmap.width,
-          height: bitmap.height,
-          draw(ctx, width, height) {
-            ctx.drawImage(bitmap, 0, 0, width, height);
-            bitmap.close?.();
-          },
-        };
-      } catch (_) {}
+  function identitySnapshot() {
+    const studentName = document.getElementById("name")?.value.trim() || "";
+    const studentId = document.getElementById("id")?.value.trim() || "";
+    const teacherSelect = document.getElementById("teacher");
+    const teacherId = teacherSelect?.value || "";
+    let teacherName = teacherSelect?.selectedOptions?.[0]?.textContent?.trim() || "";
+    let teacherEmail = "";
+    try {
+      const match = TEACHERS?.find((teacher) => String(teacher.id) === String(teacherId));
+      if (match?.name) teacherName = match.name;
+      if (match?.email) teacherEmail = match.email;
+    } catch (_) {}
+
+    let standardPrefix = "US";
+    let standardNumber = "";
+    let questionSetId = "";
+    try {
+      standardPrefix = CURRENT_QUESTION_SET?.standardPrefix || "US";
+      standardNumber = CURRENT_QUESTION_SET?.number || "";
+      questionSetId = CURRENT_QUESTION_SET?.id || "";
+    } catch (_) {}
+
+    return {
+      studentName,
+      studentId,
+      teacherId,
+      teacherName,
+      teacherEmail,
+      questionSetId,
+      unitStandard: `${standardPrefix} ${standardNumber}`.trim(),
+    };
+  }
+
+  function drawStamp(ctx, width, height, evidenceLabel, identity, timestamp) {
+    const base = Math.min(width, height);
+    const fontSize = Math.max(17, Math.round(base * 0.026));
+    const lineHeight = Math.round(fontSize * 1.3);
+    const padX = Math.round(fontSize * 0.7);
+    const padY = Math.round(fontSize * 0.55);
+    const outer = Math.max(12, Math.round(base * 0.018));
+    const lines = [
+      `${identity.studentId} · ${identity.unitStandard}`,
+      evidenceLabel,
+      new Date(timestamp).toLocaleString("en-NZ"),
+    ];
+
+    ctx.font = `${fontSize}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+    ctx.textBaseline = "top";
+    const maxText = Math.max(...lines.map((line) => ctx.measureText(line).width));
+    const boxWidth = Math.min(width * 0.88, maxText + padX * 2);
+    const boxHeight = lineHeight * lines.length + padY * 2;
+    const x = width - outer - boxWidth;
+    const y = height - outer - boxHeight;
+
+    ctx.fillStyle = "rgba(15,23,42,.82)";
+    ctx.fillRect(x, y, boxWidth, boxHeight);
+    ctx.fillStyle = "#fff";
+    let ty = y + padY;
+    for (const line of lines) {
+      ctx.fillText(line, x + padX, ty, boxWidth - padX * 2);
+      ty += lineHeight;
     }
+  }
 
+  function canvasToJpeg(canvas, quality) {
     return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => {
-        resolve({
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-          draw(ctx, width, height) {
-            ctx.drawImage(img, 0, 0, width, height);
-            URL.revokeObjectURL(url);
-          },
-        });
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error("This image format could not be opened. Try a JPG, PNG, or WebP image."));
-      };
-      img.src = url;
+      canvas.toBlob((blob) => {
+        if (blob) return resolve(blob);
+        try {
+          fetch(canvas.toDataURL("image/jpeg", quality))
+            .then((response) => response.blob())
+            .then(resolve, reject);
+        } catch (error) {
+          reject(error);
+        }
+      }, "image/jpeg", quality);
     });
   }
 
-  async function compressPhoto(file, assessment) {
-    const maxDimension = Number(assessment.photoEvidence?.maxImageDimension || DEFAULT_MAX_DIMENSION);
-    const quality = Number(assessment.photoEvidence?.jpegQuality || DEFAULT_JPEG_QUALITY);
-    const source = await loadImageForCanvas(file);
-    if (!source.width || !source.height) throw new Error("The selected image had no usable dimensions.");
+  async function makeEvidenceBlob(drawSource, sourceWidth, sourceHeight) {
+    const option = selectedEvidence();
+    if (!option) throw new Error("Choose what this photo is evidence for first.");
+    const identity = identitySnapshot();
+    if (!identity.studentId) throw new Error("Enter your Student ID first.");
 
-    const scale = Math.min(1, maxDimension / Math.max(source.width, source.height));
-    const width = Math.max(1, Math.round(source.width * scale));
-    const height = Math.max(1, Math.round(source.height * scale));
+    const config = activeAssessment?.photoEvidence || {};
+    const maxDimension = Math.max(800, Number(config.maxDimension) || DEFAULT_MAX_DIMENSION);
+    const quality = Math.min(.95, Math.max(.6, Number(config.jpegQuality) || DEFAULT_JPEG_QUALITY));
+    const fitted = fitDimensions(sourceWidth, sourceHeight, maxDimension);
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = fitted.width;
+    canvas.height = fitted.height;
     const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) throw new Error("The browser could not prepare the photo.");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, width, height);
-    source.draw(ctx, width, height);
-
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
-    if (!blob) throw new Error("The browser could not compress the photo.");
-    return { blob, width, height };
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, fitted.width, fitted.height);
+    drawSource(ctx, fitted.width, fitted.height);
+    const timestamp = new Date().toISOString();
+    drawStamp(ctx, fitted.width, fitted.height, option.label, identity, timestamp);
+    const blob = await canvasToJpeg(canvas, quality);
+    if (blob.size > MAX_UPLOAD_BYTES) {
+      throw new Error("The prepared photo is too large. Try taking the photo again at a lower camera resolution.");
+    }
+    capturedAt = timestamp;
+    return blob;
   }
 
-  function blobToDataUrl(blob) {
+  async function captureFromVideo() {
+    if (!elements?.video?.videoWidth || !stream) {
+      setStatus("Camera is not ready yet.", "error");
+      return;
+    }
+    try {
+      elements.shootBtn.disabled = true;
+      const video = elements.video;
+      const blob = await makeEvidenceBlob(
+        (ctx, w, h) => ctx.drawImage(video, 0, 0, w, h),
+        video.videoWidth,
+        video.videoHeight
+      );
+      stopCamera();
+      showCaptured(blob);
+    } catch (error) {
+      console.error(error);
+      setStatus(error.message || "Could not prepare that photo.", "error");
+      if (stream) elements.shootBtn.disabled = false;
+    }
+  }
+
+  async function captureFromFile(file) {
+    if (!file) return;
+    if (!file.type?.startsWith("image/")) {
+      setStatus("Please choose an image file.", "error");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = async () => {
+      try {
+        const width = image.naturalWidth || image.width;
+        const height = image.naturalHeight || image.height;
+        const blob = await makeEvidenceBlob(
+          (ctx, w, h) => ctx.drawImage(image, 0, 0, w, h),
+          width,
+          height
+        );
+        stopCamera();
+        showCaptured(blob);
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || "Could not prepare that image.", "error");
+      } finally {
+        URL.revokeObjectURL(url);
+        elements.fileInput.value = "";
+      }
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      elements.fileInput.value = "";
+      setStatus("That image format could not be opened on this device.", "error");
+    };
+    image.src = url;
+  }
+
+  function showCaptured(blob) {
+    capturedBlob = blob;
+    revokeCapturedUrl();
+    capturedObjectUrl = URL.createObjectURL(blob);
+    elements.preview.src = capturedObjectUrl;
+    elements.preview.hidden = false;
+    elements.video.hidden = true;
+    elements.empty.hidden = true;
+    const option = selectedEvidence();
+    elements.previewMeta.textContent = `${option?.label || "Photo evidence"} · ${Math.max(1, Math.round(blob.size / 1024))} KB`;
+    elements.previewMeta.style.display = "block";
+    elements.submitBtn.disabled = !option;
+    setStatus("Photo ready. Check it, then submit the evidence.");
+  }
+
+  function setStatus(message, type = "") {
+    if (!elements?.status) return;
+    elements.status.textContent = message;
+    elements.status.className = `photo-evidence-status${type ? ` ${type}` : ""}`;
+  }
+
+  function toBase64(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ""));
-      reader.onerror = () => reject(reader.error || new Error("Could not read the photo."));
+      reader.onload = () => {
+        const value = String(reader.result || "");
+        resolve(value.includes(",") ? value.split(",")[1] : value);
+      };
+      reader.onerror = () => reject(reader.error || new Error("The photo could not be read."));
       reader.readAsDataURL(blob);
     });
   }
 
-  async function createPhotoEvidencePdf(photo, details) {
-    if (!window.jspdf?.jsPDF) await loadFirstAvailableScript(PDF_LIBRARY_URLS.jspdf);
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
-
-    const margin = 15;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("Photo Evidence", margin, 18);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10.5);
-    doc.text(`${details.unitStandard}${details.standardVersion ? ` ${details.standardVersion}` : ""}`, margin, 27);
-    doc.text(`${details.studentName} (${details.studentId})`, margin, 34);
-    doc.text(`Evidence: ${details.evidenceLabel}`, margin, 41, { maxWidth: pageWidth - margin * 2 });
-    doc.text(`Submitted: ${new Date().toLocaleString("en-NZ")}`, margin, 50);
-
-    const dataUrl = await blobToDataUrl(photo.blob);
-    const maxW = pageWidth - margin * 2;
-    const maxH = pageHeight - 72;
-    const ratio = Math.min(maxW / photo.width, maxH / photo.height);
-    const drawW = photo.width * ratio;
-    const drawH = photo.height * ratio;
-    const x = (pageWidth - drawW) / 2;
-    const y = 60;
-    doc.addImage(dataUrl, "JPEG", x, y, drawW, drawH, undefined, "FAST");
-
-    const arrayBuffer = doc.output("arraybuffer");
-    return new Blob([arrayBuffer], { type: "application/pdf" });
+  function safePart(value) {
+    return String(value || "")
+      .trim()
+      .replace(/[^A-Za-z0-9._-]+/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^[_ .-]+|[_ .-]+$/g, "") || "photo";
   }
 
-  function makePhotoSubmissionId() {
+  function compactTimestamp(iso) {
+    const d = new Date(iso);
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  }
+
+  function makeSubmissionId() {
     const random = new Uint32Array(2);
     if (window.crypto?.getRandomValues) window.crypto.getRandomValues(random);
     else {
@@ -398,99 +419,61 @@
     return `photo_${Date.now()}_${random[0].toString(36)}${random[1].toString(36)}`;
   }
 
-  function currentStandardCode() {
-    if (!CURRENT_QUESTION_SET) return "Unit Standard";
-    const prefix = CURRENT_QUESTION_SET.standardPrefix || (/^ss/i.test(CURRENT_QUESTION_SET.id || "") ? "SS" : "US");
-    return `${prefix} ${CURRENT_QUESTION_SET.number}`;
-  }
+  async function submitPhoto() {
+    const option = selectedEvidence();
+    if (!capturedBlob) return setStatus("Take or choose a photo first.", "error");
+    if (!option) return setStatus("Choose what the photo is evidence for.", "error");
 
-  function selectedCriterion(assessment, value) {
-    return (assessment.photoEvidence?.criteria || []).find((criterion) => criterion.id === value) || null;
-  }
+    const identity = identitySnapshot();
+    if (!identity.studentName) return setStatus("Enter your name first.", "error");
+    if (!/^\d{3,6}$/.test(identity.studentId)) return setStatus("Enter a valid Student ID first.", "error");
+    if (!identity.teacherId) return setStatus("Select your teacher first.", "error");
+    if (!navigator.onLine) return setStatus("You are offline. Reconnect before submitting this photo.", "error");
 
-  async function submitPhotoEvidence(assessment) {
-    if (photoBusy) return;
-
-    const studentName = document.getElementById("name")?.value.trim() || "";
-    const studentId = document.getElementById("id")?.value.trim() || "";
-    const teacherSelector = document.getElementById("teacher");
-    const teacherId = teacherSelector?.value || "";
-    const question = getPhotoQuestion(assessment);
-    const criterionSelect = question ? document.getElementById("q" + question.id) : null;
-    const criterion = selectedCriterion(assessment, criterionSelect?.value || "");
-    const fileInput = document.getElementById("photoEvidenceFile");
-    const file = fileInput?.files?.[0] || null;
-
-    if (!studentName) return setPhotoStatus("Enter your name first.", "error");
-    if (!studentId) return setPhotoStatus("Enter your Student ID first.", "error");
-    if (!teacherId) return setPhotoStatus("Select your teacher first.", "error");
-    if (!criterion) return setPhotoStatus("Choose what the photo is evidence for.", "error");
-    if (!file) return setPhotoStatus("Take or choose a photo first.", "error");
-    if (!navigator.onLine) return setPhotoStatus("No internet connection. Reconnect before submitting the photo.", "error");
-
-    const endpoint = getSubmissionEndpoint();
-    const storageRootName = getSubmissionRootName();
-    if (!endpoint) return setPhotoStatus("Teacher submission is not configured yet.", "error");
-    if (!storageRootName) return setPhotoStatus("Evidence storage is not configured yet.", "error");
-
-    const teacher = TEACHERS.find((item) => item.id === teacherId) || {};
-    const signature = `${file.name}|${file.size}|${file.lastModified}|${criterion.id}`;
-    if (!pendingSubmission || pendingSubmission.signature !== signature) {
-      pendingSubmission = { id: makePhotoSubmissionId(), signature };
-    }
-
-    photoBusy = true;
-    setPhotoSubmitLabel();
-    setPhotoStatus("Preparing photo...", "busy");
-
+    let endpoint = "";
+    let storageRootName = "";
     try {
-      saveStudentInfo();
-      if (question) saveAnswer(question.id);
+      endpoint = getSubmissionEndpoint();
+      storageRootName = getSubmissionRootName();
+    } catch (_) {}
+    if (!endpoint) return setStatus("Photo submission is not configured yet.", "error");
+    if (!storageRootName) return setStatus("Evidence storage is not configured.", "error");
 
-      const compressed = await compressPhoto(file, assessment);
-      const details = {
-        studentName,
-        studentId,
-        unitStandard: currentStandardCode(),
-        standardVersion: CURRENT_QUESTION_SET?.version || "",
-        evidenceLabel: criterion.label,
-      };
+    elements.submitBtn.disabled = true;
+    elements.startBtn.disabled = true;
+    elements.chooseBtn.disabled = true;
+    setStatus("Uploading photo evidence…");
 
-      setPhotoStatus(`Preparing upload (${formatBytes(compressed.blob.size)})...`, "busy");
-      const [pdfBlob, pukResult] = await Promise.all([
-        createPhotoEvidencePdf(compressed, details),
-        createProgressBackupForSubmission(),
-      ]);
-      const pdfBase64 = await blobToBase64(pdfBlob);
-
-      const submissionId = pendingSubmission.id;
-      const shortRef = submissionId.replace(/^photo_/, "").slice(0, 24);
-      const dynamicAssessmentId = `${assessment.id}-${criterion.id}-${shortRef}`;
+    const submissionId = makeSubmissionId();
+    try {
+      const imageBase64 = await toBase64(capturedBlob);
+      const timestamp = capturedAt || new Date().toISOString();
+      const filename = `${safePart(identity.studentId)}_${safePart(identity.questionSetId || identity.unitStandard)}_${safePart(option.id)}_${compactTimestamp(timestamp)}.jpg`;
       const payload = {
+        submissionType: PHOTO_MODE,
         submissionId,
-        appId: APP_ID,
-        appVersion: APP_VERSION,
-        questionSetId: CURRENT_QUESTION_SET?.id || "",
+        appId: typeof APP_ID !== "undefined" ? APP_ID : "pukekohetech-quizmaster",
+        appVersion: typeof APP_VERSION !== "undefined" ? APP_VERSION : "",
+        questionSetId: identity.questionSetId,
         storageRootName,
-        studentName,
-        studentId,
-        teacherId: teacher.id || teacherId,
-        teacherName: teacher.name || teacherSelector.options[teacherSelector.selectedIndex]?.text || teacherId,
-        teacherEmail: teacher.email || "",
-        unitStandard: details.unitStandard,
-        standardVersion: details.standardVersion,
-        assessmentId: dynamicAssessmentId,
-        assessmentTitle: `${assessment.title} - ${criterion.label}`,
-        score: 1,
-        totalMarks: 1,
-        percentage: 100,
+        studentName: identity.studentName,
+        studentId: identity.studentId,
+        teacherId: identity.teacherId,
+        teacherName: identity.teacherName,
+        teacherEmail: identity.teacherEmail,
+        unitStandard: identity.unitStandard,
+        standardVersion: (() => { try { return CURRENT_QUESTION_SET?.version || ""; } catch (_) { return ""; } })(),
+        assessmentId: activeAssessment?.id || "photo-evidence-upload",
+        assessmentTitle: activeAssessment?.title || "Photo Evidence Upload",
+        evidenceId: option.id,
+        evidenceLabel: option.label,
+        capturedAt: timestamp,
         submittedAt: new Date().toISOString(),
-        pdfMimeType: "application/pdf",
-        pdfBase64,
-        pukText: pukResult.pukText,
+        imageFileName: filename,
+        imageMimeType: "image/jpeg",
+        imageBase64,
       };
 
-      setPhotoStatus("Uploading photo evidence...", "busy");
       await fetch(endpoint, {
         method: "POST",
         mode: "no-cors",
@@ -499,51 +482,204 @@
         cache: "no-store",
       });
 
-      setPhotoStatus("Upload received. Confirming...", "busy");
-      const status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
-      if (!status || (status.state !== "confirmed" && status.state !== "duplicate")) {
-        throw new Error("The photo was sent, but confirmation was not received. Press Submit Photo Evidence again to safely retry.");
+      setStatus("Photo sent. Confirming the Drive backup…");
+      let status = null;
+      if (typeof waitForSubmissionStatus === "function") {
+        status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
+      }
+      if (status && status.state !== "confirmed" && status.state !== "duplicate") {
+        throw new Error(status.message || "The photo was sent but could not be confirmed.");
       }
 
-      const recent = document.getElementById("photoEvidenceRecent");
-      if (recent) {
-        const item = document.createElement("li");
-        item.textContent = `${criterion.label} - submitted ${new Date().toLocaleTimeString("en-NZ", { hour: "numeric", minute: "2-digit" })}`;
-        recent.prepend(item);
-      }
-
-      setPhotoStatus(`Saved under Student ID ${studentId}. You can now choose another photo and submit again.`, "success");
-      showToast("Photo evidence submitted.");
-      if (fileInput) fileInput.value = "";
-      clearPreview();
-      pendingSubmission = null;
+      sessionSubmissions.push({ label: option.label, at: new Date(), url: status?.photoUrl || "" });
+      renderSessionSubmissions();
+      setStatus(`Saved under Student ID ${identity.studentId}: ${option.label}`, "success");
+      try { if (typeof showToast === "function") showToast("Photo evidence saved."); } catch (_) {}
+      resetCapturedPhoto();
     } catch (error) {
-      console.error("Photo evidence submission failed:", error);
-      setPhotoStatus(error?.message || "Photo submission failed. Your selected image is still on this device.", "error");
-      showToast("Photo submission was not confirmed.", false);
+      console.error("Photo evidence submission failed", error);
+      setStatus(error.message || "Photo submission failed. Try again.", "error");
     } finally {
-      photoBusy = false;
-      setPhotoSubmitLabel();
+      elements.startBtn.disabled = false;
+      elements.chooseBtn.disabled = false;
+      elements.submitBtn.disabled = !capturedBlob || !selectedEvidence();
     }
   }
 
-  window.loadAssessment = function () {
-    const result = originalLoadAssessment.apply(this, arguments);
-    const assessment = getSelectedAssessment();
+  function renderSessionSubmissions() {
+    if (!elements?.session) return;
+    elements.session.replaceChildren();
+    if (!sessionSubmissions.length) return;
+    const heading = document.createElement("strong");
+    heading.textContent = "Submitted this session";
+    const list = document.createElement("ul");
+    sessionSubmissions.forEach((item) => {
+      const li = document.createElement("li");
+      const time = item.at.toLocaleTimeString("en-NZ", { hour: "2-digit", minute: "2-digit" });
+      if (item.url) {
+        const link = document.createElement("a");
+        link.href = item.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = `${item.label} - ${time}`;
+        li.appendChild(link);
+      } else {
+        li.textContent = `${item.label} - ${time}`;
+      }
+      list.appendChild(li);
+    });
+    elements.session.append(heading, list);
+  }
+
+  function renderPhotoEvidence(assessment) {
+    injectStyles();
+    activeAssessment = assessment;
+    sessionSubmissions = [];
+    setStandardSubmitVisible(false);
+
+    const container = document.getElementById("questions");
+    if (!container) return;
+    container.replaceChildren();
+
+    const card = document.createElement("section");
+    card.className = "photo-evidence-card";
+
+    const title = document.createElement("h3");
+    title.textContent = assessment.title || "Photo Evidence Upload";
+    const intro = document.createElement("p");
+    intro.className = "photo-evidence-intro";
+    intro.textContent = assessment.subtitle || "Choose what the photo is evidence for, then take or upload the image.";
+
+    const grid = document.createElement("div");
+    grid.className = "photo-evidence-grid";
+
+    const left = document.createElement("div");
+    left.className = "photo-evidence-field";
+    const label = document.createElement("label");
+    label.htmlFor = "photoEvidenceCriteria";
+    label.textContent = "What is this photo evidence for?";
+    const criteria = document.createElement("select");
+    criteria.id = "photoEvidenceCriteria";
+    criteria.appendChild(new Option("Select evidence type", ""));
+    (assessment.photoEvidence?.options || []).forEach((option) => {
+      criteria.appendChild(new Option(option.label, option.id));
+    });
+    const help = document.createElement("p");
+    help.className = "photo-evidence-help";
+    help.textContent = "Choose what this photo is evidence for.";
+    left.append(label, criteria, help);
+
+    const right = document.createElement("div");
+    const note = document.createElement("p");
+    note.className = "photo-evidence-camera-note";
+    note.textContent = "Photos are resized before upload and stamped with Student ID, standard, evidence type and capture time.";
+    right.appendChild(note);
+    grid.append(left, right);
+
+    const shell = document.createElement("div");
+    shell.className = "photo-camera-shell";
+    const stage = document.createElement("div");
+    stage.className = "photo-camera-stage";
+    const empty = document.createElement("div");
+    empty.className = "photo-camera-empty";
+    empty.textContent = "Start the live camera or choose an existing photo.";
+    const video = document.createElement("video");
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.hidden = true;
+    const preview = document.createElement("img");
+    preview.alt = "Photo evidence preview";
+    preview.hidden = true;
+    stage.append(empty, video, preview);
+
+    const actions = document.createElement("div");
+    actions.className = "photo-camera-actions";
+    const startBtn = document.createElement("button");
+    startBtn.type = "button";
+    startBtn.textContent = "Start camera";
+    const chooseBtn = document.createElement("button");
+    chooseBtn.type = "button";
+    chooseBtn.textContent = "Choose existing photo";
+    const shootBtn = document.createElement("button");
+    shootBtn.type = "button";
+    shootBtn.className = "photo-shutter";
+    shootBtn.textContent = "Take photo";
+    shootBtn.disabled = true;
+    const flipBtn = document.createElement("button");
+    flipBtn.type = "button";
+    flipBtn.textContent = "Flip camera";
+    flipBtn.disabled = true;
+    const retakeBtn = document.createElement("button");
+    retakeBtn.type = "button";
+    retakeBtn.textContent = "Retake";
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.hidden = true;
+    actions.append(startBtn, chooseBtn, shootBtn, flipBtn, retakeBtn, fileInput);
+
+    const previewMeta = document.createElement("div");
+    previewMeta.className = "photo-preview-meta";
+    shell.append(stage, actions, previewMeta);
+
+    const submitRow = document.createElement("div");
+    submitRow.className = "photo-evidence-submit-row";
+    const submitBtn = document.createElement("button");
+    submitBtn.type = "button";
+    submitBtn.className = "photo-evidence-submit";
+    submitBtn.textContent = "Submit Photo Evidence";
+    submitBtn.disabled = true;
+    submitRow.appendChild(submitBtn);
+
+    const status = document.createElement("div");
+    status.className = "photo-evidence-status";
+    status.setAttribute("aria-live", "polite");
+    status.textContent = "Choose an evidence type, then take or upload a photo.";
+    const session = document.createElement("div");
+    session.className = "photo-evidence-session";
+
+    card.append(title, intro, grid, shell, submitRow, status, session);
+    container.appendChild(card);
+
+    elements = { card, criteria, help, video, preview, empty, startBtn, chooseBtn, shootBtn, flipBtn, retakeBtn, fileInput, previewMeta, submitBtn, status, session };
+
+    criteria.addEventListener("change", updateEvidenceHelp);
+    startBtn.addEventListener("click", startCamera);
+    chooseBtn.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => captureFromFile(fileInput.files?.[0]));
+    shootBtn.addEventListener("click", captureFromVideo);
+    flipBtn.addEventListener("click", flipCamera);
+    retakeBtn.addEventListener("click", async () => {
+      resetCapturedPhoto();
+      await startCamera();
+    });
+    submitBtn.addEventListener("click", submitPhoto);
+  }
+
+  window.loadAssessment = function photoAwareLoadAssessment(...args) {
+    endPhotoSession({ restoreSubmit: true });
+    const result = originalLoadAssessment.apply(this, args);
+    const assessment = currentAssessment();
     if (isPhotoAssessment(assessment)) {
-      window.setTimeout(() => renderPhotoEvidenceUi(assessment), 0);
-    } else {
-      setNormalSubmitLabel();
+      window.setTimeout(() => {
+        try {
+          if (typeof currentAssessmentId !== "undefined" && currentAssessmentId !== assessment.id) return;
+        } catch (_) {}
+        renderPhotoEvidence(assessment);
+      }, 0);
     }
     return result;
   };
 
-  window.submitWork = function () {
-    const assessment = getSelectedAssessment();
-    if (isPhotoAssessment(assessment)) {
-      submitPhotoEvidence(assessment);
-      return;
-    }
-    return originalSubmitWork.apply(this, arguments);
-  };
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("questionSetSelector")?.addEventListener("change", () => endPhotoSession({ restoreSubmit: true }));
+    document.getElementById("assessmentSelector")?.addEventListener("change", () => {
+      stopCamera();
+      resetCapturedPhoto();
+      setStandardSubmitVisible(true);
+    });
+  });
+
+  window.addEventListener("pagehide", () => stopCamera());
 })();
