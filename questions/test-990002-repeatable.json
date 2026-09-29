@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 3,
+  "_testOnly": true,
+  "_testPurpose": "Tests repeatGroup add/remove, minimum/maximum counts, saved repeat counts, tracker updates, answer signatures and resubmission after changes.",
+  "questionSet": {
+    "id": "us990002-test-repeatable",
+    "label": "US 990002 - TEST ONLY - Repeatable trials",
+    "title": "TEST ONLY - Repeatable trial records",
+    "number": "990002",
+    "version": "v1",
+    "credits": 0,
+    "standardType": "internal",
+    "evidenceTracker": {
+      "kicker": "Test progress",
+      "title": "Repeatable trials test",
+      "intro": "Add and remove trials to check the tracker and saved state.",
+      "items": [
+        {
+          "id": "trials",
+          "type": "repeatGroup",
+          "assessmentId": "repeatable-trials",
+          "blockId": "trial",
+          "label": "Trial records",
+          "unitLabel": "trial",
+          "require": "rubric",
+          "minimum": 2
+        }
+      ]
+    }
+  },
+  "assessments": [
+    {
+      "id": "repeatable-trials",
+      "title": "1. Repeatable trial test",
+      "subtitle": "Starts with 2 trials; maximum 5",
+      "attachSignoff": false,
+      "questions": [],
+      "questionGroups": [],
+      "blocks": [
+        {
+          "type": "repeatGroup",
+          "id": "trial",
+          "itemLabel": "trial",
+          "startWith": 2,
+          "minimum": 2,
+          "maximum": 5,
+          "allowAdd": true,
+          "allowRemove": true,
+          "addLabel": "+ Add another trial",
+          "removeLabel": "Remove last added trial",
+          "group": {
+            "label": "Trial {n} of {count}",
+            "title": "Trial {n}",
+            "intro": "Complete all three fields for this trial.",
+            "reminder": "Adding another trial should immediately add it to the tracker."
+          },
+          "questions": [
+            {
+              "id": "what",
+              "part": "A",
+              "text": "What did you test in trial {n}?",
+              "hint": "Use prototype or sample.",
+              "type": "short",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:prototype|sample)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "result",
+              "part": "B",
+              "text": "What happened in trial {n}?",
+              "hint": "Use worked, failed, better or worse.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:worked|failed|better|worse)\\b",
+                  "flags": "i"
+                }
+              ]
+            },
+            {
+              "id": "decision",
+              "part": "C",
+              "text": "What will you do because of trial {n}?",
+              "hint": "Use keep, change, improve or modify.",
+              "type": "long",
+              "maxPoints": 1,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "\\b(?:keep|change|improve|modify)\\b",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
