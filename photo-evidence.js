@@ -1,10 +1,10 @@
 /*
- * QuizMaster Photo / Project Evidence plugin v3
+ * QuizMaster Photo / Project Evidence plugin v4 - one-page evidence sheet
  * Uses the existing QuizMaster PDF + .puk + document-register submission route.
  * No Apps Script changes are required.
  *
  * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=3" defer></script>
+ *   <script src="photo-evidence.js?v=4" defer></script>
  *
  * Supports:
  * - live rear/front camera
@@ -12,7 +12,7 @@
  * - repeatable project-stage evidence
  * - written record instead of photo where the JSON allows it
  * - configurable metadata questions for each evidence type
- * - one-page/multi-page evidence PDF submitted through the existing register
+ * - single-page evidence PDF with the questions and photo together, submitted through the existing register
  */
 (() => {
   "use strict";
@@ -474,46 +474,127 @@
   async function createEvidencePdf(photoBlob, details) {
     if (!window.jspdf?.jsPDF) await loadFirstAvailableScript(PDF_LIBRARY_URLS.jspdf);
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
-    const margin = 15;
+
+    // Photo evidence is deliberately landscape so the learner's answers and the
+    // actual photo stay together on ONE A4 evidence sheet. Written-only records
+    // also use the same layout for consistency.
+    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const contentWidth = pageWidth - margin * 2;
-    let y = 18;
+    const margin = 10;
+    const headerY = 12;
+    const contentTop = 35;
+    const contentBottom = pageHeight - 10;
+    const contentHeight = contentBottom - contentTop;
+    const gap = 7;
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text(details.method === "written" ? "Project Evidence - Written Record" : "Photo Evidence", margin, y);
-    y += 9;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10.5);
-    doc.text(`${details.unitStandard}${details.standardVersion ? ` ${details.standardVersion}` : ""}`, margin, y); y += 7;
-    doc.text(`${details.studentName} (${details.studentId})`, margin, y); y += 7;
-    y = addWrappedText(doc, `Evidence: ${details.evidenceLabel}`, margin, y, contentWidth) + 1;
-    doc.text(`Recorded: ${new Date(details.recordedAt).toLocaleString("en-NZ")}`, margin, y); y += 9;
+    doc.setFontSize(15);
+    doc.text(details.method === "written" ? "Project Evidence - Written Record" : "Project Process Evidence", margin, headerY);
 
-    const fieldDefs = details.fieldDefs || [];
-    for (const def of fieldDefs) {
-      const value = details.fieldValues?.[def.id] || "";
-      if (!value) continue;
-      if (y > pageHeight - 35) { doc.addPage(); y = 18; }
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.2);
+    const std = `${details.unitStandard}${details.standardVersion ? ` ${details.standardVersion}` : ""}`;
+    doc.text(`${std}   |   ${details.studentName} (${details.studentId})`, margin, headerY + 7);
+    doc.setFontSize(8.4);
+    const evidenceLine = `Evidence: ${details.evidenceLabel}   |   Recorded: ${new Date(details.recordedAt).toLocaleString("en-NZ")}`;
+    doc.text(doc.splitTextToSize(evidenceLine, pageWidth - margin * 2), margin, headerY + 13);
+
+    // With a photo, answers use the left side and the image uses the right side.
+    // This is intentionally a fixed single-page layout: no doc.addPage() calls.
+    const leftWidth = photoBlob ? 118 : pageWidth - margin * 2;
+    const rightX = margin + leftWidth + gap;
+    const rightWidth = pageWidth - margin - rightX;
+
+    const fieldDefs = (details.fieldDefs || []).filter((def) => (details.fieldValues?.[def.id] || "").trim());
+
+    function measureFields(fontSize) {
+      const lineHeight = fontSize * 0.43;
+      let needed = 0;
+      const measured = [];
+      for (const def of fieldDefs) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(fontSize);
+        const lines = doc.splitTextToSize(String(details.fieldValues?.[def.id] || ""), leftWidth - 8);
+        const block = 5 + Math.max(1, lines.length) * lineHeight + 4;
+        needed += block;
+        measured.push({ def, lines, block, lineHeight });
+      }
+      return { needed, measured, lineHeight };
+    }
+
+    let bodyFont = 8.7;
+    let measured = measureFields(bodyFont);
+    while (measured.needed > contentHeight - 4 && bodyFont > 6.3) {
+      bodyFont -= 0.3;
+      measured = measureFields(bodyFont);
+    }
+
+    // Left answer panel.
+    doc.setDrawColor(185);
+    doc.setLineWidth(0.25);
+    doc.roundedRect(margin, contentTop, leftWidth, contentHeight, 2, 2);
+    let y = contentTop + 5;
+
+    for (let i = 0; i < measured.measured.length; i++) {
+      const item = measured.measured[i];
+      const remainingBlocks = measured.measured.length - i;
+      const remainingHeight = contentBottom - y - 3;
+
       doc.setFont("helvetica", "bold");
-      doc.text(`${def.label}:`, margin, y); y += 5.5;
+      doc.setFontSize(Math.min(8.5, bodyFont + 0.4));
+      doc.text(`${item.def.label}:`, margin + 4, y);
+      y += 4.7;
+
       doc.setFont("helvetica", "normal");
-      y = addWrappedText(doc, value, margin, y, contentWidth) + 4;
+      doc.setFontSize(bodyFont);
+
+      // Reserve a fair share for later answers. Only in the extreme case of a
+      // very long response do we shorten the rendered copy to keep the evidence
+      // and photograph on one sheet; the student's full answer remains in the
+      // encrypted .puk backup.
+      const fairShare = Math.max(9, remainingHeight / Math.max(1, remainingBlocks));
+      const maxLines = Math.max(1, Math.floor((fairShare - 3) / item.lineHeight));
+      let lines = item.lines;
+      if (lines.length > maxLines) {
+        lines = lines.slice(0, maxLines);
+        const last = String(lines[lines.length - 1] || "").replace(/\s+$/, "");
+        lines[lines.length - 1] = `${last.replace(/[.\u2026]+$/, "")}…`;
+      }
+      doc.text(lines, margin + 4, y);
+      y += Math.max(1, lines.length) * item.lineHeight + 3.6;
+
+      if (i < measured.measured.length - 1 && y < contentBottom - 3) {
+        doc.setDrawColor(225);
+        doc.line(margin + 4, y - 1.4, margin + leftWidth - 4, y - 1.4);
+      }
+    }
+
+    if (!fieldDefs.length) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text("No written responses were recorded for this evidence item.", margin + 4, contentTop + 8);
     }
 
     if (photoBlob) {
-      if (y > 105) { doc.addPage(); y = 18; }
+      doc.setDrawColor(185);
+      doc.roundedRect(rightX, contentTop, rightWidth, contentHeight, 2, 2);
       const dims = await readBlobDimensions(photoBlob);
       const dataUrl = await blobToDataUrl(photoBlob);
-      const maxW = contentWidth;
-      const maxH = pageHeight - y - 15;
+      const innerPad = 3;
+      const maxW = rightWidth - innerPad * 2;
+      const maxH = contentHeight - innerPad * 2;
       const ratio = Math.min(maxW / dims.width, maxH / dims.height);
       const drawW = dims.width * ratio;
       const drawH = dims.height * ratio;
-      const x = (pageWidth - drawW) / 2;
-      doc.addImage(dataUrl, "JPEG", x, y, drawW, drawH, undefined, "FAST");
+      const x = rightX + (rightWidth - drawW) / 2;
+      const py = contentTop + (contentHeight - drawH) / 2;
+      doc.addImage(dataUrl, "JPEG", x, py, drawW, drawH, undefined, "FAST");
+    } else {
+      // Written-only evidence uses the full-width answer panel and no blank page.
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(7.5);
+      doc.text("Written record selected - no photograph attached.", pageWidth - margin - 68, pageHeight - 5);
     }
 
     return new Blob([doc.output("arraybuffer")], { type: "application/pdf" });
