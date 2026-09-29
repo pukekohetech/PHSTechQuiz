@@ -25,7 +25,7 @@
     {
 "id": "usNew-test",
       "label": "SS Safety",
-      "file": "questions/BCATS_SAFETY_28_SS40540_v1.json",
+      "file": "assessments/SS40540-v1.json",
       "number": "40540",
       "version": "1",
       "credits": 0,
