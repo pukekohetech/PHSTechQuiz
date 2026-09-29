@@ -3,16 +3,6 @@
   "generated": true,
   "questionSets": [
     {
-      "id": "us24352-v3",
-      "label": "US 24352 - Safe working practices",
-      "file": "questions/us24352-v3.json",
-      "number": "24352",
-      "version": "v3",
-      "credits": 2,
-      "title": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "assessmentCount": 1
-    },
-    {
       "id": "ss40540-v1",
       "label": "SS 40540 - BCATS Safety",
       "file": "questions/ss40540-v1.json",
