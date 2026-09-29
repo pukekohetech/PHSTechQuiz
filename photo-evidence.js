@@ -1,10 +1,10 @@
 /*
- * QuizMaster Photo / Project Evidence plugin v5 - portrait one-page evidence sheet
+ * QuizMaster Photo / Project Evidence plugin v6 - portrait one-page evidence sheet + terminology validation
  * Uses the existing QuizMaster PDF + .puk + document-register submission route.
  * No Apps Script changes are required.
  *
  * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=5" defer></script>
+ *   <script src="photo-evidence.js?v=6" defer></script>
  *
  * Supports:
  * - live rear/front camera
@@ -148,18 +148,42 @@
     return elements?.method?.value || "photo";
   }
 
+  function fieldValidation(def, value) {
+    const validation = def?.validation;
+    if (!validation?.pattern || !value) return { ok: true, message: "" };
+    try {
+      const check = new RegExp(String(validation.pattern), String(validation.flags || "i"));
+      return {
+        ok: check.test(value),
+        message: String(validation.message || `Use the required safety terminology for ${def.label || def.id}.`),
+      };
+    } catch (error) {
+      console.warn("Photo evidence validation pattern could not be read", def?.id, error);
+      return { ok: true, message: "" };
+    }
+  }
+
   function collectFieldValues({ validate = false } = {}) {
     const option = selectedEvidence();
     const defs = option?.fields || [];
     const values = {};
     const missing = [];
+    const invalid = [];
     defs.forEach((def) => {
       const control = fieldControls.get(String(def.id));
       const value = String(control?.value || "").trim();
       values[String(def.id)] = value;
-      if (validate && def.required && !value) missing.push(def.label || def.id);
+      if (validate && def.required && !value) {
+        missing.push(def.label || def.id);
+        return;
+      }
+      if (validate && value) {
+        const result = fieldValidation(def, value);
+        if (!result.ok) invalid.push(result.message);
+      }
     });
     if (validate && missing.length) throw new Error(`Complete: ${missing.join(", ")}.`);
+    if (validate && invalid.length) throw new Error(invalid[0]);
     return values;
   }
 
@@ -209,6 +233,12 @@
       control.addEventListener("input", updateSubmitState);
       fieldControls.set(String(def.id), control);
       wrap.append(label, control);
+      if (def.help) {
+        const help = document.createElement("div");
+        help.className = "photo-evidence-help";
+        help.textContent = String(def.help);
+        wrap.appendChild(help);
+      }
       elements.fields.appendChild(wrap);
     }
     updateSubmitState();
