@@ -284,9 +284,33 @@ function getSubmissionRootName() {
     .replace(/\s+/g, " ");
 }
 
+function standardPrefixFromValues(...values) {
+  const source = values
+    .filter((value) => value !== null && value !== undefined)
+    .map((value) => String(value).trim())
+    .filter(Boolean)
+    .join(" ");
+
+  const spaced = source.match(/\b(US|SS)\s*[-:]?\s*\d{3,6}\b/i);
+  if (spaced) return spaced[1].toUpperCase();
+
+  const compact = source.match(/\b(US|SS)(?=\d{3,6}\b)/i);
+  if (compact) return compact[1].toUpperCase();
+
+  // Existing QuizMaster question sets are Unit Standards unless explicitly marked SS.
+  return "US";
+}
+
 function normaliseUnitStandard(value) {
-  const match = String(value || "").match(/\d{3,6}/);
-  return match ? `US ${match[0]}` : String(value || "Unit Standard").trim();
+  const raw = String(value || "").trim();
+  const prefixed = raw.match(/\b(US|SS)\s*[-:]?\s*(\d{3,6})\b/i);
+  if (prefixed) return `${prefixed[1].toUpperCase()} ${prefixed[2]}`;
+
+  const compact = raw.match(/\b(US|SS)(\d{3,6})\b/i);
+  if (compact) return `${compact[1].toUpperCase()} ${compact[2]}`;
+
+  const match = raw.match(/\b\d{3,6}\b/);
+  return match ? `US ${match[0]}` : (raw || "Unit Standard");
 }
 
 // ------------------------------------------------------------
@@ -555,17 +579,27 @@ function normaliseQuestionSet(raw, catalogueEntry) {
     throw new Error(`Question set ${id} does not contain any assessments.`);
   }
 
+  const standardPrefix = standardPrefixFromValues(
+    meta.label,
+    meta.id,
+    meta.title,
+    catalogueEntry?.label,
+    catalogueEntry?.id
+  );
+  const standardCode = `${standardPrefix} ${number}`;
+
   const setMeta = {
     ...meta,
     id,
     number,
-    label: meta.label || catalogueEntry?.label || `US ${number}`,
+    standardPrefix,
+    label: meta.label || catalogueEntry?.label || standardCode,
     version: String(meta.version || "").trim(),
   };
 
   const assessments = assessmentsRaw.map((ass) => ({
     ...ass,
-    usNumber: `US ${number}`,
+    usNumber: standardCode,
     usVersion: setMeta.version,
     credits: meta.credits ?? ass.credits ?? 0,
     standardType: meta.standardType || ass.standardType || "internal",
@@ -631,7 +665,8 @@ async function loadQuestionSet(questionSetId, options = {}) {
   if (metaEl) {
     const version = CURRENT_QUESTION_SET.version ? ` ${CURRENT_QUESTION_SET.version}` : "";
     const credits = Number(CURRENT_QUESTION_SET.credits || 0);
-    metaEl.textContent = `US ${CURRENT_QUESTION_SET.number}${version}${credits ? ` · ${credits} credits` : ""}`;
+    const standardCode = `${CURRENT_QUESTION_SET.standardPrefix || "US"} ${CURRENT_QUESTION_SET.number}`;
+    metaEl.textContent = `${standardCode}${version}${credits ? ` · ${credits} credits` : ""}`;
   }
 
   setupDeadlineBanner();
@@ -1322,7 +1357,9 @@ async function saveProgressEncrypted() {
     payload.appId = APP_ID;
     payload.appVersion = APP_VERSION;
     payload.questionSetId = CURRENT_QUESTION_SET?.id || data.questionSetId || "";
-    payload.unitStandard = CURRENT_QUESTION_SET?.number ? `US ${CURRENT_QUESTION_SET.number}` : "";
+    payload.unitStandard = CURRENT_QUESTION_SET?.number
+      ? `${CURRENT_QUESTION_SET.standardPrefix || "US"} ${CURRENT_QUESTION_SET.number}`
+      : "";
 
     const setPart = safeFilePart(CURRENT_QUESTION_SET?.id || data.questionSetId || "question-set", "question-set");
     const filename = `${__safeFilePart(studentId)}_${setPart}.puk`;
