@@ -11,16 +11,6 @@
       "credits": 4,
       "title": "Use safety practices for a BCATS project or related tasks",
       "assessmentCount": 3
-    },
-    {
-      "id": "us990004-test-multi",
-      "label": "US 990004 - TEST ONLY - Multi-section submission",
-      "file": "questions/test-990004-multi.json",
-      "number": "990004",
-      "version": "v1",
-      "credits": 0,
-      "title": "TEST ONLY - Separate submission states",
-      "assessmentCount": 2
     }
   ]
 }
