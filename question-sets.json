@@ -23,16 +23,6 @@
       "assessmentCount": 3
     },
     {
-      "id": "us990003-test-conditional",
-      "label": "US 990003 - TEST ONLY - Conditional questions",
-      "file": "questions/test-990003-conditional.json",
-      "number": "990003",
-      "version": "v1",
-      "credits": 0,
-      "title": "TEST ONLY - Conditional question branches",
-      "assessmentCount": 1
-    },
-    {
       "id": "us990004-test-multi",
       "label": "US 990004 - TEST ONLY - Multi-section submission",
       "file": "questions/test-990004-multi.json",
