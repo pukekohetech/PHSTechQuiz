@@ -3,16 +3,6 @@
   "generated": true,
   "questionSets": [
     {
-      "id": "us00000-v1",
-      "label": "US 00000 - New QuizMaster standard",
-      "file": "questions/us00000-v1.json",
-      "number": "00000",
-      "version": "v1",
-      "credits": 1,
-      "title": "New QuizMaster standard",
-      "assessmentCount": 1
-    },
-    {
       "id": "ss40540-v1",
       "label": "SS 40540 - BCATS Safety",
       "file": "questions/ss40540-v1.json",
