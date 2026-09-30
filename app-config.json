@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "appId": "pukekohetech-quizmaster",
-  "version": "2026.09-v5",
-  "appTitle": "PHS Building Assessment",
-  "appSubtitle": "Technology assessment and evidence",
+  "version": "2026.09-v6",
+  "appTitle": "PHS Assessment & Evidence",
+  "appSubtitle": "Technology",
   "teachers": [
     {
       "id": "RY",
