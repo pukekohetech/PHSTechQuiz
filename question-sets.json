@@ -23,16 +23,6 @@
       "assessmentCount": 3
     },
     {
-      "id": "us990001-test-basic",
-      "label": "US 990001 - TEST ONLY - Basic marking",
-      "file": "questions/test-990001-basic.json",
-      "number": "990001",
-      "version": "v1",
-      "credits": 0,
-      "title": "TEST ONLY - Basic QuizMaster marking",
-      "assessmentCount": 1
-    },
-    {
       "id": "us990002-test-repeatable",
       "label": "US 990002 - TEST ONLY - Repeatable trials",
       "file": "questions/test-990002-repeatable.json",
