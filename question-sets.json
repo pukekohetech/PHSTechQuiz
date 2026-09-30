@@ -31,16 +31,6 @@
       "credits": 0,
       "title": "TEST ONLY - Separate submission states",
       "assessmentCount": 2
-    },
-    {
-      "id": "us990005-test-photo",
-      "label": "US 990005 - TEST ONLY - Photo evidence",
-      "file": "questions/test-990005-photo.json",
-      "number": "990005",
-      "version": "v1",
-      "credits": 0,
-      "title": "TEST ONLY - Photo evidence and register tracking",
-      "assessmentCount": 1
     }
   ]
 }
