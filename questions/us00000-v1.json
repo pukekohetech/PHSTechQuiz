@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 3,
+  "questionSet": {
+    "id": "us00000-v1",
+    "label": "US 00000 - New QuizMaster standard",
+    "title": "New QuizMaster standard",
+    "number": "00000",
+    "version": "v1",
+    "credits": 1,
+    "standardType": "internal",
+    "evidenceTracker": {
+      "kicker": "Evidence progress",
+      "title": "Your evidence",
+      "intro": "Blue READY means complete on this device. Green SUBMITTED appears only after register confirmation.",
+      "footer": "This is a progress guide, not teacher sign-off.",
+      "items": [
+        {
+          "id": "assessment-1-assessment-questions",
+          "type": "questions",
+          "assessmentId": "assessment",
+          "questionIds": [
+            "00000-assessment-q01"
+          ],
+          "label": "1. Assessment - questions",
+          "require": "rubric",
+          "required": true
+        }
+      ]
+    }
+  },
+  "assessments": [
+    {
+      "id": "assessment",
+      "title": "1. Assessment",
+      "attachSignoff": false,
+      "schemaVersion": 3,
+      "questions": [],
+      "questionGroups": [],
+      "blocks": [
+        {
+          "type": "questions",
+          "id": "assessment-questions",
+          "questions": [
+            {
+              "id": "00000-assessment-q01",
+              "part": "A",
+              "text": "Write your question here",
+              "type": "short",
+              "maxPoints": 3,
+              "rubric": [
+                {
+                  "points": 1,
+                  "check": "(?:one|two|three)",
+                  "flags": "i"
+                },
+                {
+                  "points": 1,
+                  "check": "(?:A|B|C)",
+                  "flags": "i"
+                },
+                {
+                  "points": 1,
+                  "check": "(?:as|df|gh)",
+                  "flags": "i"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
