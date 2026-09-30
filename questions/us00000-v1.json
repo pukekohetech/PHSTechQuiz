@@ -50,17 +50,17 @@
               "rubric": [
                 {
                   "points": 1,
-                  "check": "(?:one|two|three)",
+                  "check": "(?:^|\\W)(?:one|two|three)(?=$|\\W)",
                   "flags": "i"
                 },
                 {
                   "points": 1,
-                  "check": "(?:A|B|C)",
+                  "check": "(?=^[\\s\\S]{1,}$).+",
                   "flags": "i"
                 },
                 {
                   "points": 1,
-                  "check": "(?:as|df|gh)",
+                  "check": "(?:^|\\W)(?:as|sd|df|fg)(?=$|\\W)",
                   "flags": "i"
                 }
               ]
