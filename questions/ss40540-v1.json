@@ -28,8 +28,8 @@
     "evidenceTracker": {
       "kicker": "Evidence progress",
       "title": "Your SS 40540 evidence",
-      "intro": "This updates automatically as you work. Blue READY means the work is complete on this device but has not been submitted. Green SUBMITTED is reserved for evidence QuizMaster has confirmed in the teacher register.",
-      "footer": "READY is not the same as submitted. Green SUBMITTED only appears after QuizMaster receives confirmation from the teacher register. This tracker is still a progress guide, not teacher sign-off.",
+      "intro": "This updates automatically as you work. Blue READY means the work is complete on this device but has not been submitted. Green SUBMITTED is reserved for evidence the assessment system has confirmed in the teacher register.",
+      "footer": "READY is not the same as submitted. Green SUBMITTED only appears after the assessment system receives confirmation from the teacher register. This tracker is still a progress guide, not teacher sign-off.",
       "items": [
         {
           "id": "hazards-controls",

@@ -164,8 +164,8 @@ const xorDecode = (value) => {
 // ------------------------------------------------------------
 // Globals
 // ------------------------------------------------------------
-let APP_TITLE = "PHS QuizMaster";
-let APP_SUBTITLE = "Technology assessment and evidence";
+let APP_TITLE = "PHS Assessment & Evidence";
+let APP_SUBTITLE = "Technology";
 let TEACHERS = [];
 let ASSESSMENTS = [];
 let QUESTION_SETS = [];
@@ -514,7 +514,7 @@ async function appendPdfBytesToBlob(mainPdfBlob, extraPdfBytes) {
 
 async function loadJsonFile(url, label) {
   if (location.protocol === "file:") {
-    throw new Error(`${label} cannot be auto-loaded from file://. Open QuizMaster from GitHub Pages or another web server.`);
+    throw new Error(`${label} cannot be auto-loaded from file://. Open the assessment app from GitHub Pages or another web server.`);
   }
   const separator = url.includes("?") ? "&" : "?";
   const response = await fetch(`${url}${separator}_=${Date.now()}`, {
@@ -527,7 +527,7 @@ async function loadJsonFile(url, label) {
 
 async function loadQuizMasterConfiguration() {
   const loadingEl = document.getElementById("loading");
-  if (loadingEl) loadingEl.textContent = "Loading QuizMaster…";
+  if (loadingEl) loadingEl.textContent = "Loading assessment…";
 
   try {
     const [config, catalogue] = await Promise.all([
@@ -538,16 +538,16 @@ async function loadQuizMasterConfiguration() {
     APP_CONFIG = config || {};
     APP_ID = String(APP_CONFIG.appId || "pukekohetech-quizmaster").trim();
     APP_VERSION = String(APP_CONFIG.version || "noversion").trim();
-    APP_TITLE = APP_CONFIG.appTitle || "PHS QuizMaster";
-    APP_SUBTITLE = APP_CONFIG.appSubtitle || "Technology assessment and evidence";
+    APP_TITLE = APP_CONFIG.appTitle || "PHS Assessment & Evidence";
+    APP_SUBTITLE = APP_CONFIG.appSubtitle || "Technology";
     TEACHERS = Array.isArray(APP_CONFIG.teachers) ? APP_CONFIG.teachers : [];
     QUESTION_SETS = Array.isArray(catalogue?.questionSets) ? catalogue.questionSets : [];
 
     if (!APP_ID) throw new Error("app-config.json is missing appId.");
     if (!QUESTION_SETS.length) throw new Error("No question sets were found in question-sets.json.");
   } catch (err) {
-    console.error("Failed to load QuizMaster configuration:", err);
-    showFatalError(err.message || "QuizMaster configuration could not be loaded.");
+    console.error("Failed to load assessment configuration:", err);
+    showFatalError(err.message || "Assessment configuration could not be loaded.");
     throw err;
   } finally {
     if (loadingEl) loadingEl.remove();
@@ -559,7 +559,7 @@ function showFatalError(message) {
   const box = document.createElement("main");
   box.className = "fatal-error";
   const heading = document.createElement("h1");
-  heading.textContent = "QuizMaster could not open";
+  heading.textContent = "Assessment could not open";
   const detail = document.createElement("p");
   detail.textContent = message;
   const help = document.createElement("p");
@@ -1426,7 +1426,7 @@ async function loadProgressEncryptedFile(file) {
   const backupQuestionSetId = String(payload.questionSetId || "").trim();
   if (backupQuestionSetId && backupQuestionSetId !== CURRENT_QUESTION_SET?.id) {
     const exists = QUESTION_SETS.some((set) => set.id === backupQuestionSetId);
-    if (!exists) return showToast("This backup belongs to a unit standard that is not installed in this QuizMaster.", false);
+    if (!exists) return showToast("This backup belongs to a unit standard that is not installed in this assessment app.", false);
     try {
       await loadQuestionSet(backupQuestionSetId, { silent: true });
     } catch (error) {

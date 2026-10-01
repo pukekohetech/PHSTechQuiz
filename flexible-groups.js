@@ -1,5 +1,5 @@
 /*
- * QuizMaster Flexible Groups plugin v5
+ * PHS Flexible Groups plugin v6
  * Generic schema-v3 repeatable groups, conditional questions, evidence tracking, and persistent submission-state tracking for any standard.
  *
  * Load after script.js and BEFORE photo-evidence.js:
@@ -11,12 +11,12 @@
   "use strict";
 
   const FLEX_SCHEMA_MIN = 3;
-  const PLUGIN_VERSION = 5;
+  const PLUGIN_VERSION = 6;
   const originalLoadAssessment = window.loadAssessment;
   const originalSubmitToTeacher = window.submitToTeacher;
 
   if (typeof originalLoadAssessment !== "function") {
-    console.warn("Flexible Groups: QuizMaster loadAssessment() was not available.");
+    console.warn("Flexible Groups: assessment loadAssessment() was not available.");
     return;
   }
 
@@ -494,6 +494,7 @@
       submissionId: String(record?.submissionId || "").trim(),
       submittedAt: String(record?.submittedAt || new Date().toISOString()),
       state: String(record?.state || "confirmed").trim(),
+      photoUrl: String(record?.photoUrl || "").trim(),
       pdfUrl: String(record?.pdfUrl || "").trim(),
       repeatable: record?.repeatable !== false,
     };
@@ -589,6 +590,7 @@
       repeatable: record?.repeatable ?? previous.repeatable ?? true,
       startedAt: String(record?.startedAt ?? previous.startedAt ?? new Date().toISOString()),
       confirmedAt: String(record?.confirmedAt ?? previous.confirmedAt ?? ""),
+      photoUrl: String(record?.photoUrl ?? previous.photoUrl ?? "").trim(),
       pdfUrl: String(record?.pdfUrl ?? previous.pdfUrl ?? "").trim(),
       answerSignature: String(
         record?.answerSignature ?? previous.answerSignature ?? (kind === "assessment" ? assessmentAnswerSignature(assessmentId) : "")
@@ -669,6 +671,7 @@
 
           updateSubmissionState(record.submissionId, status.state, {
             confirmedAt: new Date().toISOString(),
+            photoUrl: status?.photoUrl || record.photoUrl || "",
             pdfUrl: status?.pdfUrl || record.pdfUrl || "",
             lastError: "",
           });
@@ -683,6 +686,7 @@
               submissionId: record.submissionId,
               submittedAt: record.startedAt || new Date().toISOString(),
               state: status.state,
+              photoUrl: status?.photoUrl || record.photoUrl || "",
               pdfUrl: status?.pdfUrl || record.pdfUrl || "",
               repeatable: record.repeatable !== false,
             });
@@ -1001,7 +1005,7 @@
 
     const foot = document.createElement("p");
     foot.className = "qm-evidence-tracker__foot";
-    foot.textContent = String(config.footer || "Ready means complete on this device only. Green Submitted appears only after QuizMaster receives confirmation from the teacher register. Your teacher still decides whether the evidence is sufficient for the standard.");
+    foot.textContent = String(config.footer || "Ready means complete on this device only. Green Submitted appears only after the assessment system receives confirmation from the teacher record. Your teacher still decides whether the evidence is sufficient for the standard.");
     body.appendChild(foot);
     tracker.appendChild(body);
   }
@@ -1093,7 +1097,7 @@
           try { updatePdfActionState(); } catch (_) {}
         } else {
           updateSubmissionState(trackedSubmissionId, "pending", {
-            lastError: "Confirmation was not received yet. QuizMaster will check the register again when this backup is loaded.",
+            lastError: "Confirmation was not received yet. The assessment system will check again when this backup is loaded.",
           });
         }
       } catch (trackingError) {
@@ -1110,7 +1114,7 @@
   }
 
   // Public helpers are intentionally small so future plugins can reuse the engine
-  // without knowing how QuizMaster stores repeat counts internally.
+  // without depending on the internal repeat-count storage format.
   window.QuizMasterFlexible = Object.freeze({
     schemaVersion: FLEX_SCHEMA_MIN,
     pluginVersion: PLUGIN_VERSION,

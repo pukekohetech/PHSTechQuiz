@@ -1,10 +1,10 @@
 /*
- * QuizMaster Photo / Project Evidence plugin v8 - portrait evidence + terminology validation + progress tracking
- * Uses the existing QuizMaster PDF + .puk + document-register submission route.
- * No Apps Script changes are required.
+ * PHS Photo / Project Evidence plugin v9 - camera, validation and Drive evidence upload
+ * Submission is delegated to submission.js so photos and written evidence update the same unit record.
+ * Requires submission.js and the unified assessment-records Apps Script gateway.
  *
- * Add after script.js in index.html:
- *   <script src="photo-evidence.js?v=8" defer></script>
+ * Load after submission.js in index.html:
+ *   <script src="photo-evidence.js?v=9" defer></script>
  *
  * Supports:
  * - live rear/front camera
@@ -12,7 +12,7 @@
  * - repeatable project-stage evidence
  * - written record instead of photo where the JSON allows it
  * - configurable metadata questions for each evidence type
- * - single-page evidence PDF with the questions and photo together, submitted through the existing register
+ * - stamped/resized JPG upload with a direct Drive link in the teacher unit record
  */
 (() => {
   "use strict";
@@ -34,7 +34,7 @@
 
   const originalLoadAssessment = window.loadAssessment;
   if (typeof originalLoadAssessment !== "function") {
-    console.warn("Photo Evidence plugin: QuizMaster loadAssessment() was not available.");
+    console.warn("Photo Evidence plugin: assessment loadAssessment() was not available.");
     return;
   }
 
@@ -271,7 +271,7 @@
     if (!elements) return;
     if (!navigator.mediaDevices?.getUserMedia) return setStatus("This browser cannot open the live camera. Use Choose existing photo instead.", "error");
     if (!window.isSecureContext && location.hostname !== "localhost" && location.protocol !== "file:") {
-      return setStatus("Live camera access needs HTTPS. Use Choose existing photo or open the secure QuizMaster site.", "error");
+      return setStatus("Live camera access needs HTTPS. Use Choose existing photo or open the secure assessment site.", "error");
     }
     stopCamera();
     resetCapturedPhoto();
@@ -464,208 +464,15 @@
     elements.status.className = `photo-evidence-status${type ? ` ${type}` : ""}`;
   }
 
-  function blobToDataUrl(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ""));
-      reader.onerror = () => reject(reader.error || new Error("The photo could not be read."));
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  async function readBlobDimensions(blob) {
-    if (typeof createImageBitmap === "function") {
-      try {
-        const bitmap = await createImageBitmap(blob);
-        const dims = { width: bitmap.width, height: bitmap.height };
-        bitmap.close?.();
-        return dims;
-      } catch (_) {}
-    }
-    return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-      img.onload = () => {
-        const dims = { width: img.naturalWidth || img.width, height: img.naturalHeight || img.height };
-        URL.revokeObjectURL(url);
-        resolve(dims);
-      };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("The captured photo could not be opened.")); };
-      img.src = url;
-    });
-  }
-
-  function addWrappedText(doc, text, x, y, maxWidth, lineHeight = 5.2) {
-    const lines = doc.splitTextToSize(String(text || ""), maxWidth);
-    doc.text(lines, x, y);
-    return y + Math.max(1, lines.length) * lineHeight;
-  }
-
-  async function createEvidencePdf(photoBlob, details) {
-    if (!window.jspdf?.jsPDF) await loadFirstAvailableScript(PDF_LIBRARY_URLS.jspdf);
-    const { jsPDF } = window.jspdf;
-
-    // The streamlined SS 40540 evidence now fits comfortably on portrait A4.
-    // The photograph and its short learner explanation stay together on ONE page.
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 10;
-    const headerY = 12;
-    const contentTop = 38;
-    const contentBottom = pageHeight - 10;
-    const contentHeight = contentBottom - contentTop;
-    const gap = 6;
-    const innerPad = 4;
-    const panelWidth = pageWidth - margin * 2;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(15);
-    doc.text(details.method === "written" ? "Project Evidence - Written Record" : "Photo Evidence", margin, headerY);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.2);
-    const std = `${details.unitStandard}${details.standardVersion ? ` ${details.standardVersion}` : ""}`;
-    doc.text(`${std}   |   ${details.studentName} (${details.studentId})`, margin, headerY + 7);
-
-    doc.setFontSize(8.4);
-    const evidenceLine = `Evidence: ${details.evidenceLabel}   |   Recorded: ${new Date(details.recordedAt).toLocaleString("en-NZ")}`;
-    const evidenceLines = doc.splitTextToSize(evidenceLine, panelWidth);
-    doc.text(evidenceLines, margin, headerY + 13);
-
-    const fieldDefs = (details.fieldDefs || []).filter((def) => (details.fieldValues?.[def.id] || "").trim());
-
-    function measureFields(fontSize, availableWidth) {
-      const lineHeight = fontSize * 0.43;
-      let needed = 0;
-      const measured = [];
-      for (const def of fieldDefs) {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(fontSize);
-        const lines = doc.splitTextToSize(String(details.fieldValues?.[def.id] || ""), availableWidth - innerPad * 2);
-        const block = 5 + Math.max(1, lines.length) * lineHeight + 4;
-        needed += block;
-        measured.push({ def, lines, block, lineHeight });
-      }
-      return { needed, measured, lineHeight };
-    }
-
-    let bodyFont = photoBlob ? 9.4 : 10;
-    let measured = measureFields(bodyFont, panelWidth);
-
-    // For a photo record, reserve most of the portrait page for the image and
-    // use a compact answer box underneath. Current streamlined SS 40540 items
-    // use only one or two short prompts, but this remains tolerant of more.
-    let answerPanelHeight;
-    if (photoBlob) {
-      const maxAnswerHeight = 96;
-      while (measured.needed + 10 > maxAnswerHeight && bodyFont > 7.2) {
-        bodyFont -= 0.3;
-        measured = measureFields(bodyFont, panelWidth);
-      }
-      answerPanelHeight = Math.min(maxAnswerHeight, Math.max(50, measured.needed + 10));
-    } else {
-      answerPanelHeight = contentHeight;
-      while (measured.needed + 10 > answerPanelHeight && bodyFont > 7.2) {
-        bodyFont -= 0.3;
-        measured = measureFields(bodyFont, panelWidth);
-      }
-    }
-
-    let answerTop = contentTop;
-    if (photoBlob) {
-      const photoHeight = contentHeight - answerPanelHeight - gap;
-      const photoTop = contentTop;
-      answerTop = photoTop + photoHeight + gap;
-
-      doc.setDrawColor(185);
-      doc.setLineWidth(0.25);
-      doc.roundedRect(margin, photoTop, panelWidth, photoHeight, 2, 2);
-
-      const dims = await readBlobDimensions(photoBlob);
-      const dataUrl = await blobToDataUrl(photoBlob);
-      const maxW = panelWidth - innerPad * 2;
-      const maxH = photoHeight - innerPad * 2;
-      const ratio = Math.min(maxW / dims.width, maxH / dims.height);
-      const drawW = dims.width * ratio;
-      const drawH = dims.height * ratio;
-      const x = margin + (panelWidth - drawW) / 2;
-      const py = photoTop + (photoHeight - drawH) / 2;
-      doc.addImage(dataUrl, "JPEG", x, py, drawW, drawH, undefined, "FAST");
-    }
-
-    // Answer / evidence notes panel. In portrait mode this sits directly below
-    // the photo, keeping the photograph and explanation together as one sheet.
-    doc.setDrawColor(185);
-    doc.setLineWidth(0.25);
-    doc.roundedRect(margin, answerTop, panelWidth, answerPanelHeight, 2, 2);
-
-    let y = answerTop + 6;
-    const answerBottom = answerTop + answerPanelHeight;
-
-    for (let i = 0; i < measured.measured.length; i++) {
-      const item = measured.measured[i];
-      const remainingBlocks = measured.measured.length - i;
-      const remainingHeight = answerBottom - y - 4;
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(Math.min(9.2, bodyFont + 0.5));
-      doc.text(`${item.def.label}:`, margin + innerPad, y);
-      y += 5;
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(bodyFont);
-
-      const fairShare = Math.max(10, remainingHeight / Math.max(1, remainingBlocks));
-      const maxLines = Math.max(1, Math.floor((fairShare - 3) / item.lineHeight));
-      let lines = item.lines;
-      if (lines.length > maxLines) {
-        lines = lines.slice(0, maxLines);
-        const last = String(lines[lines.length - 1] || "").replace(/\s+$/, "");
-        lines[lines.length - 1] = `${last.replace(/[.\u2026]+$/, "")}…`;
-      }
-      doc.text(lines, margin + innerPad, y);
-      y += Math.max(1, lines.length) * item.lineHeight + 4;
-
-      if (i < measured.measured.length - 1 && y < answerBottom - 4) {
-        doc.setDrawColor(225);
-        doc.line(margin + innerPad, y - 1.7, pageWidth - margin - innerPad, y - 1.7);
-      }
-    }
-
-    if (!fieldDefs.length) {
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.text("No written responses were recorded for this evidence item.", margin + innerPad, answerTop + 9);
-    }
-
-    if (!photoBlob) {
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(7.5);
-      doc.text("Written record selected - no photograph attached.", margin, pageHeight - 5);
-    }
-
-    return new Blob([doc.output("arraybuffer")], { type: "application/pdf" });
-  }
-
-  function safePart(value) {
-    return String(value || "").trim().replace(/[^A-Za-z0-9._-]+/g, "_").replace(/_+/g, "_").replace(/^[_ .-]+|[_ .-]+$/g, "") || "evidence";
-  }
-
-  function makeSubmissionId() {
-    const random = new Uint32Array(2);
-    if (window.crypto?.getRandomValues) window.crypto.getRandomValues(random);
-    else { random[0] = Math.floor(Math.random() * 0xffffffff); random[1] = Math.floor(Math.random() * 0xffffffff); }
-    return `evidence_${Date.now()}_${random[0].toString(36)}${random[1].toString(36)}`;
-  }
-
   async function submitEvidence() {
     const option = selectedEvidence();
     const method = selectedMethod();
     if (!option) return setStatus("Choose what this evidence is for.", "error");
+
     let fieldValues;
     try { fieldValues = collectFieldValues({ validate: true }); }
     catch (error) { return setStatus(error.message, "error"); }
+
     if (method !== "written" && !capturedBlob) return setStatus("Take or choose a photo first.", "error");
 
     const identity = identitySnapshot();
@@ -673,141 +480,42 @@
     if (!/^\d{3,6}$/.test(identity.studentId)) return setStatus("Enter a valid Student ID first.", "error");
     if (!identity.teacherId) return setStatus("Select your teacher first.", "error");
     if (!navigator.onLine) return setStatus("You are offline. Reconnect before submitting this evidence.", "error");
-
-    let endpoint = "";
-    let storageRootName = "";
-    try { endpoint = getSubmissionEndpoint(); storageRootName = getSubmissionRootName(); } catch (_) {}
-    if (!endpoint) return setStatus("Teacher submission is not configured yet.", "error");
-    if (!storageRootName) return setStatus("Evidence storage is not configured.", "error");
+    if (!window.PHSSubmission?.submitPhotoEvidence) {
+      return setStatus("The teacher-submission module is not available. Reload the page and try again.", "error");
+    }
 
     elements.submitBtn.disabled = true;
     elements.startBtn.disabled = true;
     elements.chooseBtn.disabled = true;
-    setStatus("Preparing evidence…");
+    setStatus(method === "written" ? "Submitting written evidence…" : "Uploading photo evidence…");
 
-    const submissionId = makeSubmissionId();
+    const mainDescriptor = fieldValues.stage || fieldValues.area || option.label;
+
     try {
       try { saveStudentInfo(); } catch (_) {}
-      const timestamp = capturedAt || new Date().toISOString();
-      const fieldDefs = option.fields || [];
-      const details = {
-        studentName: identity.studentName,
-        studentId: identity.studentId,
-        unitStandard: identity.unitStandard,
-        standardVersion: (() => { try { return CURRENT_QUESTION_SET?.version || ""; } catch (_) { return ""; } })(),
-        evidenceLabel: option.label,
+      const status = await window.PHSSubmission.submitPhotoEvidence({
+        assessment: activeAssessment,
+        option,
         method,
-        recordedAt: timestamp,
-        fieldDefs,
         fieldValues,
-      };
-
-      const mainDescriptor = fieldValues.stage || fieldValues.area || option.label;
-
-      // Save the submission ID into QuizMaster progress BEFORE the encrypted
-      // .puk is created. The server-side copy can therefore reconcile this
-      // record against the teacher register when the .puk is restored later.
-      try {
-        window.QuizMasterFlexible?.recordSubmission?.({
-          submissionId,
-          kind: "photoEvidence",
-          questionSetId: identity.questionSetId,
-          assessmentId: activeAssessment?.id || "",
-          assessmentTitle: activeAssessment?.title || "Photo Evidence",
-          optionId: option.id || "",
-          optionLabel: option.label || "",
-          descriptor: mainDescriptor,
-          method,
-          state: "pending",
-          rootName: storageRootName,
-          startedAt: new Date().toISOString(),
-          repeatable: option.repeatable !== false,
-        });
-      } catch (trackingError) {
-        console.warn("Photo Evidence: could not add the pending submission record", trackingError);
-      }
-
-      const [pdfBlob, pukResult] = await Promise.all([
-        createEvidencePdf(method === "written" ? null : capturedBlob, details),
-        createProgressBackupForSubmission(),
-      ]);
-      const pdfBase64 = await blobToBase64(pdfBlob);
-      const shortRef = submissionId.replace(/^evidence_/, "").slice(0, 24);
-      const dynamicAssessmentId = `${activeAssessment?.id || "evidence"}-${option.id}-${safePart(mainDescriptor).slice(0,40)}-${shortRef}`;
-      const payload = {
-        submissionId,
-        appId: typeof APP_ID !== "undefined" ? APP_ID : "pukekohetech-quizmaster",
-        appVersion: typeof APP_VERSION !== "undefined" ? APP_VERSION : "",
-        questionSetId: identity.questionSetId,
-        storageRootName,
-        studentName: identity.studentName,
-        studentId: identity.studentId,
-        teacherId: identity.teacherId,
-        teacherName: identity.teacherName,
-        teacherEmail: identity.teacherEmail,
-        unitStandard: identity.unitStandard,
-        standardVersion: details.standardVersion,
-        assessmentId: dynamicAssessmentId,
-        assessmentTitle: `${activeAssessment?.title || "Evidence"} - ${mainDescriptor}`,
-        score: 1,
-        totalMarks: 1,
-        percentage: 100,
-        submittedAt: new Date().toISOString(),
-        pdfMimeType: "application/pdf",
-        pdfBase64,
-        pukText: pukResult.pukText,
-      };
-
-      setStatus("Uploading evidence and updating the register…");
-      await fetch(endpoint, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify(payload),
-        cache: "no-store",
+        descriptor: mainDescriptor,
+        blob: method === "written" ? null : capturedBlob,
+        capturedAt: capturedAt || new Date().toISOString(),
       });
 
-      setStatus("Upload received. Confirming the register…");
-      const status = await waitForSubmissionStatus(endpoint, submissionId, storageRootName);
-      if (!status || (status.state !== "confirmed" && status.state !== "duplicate")) {
-        throw new Error("The evidence was sent, but confirmation was not received. Submit again to safely retry.");
-      }
-
-      try {
-        window.QuizMasterFlexible?.updateSubmissionState?.(submissionId, status?.state || "confirmed", {
-          confirmedAt: new Date().toISOString(),
-          pdfUrl: status?.pdfUrl || "",
-          lastError: "",
-        });
-        window.QuizMasterFlexible?.recordEvidence?.({
-          assessmentId: activeAssessment?.id || "",
-          optionId: option.id || "",
-          optionLabel: option.label || "",
-          descriptor: mainDescriptor,
-          method,
-          submissionId,
-          submittedAt: new Date().toISOString(),
-          state: status?.state || "confirmed",
-          pdfUrl: status?.pdfUrl || "",
-          repeatable: option.repeatable !== false,
-        });
-      } catch (trackerError) {
-        console.warn("Photo Evidence: progress tracker could not record the confirmed evidence", trackerError);
-      }
-
-      sessionSubmissions.push({ label: mainDescriptor, method, at: new Date(), url: status?.pdfUrl || "" });
+      sessionSubmissions.push({
+        label: mainDescriptor,
+        method,
+        at: new Date(),
+        url: String(status?.photoUrl || ""),
+      });
       renderSessionSubmissions();
-      setStatus(`Saved under Student ID ${identity.studentId} and recorded in the register: ${mainDescriptor}`, "success");
-      try { if (typeof showToast === "function") showToast("Evidence saved."); } catch (_) {}
+      setStatus(`Saved under Student ID ${identity.studentId}: ${mainDescriptor}`, "success");
+      try { if (typeof showToast === "function") showToast("Evidence saved and added to the unit record."); } catch (_) {}
       resetCapturedPhoto();
       clearEvidenceFields();
       updateSubmitState();
     } catch (error) {
-      try {
-        window.QuizMasterFlexible?.updateSubmissionState?.(submissionId, "pending", {
-          lastError: String(error?.message || "Evidence submission was not confirmed yet."),
-        });
-      } catch (_) {}
       console.error("Evidence submission failed", error);
       setStatus(error.message || "Evidence submission failed. Try again.", "error");
     } finally {
@@ -879,7 +587,7 @@
     const right = document.createElement("div");
     const note = document.createElement("p");
     note.className = "photo-evidence-camera-note";
-    note.textContent = "Photo records are resized before upload and stamped with Student ID, standard, evidence type and capture time. Every submitted record also goes through the existing QuizMaster document register.";
+    note.textContent = "Photo records are resized before upload and stamped with Student ID, standard, evidence type and capture time. Every submitted record is saved to Drive and linked into the teacher unit record.";
     right.appendChild(note);
     grid.append(left, right);
 
