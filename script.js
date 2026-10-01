@@ -180,6 +180,7 @@ let SUBMISSION_SETTINGS = {
 };
 let lateSubmissionOverride = false;
 let lateSubmissionOverrideAt = null;
+let deadlineMutationObserver = null;
 
 // ------------------------------------------------------------
 // DEBUG MODE
@@ -630,6 +631,7 @@ async function loadQuestionSet(questionSetId, options = {}) {
   if (!entry) throw new Error(`Question set ${id} is not in the catalogue.`);
 
   persistCurrentAssessmentAnswers();
+  resetDeadlineContext();
   clearPreparedPdf();
   closeResultOptions();
   document.getElementById("result")?.classList.add("hidden");
@@ -681,6 +683,7 @@ async function handleQuestionSetChange() {
   const selector = document.getElementById("questionSetSelector");
   if (!selector?.value) {
     persistCurrentAssessmentAnswers();
+    resetDeadlineContext();
     CURRENT_QUESTION_SET = null;
     ASSESSMENTS = [];
     currentAssessmentId = null;
@@ -1107,6 +1110,7 @@ function loadAssessment() {
   });
 
   attachProtection();
+  applyDeadlineLockIfNeeded();
   showToast("Assessment loaded.");
 
   // Bring the newly loaded assessment into view, especially when loading from the results screen.
@@ -1674,65 +1678,118 @@ function deadlineBlocksSubmission(now = new Date()) {
   return !!status && status.status === "overdue" && !lateSubmissionOverride;
 }
 
-function lockAllFieldsForDeadline() {
-  const questionsDiv = document.getElementById("questions");
-  if (questionsDiv) {
-    questionsDiv.querySelectorAll("input, textarea, select").forEach((el) => {
-      el.readOnly = true;
-      if (el.tagName === "SELECT") el.disabled = true;
-      el.classList.add("locked-field");
-    });
-  }
+function rememberDeadlineLockState(el) {
+  if (!el || el.dataset.deadlineLockApplied === "1") return;
 
-  const nameEl = document.getElementById("name");
-  const idEl = document.getElementById("id");
-  const teacherEl = document.getElementById("teacher");
-  const assSel = document.getElementById("assessmentSelector");
-  const downloadBtn = document.getElementById("downloadBtn");
-  const shareBtn = document.getElementById("shareBtn");
-
-  [nameEl, idEl].forEach((el) => {
-    if (el) {
-      el.readOnly = true;
-      el.classList.add("locked-field");
-    }
-  });
-
-  [teacherEl, assSel].forEach((el) => {
-    if (el) el.disabled = true;
-  });
-
-  if (downloadBtn) downloadBtn.disabled = true;
-  if (shareBtn) shareBtn.disabled = true;
+  el.dataset.deadlineLockApplied = "1";
+  el.dataset.deadlinePrevReadonly = el.readOnly ? "1" : "0";
+  el.dataset.deadlinePrevDisabled = el.disabled ? "1" : "0";
 }
 
-function unlockFieldsForLateSubmission() {
-  const questionsDiv = document.getElementById("questions");
-  if (questionsDiv) {
-    questionsDiv.querySelectorAll("input, textarea, select").forEach((el) => {
-      el.readOnly = false;
-      el.disabled = false;
-      el.classList.remove("locked-field");
-    });
-  }
+function deadlineLockElement(el, options = {}) {
+  if (!el) return;
+  rememberDeadlineLockState(el);
 
+  if (options.readOnly && "readOnly" in el) el.readOnly = true;
+  if (options.disabled) el.disabled = true;
+
+  el.dataset.deadlineLocked = "1";
+  if (el.matches?.("input, textarea, select")) el.classList.add("locked-field");
+}
+
+function stopDeadlineMutationObserver() {
+  if (deadlineMutationObserver) {
+    deadlineMutationObserver.disconnect();
+    deadlineMutationObserver = null;
+  }
+}
+
+function ensureDeadlineMutationObserver() {
+  const questionsDiv = document.getElementById("questions");
+  if (!questionsDiv || deadlineMutationObserver || !window.MutationObserver) return;
+
+  deadlineMutationObserver = new MutationObserver((mutations) => {
+    if (!deadlineBlocksSubmission()) return;
+    const addedControls = mutations.some((mutation) => mutation.addedNodes?.length);
+    if (addedControls) lockAllFieldsForDeadline();
+  });
+
+  deadlineMutationObserver.observe(questionsDiv, { childList: true, subtree: true });
+}
+
+function clearDeadlineLocks() {
+  document.querySelectorAll('[data-deadline-lock-applied="1"]').forEach((el) => {
+    if ("readOnly" in el) el.readOnly = el.dataset.deadlinePrevReadonly === "1";
+    el.disabled = el.dataset.deadlinePrevDisabled === "1";
+
+    delete el.dataset.deadlineLockApplied;
+    delete el.dataset.deadlinePrevReadonly;
+    delete el.dataset.deadlinePrevDisabled;
+    delete el.dataset.deadlineLocked;
+
+    if (!el.readOnly && !el.disabled) el.classList.remove("locked-field");
+  });
+
+  // A deadline must never trap the learner on one unit. Identity and navigation
+  // controls stay usable even when the selected assessment itself is overdue.
   const nameEl = document.getElementById("name");
   if (nameEl) {
     nameEl.readOnly = false;
     nameEl.classList.remove("locked-field");
   }
 
-  // Preserve the existing device-bound Student ID lock.
+  const teacherEl = document.getElementById("teacher");
+  if (teacherEl) teacherEl.disabled = false;
+
+  const assessmentEl = document.getElementById("assessmentSelector");
+  if (assessmentEl && CURRENT_QUESTION_SET) assessmentEl.disabled = false;
+
+  // Preserve the existing device-bound Student ID lock. This is separate from
+  // deadline locking and must remain in place when configured for the device.
   const idEl = document.getElementById("id");
-  if (idEl && !data.idLocked) {
-    idEl.readOnly = false;
-    idEl.classList.remove("locked-field");
+  if (idEl) {
+    const profile = loadGlobalProfile();
+    const idShouldStayLocked = !!(data?.idLocked || profile?.idLocked);
+    idEl.readOnly = idShouldStayLocked;
+    idEl.classList.toggle("locked-field", idShouldStayLocked);
+  }
+}
+
+function resetDeadlineContext() {
+  stopDeadlineMutationObserver();
+  clearDeadlineLocks();
+
+  DEADLINE = null;
+  lateSubmissionOverride = false;
+  lateSubmissionOverrideAt = null;
+
+  const banner = document.getElementById("deadline-banner");
+  if (banner) {
+    banner.className = "deadline-banner hidden";
+    banner.textContent = "";
   }
 
-  [document.getElementById("teacher"), document.getElementById("assessmentSelector")].forEach((el) => {
-    if (el) el.disabled = false;
-  });
+  updatePdfActionState();
+}
 
+function lockAllFieldsForDeadline() {
+  // Only assessment work is locked. Student details and the unit/assessment
+  // selectors remain usable so an expired unit can never trap the learner.
+  const questionsDiv = document.getElementById("questions");
+  if (!questionsDiv) return;
+
+  questionsDiv.querySelectorAll("input, textarea, select, button").forEach((el) => {
+    const tag = el.tagName;
+    const type = String(el.type || "").toLowerCase();
+    const shouldReadOnly = tag === "INPUT" || tag === "TEXTAREA";
+    const shouldDisable = tag === "SELECT" || tag === "BUTTON" || type === "file";
+    deadlineLockElement(el, { readOnly: shouldReadOnly, disabled: shouldDisable });
+  });
+}
+
+function unlockFieldsForLateSubmission() {
+  stopDeadlineMutationObserver();
+  clearDeadlineLocks();
   updatePdfActionState();
 }
 
@@ -1740,30 +1797,38 @@ function setupDeadlineBanner() {
   const banner = document.getElementById("deadline-banner");
   if (!banner) return;
 
-  const stored = (() => {
-    try {
-      return JSON.parse(storageGet(STORAGE_KEY)) || data;
-    } catch {
-      return data;
-    }
-  })();
-
-  if (!stored.deadlineInfo) stored.deadlineInfo = {};
-
-  if (!stored.deadlineInfo.firstSeen) {
-    stored.deadlineInfo.firstSeen = new Date().toISOString();
-    storageSet(STORAGE_KEY, JSON.stringify(stored));
-  }
-
   const now = new Date();
   const deadlineStatus = getDeadlineStatus(now);
   if (!deadlineStatus) {
-    banner.classList.add("hidden");
+    banner.className = "deadline-banner hidden";
+    banner.textContent = "";
     return;
   }
 
-  const firstSeen = new Date(stored.deadlineInfo.firstSeen);
-  const daysSinceStart = Math.floor((now - firstSeen) / 86400000);
+  // firstSeen now belongs to this exact deadline cycle. If a teacher changes
+  // the date/label, or a new school year starts, stale timing data is discarded.
+  const deadlineKey = [
+    now.getFullYear(),
+    String(DEADLINE?.month || "").padStart(2, "0"),
+    String(DEADLINE?.day || "").padStart(2, "0"),
+    String(DEADLINE?.label || "Assessment deadline"),
+  ].join("|");
+
+  if (!data.deadlineInfo || data.deadlineInfo.deadlineKey !== deadlineKey) {
+    data.deadlineInfo = {
+      deadlineKey,
+      firstSeen: now.toISOString(),
+    };
+    if (STORAGE_KEY) storageSet(STORAGE_KEY, JSON.stringify(data));
+  } else if (!data.deadlineInfo.firstSeen) {
+    data.deadlineInfo.firstSeen = now.toISOString();
+    if (STORAGE_KEY) storageSet(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  const firstSeen = new Date(data.deadlineInfo.firstSeen);
+  const daysSinceStart = Number.isFinite(firstSeen.getTime())
+    ? Math.max(0, Math.floor((now - firstSeen) / 86400000))
+    : 0;
 
   let cls = "info";
   let text = "";
@@ -1782,9 +1847,7 @@ function setupDeadlineBanner() {
     else cls = "info";
 
     text = `${label}: ${dateStr} – ${daysLeft} day${daysLeft === 1 ? "" : "s"} left.`;
-    if (daysSinceStart !== null && daysSinceStart >= 0) {
-      text += ` You started ${daysSinceStart} day${daysSinceStart === 1 ? "" : "s"} ago.`;
-    }
+    text += ` You started ${daysSinceStart} day${daysSinceStart === 1 ? "" : "s"} ago.`;
 
     if (daysLeft > 0 && daysLeft <= 7) {
       showToast(`Only ${daysLeft} day${daysLeft === 1 ? "" : "s"} left to complete this assessment.`, false);
@@ -1799,8 +1862,7 @@ function setupDeadlineBanner() {
       text = `${label}: ${dateStr} – ${overdueDays} day${overdueDays === 1 ? "" : "s"} late. Teacher late-submission override is active.`;
     } else {
       cls = "over";
-      text = `${label}: ${dateStr} – Deadline has passed. You are ${overdueDays} day${overdueDays === 1 ? "" : "s"} late.`;
-      lockAllFieldsForDeadline();
+      text = `${label}: ${dateStr} – Deadline has passed. You are ${overdueDays} day${overdueDays === 1 ? "" : "s"} late. Assessment answers are read-only.`;
     }
   }
 
@@ -1810,7 +1872,15 @@ function setupDeadlineBanner() {
 }
 
 function applyDeadlineLockIfNeeded() {
-  if (deadlineBlocksSubmission()) lockAllFieldsForDeadline();
+  stopDeadlineMutationObserver();
+  clearDeadlineLocks();
+
+  if (deadlineBlocksSubmission()) {
+    lockAllFieldsForDeadline();
+    ensureDeadlineMutationObserver();
+  }
+
+  updatePdfActionState();
 }
 
 // ------------------------------------------------------------
