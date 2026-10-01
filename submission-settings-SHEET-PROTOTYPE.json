@@ -4,7 +4,7 @@
     "mode": "sheet"
   },
   "gateway": {
-    "url": "https://script.google.com/macros/s/AKfycbzWrYPKGMzIC8MEVbvhIrcg-0V1Aruc2kCpOOGGC_X2sO2yIIshJNdsNBKiDFATS5vQ9Q/exec",
+    "url": "https://script.google.com/macros/s/AKfycbxo_PzdPD5ZjP-J53fBAZGXOfoAAbcKdlZz5dbH1xZKYnSS0S0T9u3z3J7Jwv_oAlJmUg/exec",
     "sheetUrl": "PASTE_NEW_SHEET_GATEWAY_EXEC_URL_HERE",
     "provider": "apps-script"
   },
