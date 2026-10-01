@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 3,
+  "submission": {
+    "mode": "sheet"
+  },
+  "gateway": {
+    "url": "https://script.google.com/macros/s/AKfycbzWrYPKGMzIC8MEVbvhIrcg-0V1Aruc2kCpOOGGC_X2sO2yIIshJNdsNBKiDFATS5vQ9Q/exec",
+    "sheetUrl": "PASTE_NEW_SHEET_GATEWAY_EXEC_URL_HERE",
+    "provider": "apps-script"
+  },
+  "storage": {
+    "rootName": "PHS Building Evidence",
+    "sheetRootName": "PHS Building Sheet Submissions",
+    "year": "auto"
+  },
+  "features": {
+    "submitPdf": false,
+    "submitPuk": false,
+    "submitAnswers": true,
+    "submitPhotos": true
+  }
+}
