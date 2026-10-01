@@ -12,7 +12,7 @@
 (() => {
   "use strict";
 
-  const PLUGIN_VERSION = "1.1.0";
+  const PLUGIN_VERSION = "1.2.0";
 
   // Keep the final versions currently installed by the other QuizMaster plugins.
   const originalClearPreparedPdf = clearPreparedPdf;
@@ -67,28 +67,37 @@
     const assessment = currentAssessment();
     if (!assessment) return [];
 
-    // gradeIt() also persists the latest on-screen values through saveAnswer().
+    // IMPORTANT: use gradeIt().results as the canonical list of questions.
+    // Schema-v3 flexible assessments can start with assessment.questions = []
+    // and materialise their questions at runtime. Mapping assessment.questions
+    // directly can therefore produce a valid-looking submission with 0 answers.
+    // gradeIt() already sees exactly the questions currently shown to the learner
+    // and also saves their latest answers.
     const graded = gradeIt();
-    const byId = new Map(
-      (graded.results || []).map((result) => [String(result.id || "").toUpperCase(), result])
+    const results = Array.isArray(graded?.results) ? graded.results : [];
+
+    // Build a small lookup only for optional question metadata such as type.
+    const questionById = new Map(
+      (assessment.questions || []).map((question) => [
+        String(question?.id || "").trim().toUpperCase(),
+        question,
+      ])
     );
 
-    return (assessment.questions || []).map((question) => {
-      const id = String(question.id || "").trim();
-      const result = byId.get(id.toUpperCase()) || {};
-      const answer = typeof getAnswer === "function"
-        ? String(getAnswer(id) || "")
-        : String(document.getElementById(`q${id}`)?.value || "");
+    return results.map((result) => {
+      const resultId = String(result?.id || "").trim();
+      const source = questionById.get(resultId.toUpperCase()) || {};
+      const sourceId = String(source.id || resultId).trim();
 
       return {
-        questionId: id,
-        question: String(question.text || ""),
-        type: String(question.type || "long"),
-        group: String(question.group || ""),
-        part: String(result.part || question.part || ""),
-        answer,
-        earned: Number(result.earned || 0),
-        maxPoints: Number(result.max ?? question.maxPoints ?? 0),
+        questionId: sourceId,
+        question: String(result?.text || source.text || ""),
+        type: String(source.type || "long"),
+        group: String(result?.group || source.group || ""),
+        part: String(result?.part || source.part || ""),
+        answer: String(result?.answer ?? ""),
+        earned: Number(result?.earned || 0),
+        maxPoints: Number(result?.max ?? source.maxPoints ?? 0),
       };
     });
   }
@@ -98,6 +107,11 @@
     if (!assessment || !finalData) return null;
 
     const answers = collectSheetAnswers();
+    if (!answers.length) {
+      throw new Error(
+        "No individual questions were found for this assessment. Reload the assessment and try again."
+      );
+    }
     return {
       preparedAt: new Date().toISOString(),
       assessmentId: String(assessment.id || finalData.assessmentId || ""),
