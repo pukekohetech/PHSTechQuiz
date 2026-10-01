@@ -1,5 +1,5 @@
 /*
- * PHS Assessment & Evidence - Google Sheets unit snapshot submission prototype v1.3
+ * PHS Assessment & Evidence - Google Sheets unit snapshot submission prototype v1.4
  *
  * Sheet mode now submits a COMPLETE UNIT SNAPSHOT:
  *   - every defined question in every assessment section
@@ -17,7 +17,7 @@
 (() => {
   "use strict";
 
-  const PLUGIN_VERSION = "1.3.0";
+  const PLUGIN_VERSION = "1.4.0";
 
   const originalClearPreparedPdf = clearPreparedPdf;
   const originalUpdatePdfActionState = updatePdfActionState;
@@ -456,22 +456,58 @@
   }
 
   async function waitForSheetStatus(endpoint, submissionId, rootName) {
-    const delays = [120, 220, 350, 500, 750, 1100, 1600, 2300];
+    // A first complete-unit save can need longer than a small per-assessment save
+    // because the gateway may be creating 50+ sheet columns on first use.
+    // Keep cheap cache checks running long enough for that first save to finish.
+    const delays = [200, 400, 700, 1000, 1500, 2200, 3000, 4000, 5000, 6000];
     let last = null;
+
     for (const delay of delays) {
       await new Promise((resolve) => setTimeout(resolve, delay));
       try {
-        const status = await jsonpRequest(endpoint, { action: "status", submissionId, fast: "1", rootName }, 4500);
-        last = status;
+        const status = await jsonpRequest(
+          endpoint,
+          { action: "status", submissionId, fast: "1", rootName },
+          5500
+        );
+        last = status || last;
+
         if (status?.state === "confirmed" || status?.state === "duplicate") return status;
-        if (status?.state === "error") throw new Error(status.message || "Teacher submission failed.");
-      } catch (_) {}
+
+        // Do not hide a real server-side validation/write error behind a generic
+        // "not confirmed" message. Surface it immediately.
+        if (status?.state === "error") {
+          throw new Error(status.message || "Google Sheets submission failed.");
+        }
+      } catch (error) {
+        // Network/JSONP failures are transient and can be retried. A real gateway
+        // error is intentionally re-thrown above and should be shown to the user.
+        if (error?.message && !/timed out|reach|load|network|connection/i.test(error.message)) {
+          throw error;
+        }
+      }
     }
 
-    const recovered = await jsonpRequest(endpoint, { action: "status", submissionId, fast: "0", rootName }, 6500);
-    if (recovered?.state === "confirmed" || recovered?.state === "duplicate") return recovered;
-    if (recovered?.state === "error") throw new Error(recovered.message || "Teacher submission failed.");
-    return recovered || last;
+    // If the cache confirmation was missed, search the durable _Submission Log.
+    // Repeat this a few times because Google Sheets writes can finish just after
+    // the fast-poll window on the first submission for a new standard.
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      if (attempt) await new Promise((resolve) => setTimeout(resolve, 2500));
+
+      const recovered = await jsonpRequest(
+        endpoint,
+        { action: "status", submissionId, fast: "0", rootName },
+        9000
+      );
+
+      last = recovered || last;
+      if (recovered?.state === "confirmed" || recovered?.state === "duplicate") return recovered;
+      if (recovered?.state === "error") {
+        throw new Error(recovered.message || "Google Sheets submission failed.");
+      }
+    }
+
+    return last;
   }
 
   async function postUnitSnapshot({ submissionId, trigger, triggerAssessment, override, showStatus = false }) {
@@ -520,7 +556,7 @@
 
     const status = await waitForSheetStatus(endpoint, submissionId, storageRootName);
     if (!status || (status.state !== "confirmed" && status.state !== "duplicate")) {
-      throw new Error("The unit snapshot was sent, but confirmation was not received.");
+      throw new Error("The unit record was sent but is still waiting for confirmation. Wait a few seconds, then press Submit to Teacher again. The same submission reference will be reused safely.");
     }
     return status;
   }
@@ -810,7 +846,7 @@
       window.setTimeout(async () => {
         try {
           const health = await checkSheetGateway();
-          console.info("Google Sheets unit gateway ready:", health);
+          console.info(`Google Sheets unit gateway ready (browser plugin ${PLUGIN_VERSION}):`, health);
         } catch (error) {
           console.warn("Google Sheets unit gateway check failed:", error);
         }
