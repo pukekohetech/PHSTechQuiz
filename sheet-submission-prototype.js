@@ -12,7 +12,7 @@
 (() => {
   "use strict";
 
-  const PLUGIN_VERSION = "1.0.0";
+  const PLUGIN_VERSION = "1.1.0";
 
   // Keep the final versions currently installed by the other QuizMaster plugins.
   const originalClearPreparedPdf = clearPreparedPdf;
@@ -43,6 +43,19 @@
       .trim()
       .replace(/\s+-\s+\d{4}\s*$/, "")
       .replace(/\s+/g, " ");
+  }
+
+  async function checkSheetGateway() {
+    const endpoint = getSheetEndpoint();
+    if (!endpoint) {
+      throw new Error("gateway.sheetUrl is missing or invalid in submission-settings.json.");
+    }
+
+    const health = await jsonpRequest(endpoint, { action: "health" }, 7000);
+    if (!health || health.state !== "ready" || health.mode !== "sheet") {
+      throw new Error(health?.message || "The Google Sheets gateway did not return the expected ready response.");
+    }
+    return health;
   }
 
   function currentAssessment() {
@@ -283,6 +296,9 @@
     }
 
     try {
+      const health = await checkSheetGateway();
+      if (!health?.ok) throw new Error(health?.message || "Google Sheets gateway is not ready.");
+
       const payload = {
         submissionMode: "sheet",
         submissionId,
@@ -379,9 +395,21 @@
     collectSheetAnswers,
     getSheetEndpoint,
     getSheetRootName,
+    checkGateway: checkSheetGateway,
   });
 
   document.addEventListener("DOMContentLoaded", () => {
     window.setTimeout(() => updatePdfActionState(), 0);
+
+    if (isSheetMode()) {
+      window.setTimeout(async () => {
+        try {
+          const health = await checkSheetGateway();
+          console.info("Google Sheets submission gateway ready:", health);
+        } catch (error) {
+          console.warn("Google Sheets submission gateway check failed:", error);
+        }
+      }, 500);
+    }
   });
 })();

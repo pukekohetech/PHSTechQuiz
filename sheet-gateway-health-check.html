@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheet Gateway Health Check</title>
+<style>
+body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:850px;margin:40px auto;padding:0 20px;line-height:1.5}
+input{width:100%;box-sizing:border-box;padding:10px;font:inherit}
+button{margin-top:12px;padding:10px 16px;font:inherit;cursor:pointer}
+pre{white-space:pre-wrap;background:#f4f4f4;padding:16px;border-radius:8px;min-height:80px}
+.ok{border-left:5px solid #238636} .bad{border-left:5px solid #b42318}
+</style>
+</head>
+<body>
+<h1>Google Sheets Gateway Health Check</h1>
+<p>This only checks whether the Apps Script web app is deployed and publicly reachable. It does not submit student data.</p>
+<label for="url">Apps Script /exec URL</label>
+<input id="url" value="https://script.google.com/macros/s/AKfycby6-9FIHf9pDmE6IioGDRcK4JTtlmzHZv8x6_l6scL3ypFI5gzA3srJLHzuX4zHQqU0Pw/exec">
+<button id="test">Test gateway</button>
+<pre id="out">Press Test gateway.</pre>
+<script>
+const out=document.getElementById('out');
+document.getElementById('test').addEventListener('click',()=>{
+  const endpoint=document.getElementById('url').value.trim();
+  out.className='';
+  out.textContent='Testing...';
+  const cb='__sheetHealth_'+Date.now();
+  const s=document.createElement('script');
+  const timer=setTimeout(()=>finish(new Error('Timed out. Check deployment access is set to Anyone and that you used the /exec URL.')),8000);
+  function finish(err,value){
+    clearTimeout(timer);
+    try{delete window[cb]}catch(e){}
+    s.remove();
+    if(err){out.className='bad';out.textContent='FAILED\n\n'+err.message;}
+    else{out.className=value && value.state==='ready' && value.mode==='sheet' ? 'ok':'bad';out.textContent=JSON.stringify(value,null,2);}
+  }
+  window[cb]=(v)=>finish(null,v);
+  try{
+    const u=new URL(endpoint);
+    u.searchParams.set('action','health');
+    u.searchParams.set('callback',cb);
+    u.searchParams.set('_',Date.now());
+    s.onerror=()=>finish(new Error('Could not load the web app. The deployment may require sign-in or the URL may be wrong.'));
+    s.src=u.toString();
+    document.head.appendChild(s);
+  }catch(e){finish(e)}
+});
+</script>
+</body>
+</html>
