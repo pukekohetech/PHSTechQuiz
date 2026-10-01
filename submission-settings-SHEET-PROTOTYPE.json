@@ -5,7 +5,7 @@
   },
   "gateway": {
     "url": "https://script.google.com/macros/s/AKfycbxo_PzdPD5ZjP-J53fBAZGXOfoAAbcKdlZz5dbH1xZKYnSS0S0T9u3z3J7Jwv_oAlJmUg/exec",
-    "sheetUrl": "https://script.google.com/macros/s/AKfycby6-9FIHf9pDmE6IioGDRcK4JTtlmzHZv8x6_l6scL3ypFI5gzA3srJLHzuX4zHQqU0Pw/exec",
+    "sheetUrl": "https://script.google.com/macros/s/AKfycbwDInpn9yBVnxzKqX_uQu_bawXqmDKAt_FdY377jeUzm0zD2MFhcdSvp74RB_0tRGBbTQ/exec",
     "provider": "apps-script"
   },
   "storage": {
