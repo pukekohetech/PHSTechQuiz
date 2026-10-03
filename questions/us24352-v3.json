@@ -1,96 +1,122 @@
-{
-  "schemaVersion": 2,
-  "questionSet": {
-    "id": "us24352-v3",
-    "label": "US 24352 - Safety Knowledge",
-    "title": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-    "number": "24352",
-    "version": "v3",
-    "credits": 2,
-    "standardType": "internal"
-  },
-  "assessments": [
+              "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "ppe_required_5",
+          "text": "PPE required (specify or N/A).",
+          "image": "blank.jpg",
+          "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
+          "type": "short",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "comments_5",
+          "text": "What could have happened if this hazard went unchecked?",
+          "image": "blank.jpg",
+          "hint": "Describe a realistic outcome (injury, damage, accident).",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
+              "flags": "i"
+            }
+          ]
+        }
+      ]
+    },
     {
-      "id": "24352-selfreflection1",
-      "title": "Learner Self-reflection 1 – 24352 (v3)",
-      "attachSignoff": false,
-      "subtitle": "US 24352 – Eye and Respiratory PPE",
+      "id": "assessment-record-6",
+      "title": "Assessment Record Sheet - 24352 - final (v3) 6/6",
+      "attachSignoff": true,
+      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
       "questions": [
         {
-          "id": "q1a_face_shields",
-          "text": "Match the appropriate eye protection PPE to the hazard.\n\nPPE Type: Polycarbonate face shields",
+          "id": "project_name_6",
+          "text": "Name the project you were working on.",
           "image": "blank.jpg",
-          "hint": "Think about fast-moving chips/particles and the need to protect more than just the eyes.",
-          "type": "mc",
+          "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
+          "type": "short",
           "maxPoints": 1,
           "rubric": [
             {
               "points": 1,
-              "check": "^High velocity particles$",
-              "flags": "i"
+              "check": ".+",
+              "flags": ""
             }
-          ],
-          "options": [
-            "Low velocity flying particles and objects",
-            "Medium velocity small flying particles",
-            "High velocity particles",
-            "Gas vapours, dust and fumes",
-            "Non-ionizing radiation and glare",
-            "Infrared and UV radiation (arc welding)"
           ]
         },
         {
-          "id": "q1b_hood_helmet",
-          "text": "Match the appropriate eye protection PPE to the hazard.\n\nPPE Type: Hood and helmet (completely sealing the face)",
+          "id": "hazard_identified_6",
+          "text": "What hazard did you encounter?",
           "image": "blank.jpg",
-          "hint": "If it seals, what kind of hazard is it trying to keep OUT of your breathing/eye area?",
-          "type": "mc",
+          "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
+          "type": "long",
+          "maxPoints": 2,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
+              "flags": "i"
+            }
+          ]
+        },
+        {
+          "id": "ppe_required_6",
+          "text": "PPE required (specify or N/A).",
+          "image": "blank.jpg",
+          "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
+          "type": "short",
           "maxPoints": 1,
           "rubric": [
             {
               "points": 1,
-              "check": "^Gas vapours, dust and fumes$",
+              "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
               "flags": "i"
             }
-          ],
-          "options": [
-            "Low velocity flying particles and objects",
-            "Medium velocity small flying particles",
-            "High velocity particles",
-            "Gas vapours, dust and fumes",
-            "Non-ionizing radiation and glare",
-            "Infrared and UV radiation (arc welding)"
           ]
         },
         {
-          "id": "q1c_wide_goggles",
-          "text": "Match the appropriate eye protection PPE to the hazard.\n\nPPE Type: Wide vision goggles",
+          "id": "comments_6",
+          "text": "What could have happened if this hazard went unchecked?",
           "image": "blank.jpg",
-          "hint": "Think about higher-energy chips than normal workshop tasks (more impact protection than basic glasses).",
-          "type": "mc",
-          "maxPoints": 1,
+          "hint": "Describe a realistic outcome (injury, damage, accident).",
+          "type": "long",
+          "maxPoints": 2,
           "rubric": [
             {
               "points": 1,
-              "check": "^Medium velocity small flying particles$",
+              "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 1,
+              "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
               "flags": "i"
             }
-          ],
-          "options": [
-            "Low velocity flying particles and objects",
-            "Medium velocity small flying particles",
-            "High velocity particles",
-            "Gas vapours, dust and fumes",
-            "Non-ionizing radiation and glare",
-            "Infrared and UV radiation (arc welding)"
           ]
-        },
-        {
-          "id": "q1d_safety_glasses",
-          "text": "Match the appropriate eye protection PPE to the hazard.\n\nPPE Type: Safety glasses",
-          "image": "blank.jpg",
-          "hint": "General workshop protection for typical jobs with small chips.",
-          "type": "mc",
-          "maxPoints": 1,
-          "rubric": [
-            {
+        }
+      ]
+    }
+  ]
+}
