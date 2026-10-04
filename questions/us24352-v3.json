@@ -65,6 +65,17 @@
           "required": true
         },
         {
+          "id": "assessment-record-1-trial-n",
+          "type": "repeatGroup",
+          "assessmentId": "assessment-record-1",
+          "blockId": "assessment-record-1-trial",
+          "label": "Trial {n}",
+          "unitLabel": "trial",
+          "require": "rubric",
+          "minimum": 2,
+          "required": true
+        },
+        {
           "id": "assessment-record-1-3-assessment-record-sheet-24352-v3-1-6-questions",
           "type": "questions",
           "assessmentId": "assessment-record-1",
@@ -75,76 +86,6 @@
             "comments_1"
           ],
           "label": "3. Assessment Record Sheet - 24352 (v3) 1/6 - questions",
-          "require": "rubric",
-          "required": true
-        },
-        {
-          "id": "assessment-record-2-4-assessment-record-sheet-24352-v3-2-6-questions",
-          "type": "questions",
-          "assessmentId": "assessment-record-2",
-          "questionIds": [
-            "project_name_2",
-            "hazard_identified_2",
-            "ppe_required_2",
-            "comments_2"
-          ],
-          "label": "4. Assessment Record Sheet - 24352 (v3) 2/6 - questions",
-          "require": "rubric",
-          "required": true
-        },
-        {
-          "id": "assessment-record-3-5-assessment-record-sheet-24352-v3-3-6-questions",
-          "type": "questions",
-          "assessmentId": "assessment-record-3",
-          "questionIds": [
-            "project_name_3",
-            "hazard_identified_3",
-            "ppe_required_3",
-            "comments_3"
-          ],
-          "label": "5. Assessment Record Sheet - 24352 (v3) 3/6 - questions",
-          "require": "rubric",
-          "required": true
-        },
-        {
-          "id": "assessment-record-4-6-assessment-record-sheet-24352-v3-4-6-questions",
-          "type": "questions",
-          "assessmentId": "assessment-record-4",
-          "questionIds": [
-            "project_name_4",
-            "hazard_identified_4",
-            "ppe_required_4",
-            "comments_4"
-          ],
-          "label": "6. Assessment Record Sheet - 24352 (v3) 4/6 - questions",
-          "require": "rubric",
-          "required": true
-        },
-        {
-          "id": "assessment-record-5-7-assessment-record-sheet-24352-v3-5-6-questions",
-          "type": "questions",
-          "assessmentId": "assessment-record-5",
-          "questionIds": [
-            "project_name_5",
-            "hazard_identified_5",
-            "ppe_required_5",
-            "comments_5"
-          ],
-          "label": "7. Assessment Record Sheet - 24352(v3) 5/6 - questions",
-          "require": "rubric",
-          "required": true
-        },
-        {
-          "id": "assessment-record-6-8-assessment-record-sheet-24352-final-v3-6-6-questions",
-          "type": "questions",
-          "assessmentId": "assessment-record-6",
-          "questionIds": [
-            "project_name_6",
-            "hazard_identified_6",
-            "ppe_required_6",
-            "comments_6"
-          ],
-          "label": "8. Assessment Record Sheet - 24352 - final (v3) 6/6 - questions",
           "require": "rubric",
           "required": true
         }
@@ -1072,469 +1013,79 @@
               "image": "blank.jpg"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "assessment-record-2",
-      "title": "4. Assessment Record Sheet - 24352 (v3) 2/6",
-      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "attachSignoff": false,
-      "schemaVersion": 3,
-      "questions": [],
-      "questionGroups": [],
-      "blocks": [
+        },
         {
-          "type": "questions",
-          "id": "imported-4",
+          "type": "repeatGroup",
+          "id": "assessment-record-1-trial",
+          "group": {
+            "label": "Trial {n} of {count}",
+            "title": "Trial {n}",
+            "intro": "Record one trial here."
+          },
+          "itemLabel": "trial",
+          "startWith": 2,
+          "minimum": 2,
+          "maximum": null,
+          "allowAdd": true,
+          "allowRemove": true,
+          "addLabel": "+ Add another trial",
+          "removeLabel": "Remove last added trial",
           "questions": [
             {
-              "id": "project_name_2",
-              "text": "Name the project you were working on.",
-              "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
+              "id": "24352-assessment-record-1-q05",
+              "part": "A",
+              "text": "What did you trial?",
               "type": "short",
               "maxPoints": 1,
               "rubric": [
                 {
                   "points": 1,
-                  "check": ".+",
-                  "flags": "",
-                  "_uid": "u34lpc4lyfo6f"
+                  "check": "(?=^[\\s\\S]{1,}$).+",
+                  "flags": "i"
                 }
-              ],
-              "image": "blank.jpg"
+              ]
             },
             {
-              "id": "hazard_identified_2",
-              "text": "What hazard did you encounter?",
-              "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
-                  "flags": "i",
-                  "_uid": "u9adedtccfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
-                  "flags": "i",
-                  "_uid": "ui5awdw70fo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "ppe_required_2",
-              "text": "PPE required (specify or N/A).",
-              "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
+              "id": "24352-assessment-record-1-q06",
+              "part": "B",
+              "text": "What happened?",
               "type": "short",
               "maxPoints": 1,
               "rubric": [
                 {
                   "points": 1,
-                  "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
-                  "flags": "i",
-                  "_uid": "u5ae8b9wcfo6f"
+                  "check": "(?=^[\\s\\S]{1,}$).+",
+                  "flags": "i"
                 }
-              ],
-              "image": "blank.jpg"
+              ]
             },
             {
-              "id": "comments_2",
-              "text": "What could have happened if this hazard went unchecked?",
-              "hint": "Describe a realistic outcome (injury, damage, accident).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
-                  "flags": "i",
-                  "_uid": "ukq8ohx7tfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
-                  "flags": "i",
-                  "_uid": "ufi78d4r6fo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "assessment-record-3",
-      "title": "5. Assessment Record Sheet - 24352 (v3) 3/6",
-      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "attachSignoff": false,
-      "schemaVersion": 3,
-      "questions": [],
-      "questionGroups": [],
-      "blocks": [
-        {
-          "type": "questions",
-          "id": "imported-5",
-          "questions": [
-            {
-              "id": "project_name_3",
-              "text": "Name the project you were working on.",
-              "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
+              "id": "24352-assessment-record-1-q07",
+              "part": "C",
+              "text": "Write your question here",
               "type": "short",
               "maxPoints": 1,
               "rubric": [
                 {
                   "points": 1,
-                  "check": ".+",
-                  "flags": "",
-                  "_uid": "up5hh0teufo6f"
+                  "check": "(?!)",
+                  "flags": "i"
                 }
-              ],
-              "image": "blank.jpg"
+              ]
             },
             {
-              "id": "hazard_identified_3",
-              "text": "What hazard did you encounter?",
-              "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
-                  "flags": "i",
-                  "_uid": "usjd962o0fo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
-                  "flags": "i",
-                  "_uid": "u266xv3pnfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "ppe_required_3",
-              "text": "PPE required (specify or N/A).",
-              "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
+              "id": "24352-assessment-record-1-q08",
+              "part": "D",
+              "text": "Write your question here",
               "type": "short",
               "maxPoints": 1,
               "rubric": [
                 {
                   "points": 1,
-                  "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
-                  "flags": "i",
-                  "_uid": "uoki6cwocfo6f"
+                  "check": "(?=^[\\s\\S]{1,}$).+",
+                  "flags": "i"
                 }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "comments_3",
-              "text": "What could have happened if this hazard went unchecked?",
-              "hint": "Describe a realistic outcome (injury, damage, accident).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
-                  "flags": "i",
-                  "_uid": "uh41s1h35fo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
-                  "flags": "i",
-                  "_uid": "ua6izx140fo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "assessment-record-4",
-      "title": "6. Assessment Record Sheet - 24352 (v3) 4/6",
-      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "attachSignoff": false,
-      "schemaVersion": 3,
-      "questions": [],
-      "questionGroups": [],
-      "blocks": [
-        {
-          "type": "questions",
-          "id": "imported-6",
-          "questions": [
-            {
-              "id": "project_name_4",
-              "text": "Name the project you were working on.",
-              "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": ".+",
-                  "flags": "",
-                  "_uid": "u8moeehubfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "hazard_identified_4",
-              "text": "What hazard did you encounter?",
-              "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
-                  "flags": "i",
-                  "_uid": "up9i6yo6rfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
-                  "flags": "i",
-                  "_uid": "ulqgdw0ezfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "ppe_required_4",
-              "text": "PPE required (specify or N/A).",
-              "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
-                  "flags": "i",
-                  "_uid": "uuwv9gn6mfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "comments_4",
-              "text": "What could have happened if this hazard went unchecked?",
-              "hint": "Describe a realistic outcome (injury, damage, accident).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
-                  "flags": "i",
-                  "_uid": "u21l497npfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
-                  "flags": "i",
-                  "_uid": "uyxshi84rfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "assessment-record-5",
-      "title": "7. Assessment Record Sheet - 24352(v3) 5/6",
-      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "attachSignoff": true,
-      "schemaVersion": 3,
-      "questions": [],
-      "questionGroups": [],
-      "blocks": [
-        {
-          "type": "questions",
-          "id": "imported-7",
-          "questions": [
-            {
-              "id": "project_name_5",
-              "text": "Name the project you were working on.",
-              "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": ".+",
-                  "flags": "",
-                  "_uid": "u8m3n97hhfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "hazard_identified_5",
-              "text": "What hazard did you encounter?",
-              "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
-                  "flags": "i",
-                  "_uid": "uhonke1pkfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
-                  "flags": "i",
-                  "_uid": "uqgwgpvixfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "ppe_required_5",
-              "text": "PPE required (specify or N/A).",
-              "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
-                  "flags": "i",
-                  "_uid": "u39zxfzdpfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "comments_5",
-              "text": "What could have happened if this hazard went unchecked?",
-              "hint": "Describe a realistic outcome (injury, damage, accident).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
-                  "flags": "i",
-                  "_uid": "upowji7mofo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
-                  "flags": "i",
-                  "_uid": "uqzbr45s6fo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "assessment-record-6",
-      "title": "8. Assessment Record Sheet - 24352 - final (v3) 6/6",
-      "subtitle": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "attachSignoff": true,
-      "schemaVersion": 3,
-      "questions": [],
-      "questionGroups": [],
-      "blocks": [
-        {
-          "type": "questions",
-          "id": "imported-8",
-          "questions": [
-            {
-              "id": "project_name_6",
-              "text": "Name the project you were working on.",
-              "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": ".+",
-                  "flags": "",
-                  "_uid": "u2n58pflmfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "hazard_identified_6",
-              "text": "What hazard did you encounter?",
-              "hint": "Name a real hazard you noticed (dust, noise, sharp edge, loose cable, etc.).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(dust|sawdust|wood\\s?dust|fine\\s?dust|MDF\\s?dust|concrete\\s?dust|cement\\s?dust|silica|fumes?|vapou?r|spray|noise|loud|vibration|sharp|blade|cut|splinter|chip|debris|fragment(s)?|shard(s)?|spark(s)?|hot|heat|burn(s)?|fire|flammable|chemical(s)?|paint|glue|solvent(s)?|thinners?|spill(s)?|wet\\s?floor|clutter|mess|offcuts?|slip|trip|fall|electric(ity)?|shock|live\\s?wire|exposed\\s?wire|unguarded|guard\\s?missing|broken|faulty|frayed|unstable|heavy|manual\\s?handling|back\\s?strain|kickback|hair|jewell?ery|ring(s)?|bracelet(s)?|necklace(s)?|loose\\s?clothing|drawstring(s)?|hoodie\\s?string(s)?)\\b",
-                  "flags": "i",
-                  "_uid": "uz2ejqaqqfo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(saw|drop\\s?saw|circular\\s?saw|mitre\\s?saw|sander|belt\\s?sander|router|drill|lathe|grinder|angle\\s?grinder|nail\\s?gun|hammer|chisel|bench|work\\s?bench|vice|clamp(s)?|machine|tool|cable|cord|lead|power\\s?lead|extension|workshop|floor|walkway|storage|shed|truck|plywood|sheet(s)?|timber|wood|concrete)\\b",
-                  "flags": "i",
-                  "_uid": "uztsgtpylfo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "ppe_required_6",
-              "text": "PPE required (specify or N/A).",
-              "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
-              "type": "short",
-              "maxPoints": 1,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(safety (glasses|goggles)|face shield|welding helmet|mask|respirator|dust mask|ear[\\s-]*(muff|muffs|plug|plugs)|gloves?|overalls?|apron|hard hat|steel[- ]?cap (boots?|shoes?)|safety boots?)\\b|\\bN\\/?A\\b",
-                  "flags": "i",
-                  "_uid": "u43o9es6ifo6f"
-                }
-              ],
-              "image": "blank.jpg"
-            },
-            {
-              "id": "comments_6",
-              "text": "What could have happened if this hazard went unchecked?",
-              "hint": "Describe a realistic outcome (injury, damage, accident).",
-              "type": "long",
-              "maxPoints": 2,
-              "rubric": [
-                {
-                  "points": 1,
-                  "check": "\\b(could|might|may|would|risk|result|cause|lead to)\\b",
-                  "flags": "i",
-                  "_uid": "uln9gf8sefo6f"
-                },
-                {
-                  "points": 1,
-                  "check": "\\b(injur(y|ies)|hurt|cut|burn|eye|blind|hearing|tinnitus|trip|fall|shock|strain|damage|accident)\\b",
-                  "flags": "i",
-                  "_uid": "u77zc1v4ofo6f"
-                }
-              ],
-              "image": "blank.jpg"
+              ]
             }
           ]
         }
