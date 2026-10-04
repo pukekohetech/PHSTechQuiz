@@ -72,7 +72,7 @@
           "label": "Hazard record {n}",
           "unitLabel": "hazard",
           "require": "rubric",
-          "minimum": 6,
+          "minimum": 5,
           "required": true
         }
       ]
@@ -928,9 +928,9 @@
             "reminder": "Keep the project, hazard, PPE and possible consequence connected."
           },
           "itemLabel": "hazard",
-          "startWith": 6,
-          "minimum": 6,
-          "maximum": null,
+          "startWith": 2,
+          "minimum": 5,
+          "maximum": 6,
           "allowAdd": true,
           "allowRemove": true,
           "addLabel": "+ Add another hazard",
