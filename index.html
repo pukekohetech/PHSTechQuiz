@@ -7,7 +7,7 @@
     <title id="page-title">Loading…</title>
     <!-- Add a favicon for better browser tab appearance -->
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="stylesheet" href="styles.css?v=16">
+    <link rel="stylesheet" href="styles.css?v=17">
     <link rel="stylesheet" href="question-groups.css?v=23">
 
   </head>
@@ -104,42 +104,12 @@
           <div id="submissionReceipt" class="submission-receipt hidden" aria-live="polite"></div>
         </div>
         <div class="btn-group result-actions" aria-label="Completed assessment actions">
-          <button class="btn btn-secondary" id="moreOptionsBtn" type="button" onclick="openResultOptions()">
-            More options
-          </button>
           <button class="btn btn-secondary" type="button" onclick="back()">Back to Form</button>
         </div>
         <p id="pdfStatus" class="share-help" aria-live="polite"></p>
       </section>
     </div>
 
-
-    <div id="resultOptionsBackdrop" class="result-options-backdrop hidden" aria-hidden="true"></div>
-    <aside id="resultOptionsPanel" class="result-options-panel hidden" aria-labelledby="resultOptionsTitle" aria-hidden="true" role="dialog" aria-modal="true" tabindex="-1">
-      <div class="result-options-panel__header">
-        <div>
-          <p class="app-settings-kicker">Completed assessment</p>
-          <h2 id="resultOptionsTitle">More options</h2>
-        </div>
-        <button id="resultOptionsClose" class="app-settings-close" type="button" aria-label="Close more options">&times;</button>
-      </div>
-      <p class="app-settings-intro">Use these only if you need a personal copy or another way to move your work.</p>
-      <div class="app-settings-actions">
-        <button class="settings-action-button" id="downloadBtn" type="button" onclick="downloadWork()" disabled>
-          <span aria-hidden="true">&#8681;</span>
-          <span><strong>Download PDF</strong><small>Save a copy of the completed assessment</small></span>
-        </button>
-        <button class="settings-action-button settings-action-button--secondary" id="downloadPukBtn" type="button" onclick="downloadPreparedPuk()" disabled>
-          <span aria-hidden="true">&#128190;</span>
-          <span><strong>Download .puk backup</strong><small>Save the encrypted editable work file</small></span>
-        </button>
-        <button class="settings-action-button settings-action-button--secondary" id="shareBtn" type="button" onclick="shareWork()" disabled>
-          <span aria-hidden="true">&#8599;</span>
-          <span><strong>Share PDF</strong><small>Open the device share sheet</small></span>
-        </button>
-      </div>
-      <p class="app-settings-note">On iPad, sharing is usually the easiest way to save a personal PDF copy to Files.</p>
-    </aside>
 
     <!-- Touch-friendly assessment save/load controls. -->
     <button id="appSettingsToggle" class="app-settings-toggle" type="button" aria-controls="appSettingsPanel" aria-expanded="false" aria-label="Open assessment settings">
@@ -337,10 +307,10 @@
     </aside>
 
     <!-- Load the application logic. Using regular script tags avoids issues with ES module loading via file://. -->
-<script src="script.js?v=30" defer></script>
+<script src="script.js?v=31" defer></script>
 <script src="dynamic-branding.js?v=2" defer></script>
 <script src="flexible-groups.js?v=6" defer></script>
-<script src="submission.js?v=1" defer></script>
+<script src="submission.js?v=2" defer></script>
 <script src="photo-evidence.js?v=9" defer></script>
 <script src="reading-comfort.js?v=2" defer></script>
 

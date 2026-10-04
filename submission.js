@@ -547,32 +547,14 @@
     return status;
   }
 
-  function setResultOptionVisibility(sheetMode) {
-    const moreOptions = document.getElementById("moreOptionsBtn");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const downloadPukBtn = document.getElementById("downloadPukBtn");
-    const shareBtn = document.getElementById("shareBtn");
-    if (sheetMode) {
-      if (moreOptions) moreOptions.hidden = true;
-      [downloadBtn, downloadPukBtn, shareBtn].forEach((button) => { if (button) button.hidden = true; });
-    } else {
-      if (moreOptions) moreOptions.hidden = false;
-      [downloadBtn, downloadPukBtn, shareBtn].forEach((button) => { if (button) button.hidden = false; });
-    }
-  }
-
   clearPreparedPdf = function unitSheetClearPreparedPdf() {
     sheetPackage = null;
     return originalClearPreparedPdf();
   };
 
   updatePdfActionState = function unitSheetUpdateActionState() {
-    if (!isSheetMode()) {
-      setResultOptionVisibility(false);
-      return originalUpdatePdfActionState();
-    }
+    if (!isSheetMode()) return originalUpdatePdfActionState();
 
-    setResultOptionVisibility(true);
     const canSubmit = canExportCurrentResult();
     const packageReady = !!sheetPackage;
     const endpointReady = !!getSheetEndpoint();

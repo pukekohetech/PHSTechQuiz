@@ -410,15 +410,6 @@ function downloadBlob(blob, filename) {
   window.setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-function canShareFile(file) {
-  if (!file || typeof navigator.share !== "function") return false;
-  if (typeof navigator.canShare !== "function") return false;
-  try {
-    return navigator.canShare({ files: [file] });
-  } catch {
-    return false;
-  }
-}
 
 async function fetchOptionalPdfBytes(url) {
   try {
@@ -633,7 +624,6 @@ async function loadQuestionSet(questionSetId, options = {}) {
   persistCurrentAssessmentAnswers();
   resetDeadlineContext();
   clearPreparedPdf();
-  closeResultOptions();
   document.getElementById("result")?.classList.add("hidden");
   document.getElementById("form")?.classList.remove("hidden");
   document.getElementById("questions")?.replaceChildren();
@@ -1893,7 +1883,6 @@ let preparedPdfBase64 = null;
 let currentSubmissionId = null;
 let lastConfirmedSubmission = null;
 let pdfPreparationToken = 0;
-let pdfActionInProgress = false;
 let pdfPreparationInProgress = false;
 let submissionInProgress = false;
 
@@ -1921,21 +1910,8 @@ function updatePdfActionState() {
   const uploadReady = !!preparedPdfBase64;
   const packageReady = pdfReady && pukReady && uploadReady;
   const canExport = canExportCurrentResult();
-  const busy = pdfActionInProgress || pdfPreparationInProgress || submissionInProgress;
-  const downloadBtn = document.getElementById("downloadBtn");
-  const downloadPukBtn = document.getElementById("downloadPukBtn");
-  const shareBtn = document.getElementById("shareBtn");
+  const busy = pdfPreparationInProgress || submissionInProgress;
   const submitTeacherBtn = document.getElementById("submitTeacherBtn");
-
-  [downloadBtn, shareBtn].forEach((button) => {
-    if (!button) return;
-    button.disabled = !canExport || !pdfReady || busy;
-    button.setAttribute("aria-busy", String(busy));
-  });
-  if (downloadPukBtn) {
-    downloadPukBtn.disabled = !canExport || !pukReady || busy;
-    downloadPukBtn.setAttribute("aria-busy", String(busy));
-  }
 
   const endpointReady = !!getSubmissionEndpoint();
   const rootNameReady = !!getSubmissionRootName();
@@ -1960,7 +1936,7 @@ function updatePdfActionState() {
       submissionStatus.textContent = "Reach the required result before teacher submission is available.";
       submissionStatus.className = "submission-card__status warning";
     } else if (!endpointReady) {
-      submissionStatus.textContent = "Teacher submission is not configured yet. Your PDF and .puk can still be saved from More options.";
+      submissionStatus.textContent = "Teacher submission is not configured yet. Your work remains saved in this browser and can be backed up from Save & Load.";
       submissionStatus.className = "submission-card__status warning";
     } else if (!rootNameReady) {
       submissionStatus.textContent = "Evidence storage is not configured. Add storage.rootName to submission-settings.json.";
@@ -2159,7 +2135,6 @@ function submitWork() {
 }
 
 function back() {
-  closeResultOptions();
   clearPreparedPdf();
   document.getElementById("result").classList.add("hidden");
   document.getElementById("form").classList.remove("hidden");
@@ -2375,47 +2350,8 @@ async function submitToTeacher() {
   }
 }
 
-function openResultOptions() {
-  const panel = document.getElementById("resultOptionsPanel");
-  const backdrop = document.getElementById("resultOptionsBackdrop");
-  if (!panel || !backdrop) return;
-  panel.classList.remove("hidden");
-  backdrop.classList.remove("hidden");
-  panel.setAttribute("aria-hidden", "false");
-  backdrop.setAttribute("aria-hidden", "false");
-  document.body.classList.add("result-options-open");
-  setTimeout(() => panel.focus(), 0);
-}
-
-function closeResultOptions() {
-  const panel = document.getElementById("resultOptionsPanel");
-  const backdrop = document.getElementById("resultOptionsBackdrop");
-  if (!panel || !backdrop) return;
-  panel.classList.add("hidden");
-  backdrop.classList.add("hidden");
-  panel.setAttribute("aria-hidden", "true");
-  backdrop.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("result-options-open");
-}
-
-function initResultOptions() {
-  document.getElementById("resultOptionsClose")?.addEventListener("click", closeResultOptions);
-  document.getElementById("resultOptionsBackdrop")?.addEventListener("click", closeResultOptions);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !document.getElementById("resultOptionsPanel")?.classList.contains("hidden")) {
-      closeResultOptions();
-    }
-  });
-}
-
-function downloadPreparedPuk() {
-  if (!preparedPukResult) return showToast("The .puk backup is still being prepared.", false);
-  downloadBlob(preparedPukResult.pukBlob, preparedPukResult.fileName);
-  showToast(isAppleMobileDevice() ? ".puk backup opened. Use Share, then Save to Files." : ".puk backup download started.");
-}
-
 // ------------------------------------------------------------
-// Email / PDF (existing behaviour preserved)
+// PDF preparation for teacher submission (legacy file mode)
 // ------------------------------------------------------------
 async function createAssessmentPdf() {
   if (!finalData) return alert("Submit first!");
@@ -2630,70 +2566,6 @@ async function createAssessmentPdf() {
   return { pdfBlob, fileName };
 }
 
-function setPdfActionBusy(isBusy) {
-  pdfActionInProgress = isBusy;
-  updatePdfActionState();
-}
-
-function downloadPreparedPdf() {
-  if (!preparedPdfResult) {
-    showToast("The PDF is still being prepared. Please try again in a moment.", false);
-    return;
-  }
-  try {
-    downloadBlob(preparedPdfResult.pdfBlob, preparedPdfResult.fileName);
-    showToast(isAppleMobileDevice() ? "PDF opened. Use Share, then Save to Files." : "PDF download started.");
-  } catch (error) {
-    console.error("PDF download failed:", error);
-    showToast("PDF could not be downloaded.", false);
-  }
-}
-
-function downloadWork() {
-  if (pdfActionInProgress || pdfPreparationInProgress) return;
-  downloadPreparedPdf();
-}
-
-function shareWork() {
-  if (pdfActionInProgress || pdfPreparationInProgress) return;
-  if (!preparedPdfResult) {
-    showToast("The PDF is still being prepared. Please try again in a moment.", false);
-    return;
-  }
-
-  const pdfFile = preparedPdfResult.pdfFile;
-  if (!canShareFile(pdfFile)) {
-    downloadPreparedPdf();
-    showToast("Direct file sharing is unavailable. The PDF was opened for saving instead.", false);
-    return;
-  }
-
-  // Do not await any PDF work before this call. Safari requires navigator.share
-  // to run directly from the student's tap, otherwise it can throw NotAllowedError.
-  setPdfActionBusy(true);
-  navigator.share({
-    title: "Assessment PDF",
-    text: "Here is my completed assessment.",
-    files: [pdfFile],
-  }).then(() => {
-    showToast("PDF shared successfully.");
-  }).catch((error) => {
-    if (error?.name === "AbortError") {
-      showToast("Sharing cancelled.", false);
-      return;
-    }
-    console.warn("Native file sharing failed:", error);
-    showToast("Sharing was blocked. Use Download PDF, then Share or Save to Files.", false);
-  }).finally(() => {
-    setPdfActionBusy(false);
-  });
-}
-
-// Keep the old function name for any bookmarked or older HTML version.
-async function emailWork() {
-  return shareWork();
-}
-
 // ------------------------------------------------------------
 // Attach protection to inputs (softened anti-cheat)
 // ------------------------------------------------------------
@@ -2732,13 +2604,7 @@ if ("serviceWorker" in navigator && isSecureContext && /^https?:$/.test(location
 window.loadAssessment = loadAssessment;
 window.submitWork = submitWork;
 window.back = back;
-window.emailWork = emailWork;
-window.downloadWork = downloadWork;
-window.shareWork = shareWork;
 window.submitToTeacher = submitToTeacher;
-window.openResultOptions = openResultOptions;
-window.closeResultOptions = closeResultOptions;
-window.downloadPreparedPuk = downloadPreparedPuk;
 
 // ------------------------------------------------------------
 // Start
@@ -2748,7 +2614,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadSubmissionSettings();
   initApp();
   initAppSettings();
-  initResultOptions();
   updatePdfActionState();
 
   // Preload libraries quietly.

@@ -1397,11 +1397,6 @@ body.app-settings-open {
   font-size: 0.88rem;
 }
 
-.result-actions .btn[aria-busy="true"] {
-  opacity: 0.65;
-  cursor: progress;
-}
-
 @media (max-width: 640px) {
   .app-settings-toggle {
     bottom: 10px;
@@ -1678,62 +1673,7 @@ textarea {
   display: block;
 }
 
-.result-options-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1230;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(2px);
-}
-
-.result-options-backdrop.hidden,
-.result-options-panel.hidden {
-  display: none !important;
-}
-
-.result-options-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 1231;
-  width: min(520px, calc(100vw - 28px));
-  max-height: calc(100dvh - 28px);
-  overflow-y: auto;
-  transform: translate(-50%, -50%);
-  border: 1px solid #cbd5e1;
-  border-radius: 20px;
-  padding: 22px;
-  background: #f8fafc;
-  color: #1f2933;
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.42);
-}
-
-.result-options-panel__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-.result-options-panel__header h2 {
-  margin: 0;
-  color: #1f2933;
-  font-size: 1.6rem;
-}
-
-body.result-options-open {
-  overflow: hidden;
-}
-
 @media (max-width: 640px) {
-  .result-options-panel {
-    width: calc(100vw - 20px);
-    max-height: calc(100dvh - 20px);
-    padding: 18px;
-    border-radius: 16px;
-  }
-
   .submission-card {
     padding: 14px;
   }

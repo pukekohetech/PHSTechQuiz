@@ -2,18 +2,18 @@
 // Update cache name to force cache busting when assets change. 
 // Bump the cache version whenever core assets change. This forces the
 // service worker to re-cache updated files like script.js and questions.json.
-const CACHE_NAME = 'phs-assessment-v30-records';
+const CACHE_NAME = 'phs-assessment-v31-cleanup';
 
 const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./script.js?v=30",
+  "./script.js?v=31",
   "./dynamic-branding.js?v=2",
   "./flexible-groups.js?v=6",
-  "./submission.js?v=1",
+  "./submission.js?v=2",
   "./photo-evidence.js?v=9",
   "./question-groups.css?v=23",
-  "./styles.css?v=16",
+  "./styles.css?v=17",
   "./reading-comfort.js?v=2",
   "./resource.html",
   "./app-config.json",

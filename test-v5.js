@@ -3,7 +3,7 @@ const vm = require('vm');
 const assert = require('assert');
 globalThis.assert = assert;
 
-const plugin = fs.readFileSync('/mnt/data/qm-flex-v5-submit-sync/flexible-groups.js','utf8');
+const plugin = fs.readFileSync(require('path').join(__dirname, 'flexible-groups.js'),'utf8');
 
 const prefix = `
 var window = globalThis;
