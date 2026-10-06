@@ -507,7 +507,7 @@
               "id": "q2_jandals",
               "text": "Q2: Why should jandals never be worn on a work site?",
               "hint": "Think about toe protection, grip, and what happens if something sharp/heavy lands on your foot.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -523,7 +523,7 @@
               "id": "q3a_heat_sparks",
               "text": "Q3: Identify the hazard – What type of clothing would be a hazard to wear around heat or sparks?",
               "hint": "Think about fabrics that melt or catch easily, and clothing that leaves skin exposed.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -539,7 +539,7 @@
               "id": "q3b_machinery_lathes",
               "text": "Q3: Identify the hazard – What type of clothing would be a hazard to wear around machinery such as lathes?",
               "hint": "Think about anything that can get caught in moving parts.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -555,7 +555,7 @@
               "id": "q3c_spraying_paint",
               "text": "Q3: Identify the hazard – What type of clothing would be a hazard to wear when spraying paint?",
               "hint": "Think about overspray/chemicals contacting skin and clothing that doesn’t cover your body.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -571,7 +571,7 @@
               "id": "q4_long_hair_machinery",
               "text": "Q4: Identify the potential hazards of wearing long hair around machinery.",
               "hint": "What can moving parts do if they grab hair?",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -631,7 +631,7 @@
               "id": "q6_nailing_timber_eye_hazard",
               "text": "Q6: When nailing timber you should always wear eye protection. Describe an eye hazard associated with this activity.",
               "hint": "Think about what can fly upward unexpectedly.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -941,7 +941,7 @@
               "part": "A",
               "text": "Name the project you were working on.",
               "hint": "Example: stool, toolbox, picture frame, coffee table, etc.",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
@@ -981,7 +981,7 @@
               "part": "C",
               "text": "PPE required (specify or N/A).",
               "hint": "List the PPE you actually used (e.g., safety glasses, ear muffs, dust mask).",
-              "type": "short",
+              "type": "long",
               "maxPoints": 1,
               "rubric": [
                 {
