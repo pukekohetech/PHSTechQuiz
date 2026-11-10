@@ -342,55 +342,7 @@
   body.reading-dark-mode .phs-translate-help { background: #252c35; color: #f4f4f5; border-color: #46525f; }
   body.reading-dark-mode .phs-translate-help summary { color: #ffe3e3; }
 </style>
-<script>
-  (function () {
-    function setupBrowserTranslationHelp() {
-      document.documentElement.lang = 'en-NZ';
-      document.documentElement.setAttribute('translate', 'yes');
-      var header = document.querySelector('.container > header');
-      if (header && !document.getElementById('phs-translate-help')) {
-        var help = document.createElement('details');
-        help.id = 'phs-translate-help';
-        help.className = 'phs-translate-help';
-        help.innerHTML = '<summary>🌐 Language / Translate</summary>' +
-          '<div class="phs-translate-help__content">' +
-          '<p>First load your assessment. Then use the translation feature in your browser to choose a language.</p>' +
-          '<ol><li><strong>Chrome:</strong> Right-click a blank part of the page, then select <strong>Translate to…</strong>. Choose your language in the translation menu.</li>' +
-          '<li><strong>Edge:</strong> Use the Translate icon in the address bar, or open the browser menu and choose Translate.</li>' +
-          '<li><strong>Other browsers:</strong> Use their built-in page translation option, if available.</li></ol>' +
-          '<p>If you load another assessment and the questions return to English, use Translate again.</p>' +
-          '<p class="phs-translate-help__note"><strong>Important:</strong> Marking still uses English answer rules. Ask your teacher to review answers written in another language.</p>' +
-          '</div>';
-        header.insertAdjacentElement('afterend', help);
-      }
 
-      function protectOriginalResponses() {
-        document.querySelectorAll('#name, #id, #student, #teacher-name, #questions input.answer-field, #questions textarea.answer-field, .photo-evidence-field input[type="text"], .photo-evidence-field textarea').forEach(function (el) {
-          el.setAttribute('translate', 'no');
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.id === 'student') el.setAttribute('dir', 'auto');
-        });
-        document.querySelectorAll('#answers .feedback p').forEach(function (p) {
-          var heading = p.querySelector('strong');
-          if (heading && /^Your answer\s*:/i.test(heading.textContent || '')) {
-            var answer = p.querySelector('span');
-            if (answer) { answer.setAttribute('translate', 'no'); answer.setAttribute('dir', 'auto'); }
-          }
-        });
-      }
-      protectOriginalResponses();
-      var container = document.querySelector('.container');
-      if (container && window.MutationObserver) {
-        var observer = new MutationObserver(protectOriginalResponses);
-        observer.observe(container, { childList: true, subtree: true });
-      }
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setupBrowserTranslationHelp, { once: true });
-    } else {
-      setupBrowserTranslationHelp();
-    }
-  })();
-</script>
 
 
 
