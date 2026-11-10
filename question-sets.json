@@ -4,13 +4,13 @@
   "questionSets": [
     {
       "id": "us24352-v3",
-      "label": "US 24352 - Safety Knowledge",
+      "label": "US 24352 - Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
       "file": "questions/us24352-v3.json",
       "number": "24352",
       "version": "v3",
       "credits": 2,
       "title": "Demonstrate and apply knowledge of safe working practices in the construction of a BCATS project",
-      "assessmentCount": 8
+      "assessmentCount": 3
     },
     {
       "id": "ss40540-v1",
