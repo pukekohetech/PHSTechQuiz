@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html lang="en-NZ">
+<html lang="en-NZ" translate="yes">
   <head>
     <link rel="manifest" href="manifest.webmanifest">
     <meta charset="UTF-8">
@@ -10,6 +10,22 @@
     <link rel="stylesheet" href="styles.css?v=17">
     <link rel="stylesheet" href="question-groups.css?v=23">
 
+<!-- PHSTechQuiz: in-page language translation. Uses the browser's Translator API. -->
+<style>
+  .phs-language-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 18px; padding:10px 12px; border:1px solid #d8c6c6; border-radius:12px; background:#fffafa; }
+  .phs-language-bar__button { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; padding:8px 15px; border:1px solid #6e1818; border-radius:9px; background:#6e1818; color:#fff; font:700 1rem system-ui, sans-serif; cursor:pointer; }
+  .phs-language-bar__button:focus-visible, .phs-language-panel select:focus-visible { outline:3px solid #274dba; outline-offset:2px; }
+  .phs-language-bar kbd { font:600 .78rem system-ui,sans-serif; border:1px solid #e0b5b5; border-radius:5px; padding:2px 5px; color:#fff; }
+  .phs-language-panel { flex:1 1 270px; min-width:220px; }
+  .phs-language-panel[hidden] { display:none; }
+  .phs-language-panel label { display:block; margin:0 0 5px; font-weight:650; }
+  .phs-language-panel select { width:100%; max-width:380px; min-height:42px; background:#fff; color:#1f2937; }
+  .phs-language-status { width:100%; margin:0; color:#4b5563; font-size:.88rem; line-height:1.4; }
+  .phs-language-note { width:100%; margin:0; color:#6b4a4a; font-size:.82rem; line-height:1.4; }
+  body.reading-dark-mode .phs-language-bar { background:#292d36; border-color:#62656d; color:#fff; }
+  body.reading-dark-mode .phs-language-status, body.reading-dark-mode .phs-language-note { color:#eff0f4; }
+  @media (max-width:540px) { .phs-language-bar { align-items:stretch; } .phs-language-bar__button { width:100%; } .phs-language-panel { flex-basis:100%; } }
+</style>
   </head>
   <body>
     <div class="container">
@@ -31,13 +47,13 @@
         <div class="info-grid">
           <div>
             <label for="name">Student Name</label>
-            <input id="name" type="text" placeholder="Enter your full name">
+            <input id="name" type="text" translate="no" placeholder="Enter your full name">
           </div>
           <div>
             <label for="id">Student ID</label>
-            <input id="id" type="text" placeholder="Enter your ID">
+            <input id="id" type="text" translate="no" placeholder="Enter your ID">
             <div id="locked-msg" class="locked-msg hidden">
-              ID locked as <span id="locked-id"></span> for this device.
+              ID locked as <span id="locked-id" translate="no"></span> for this device.
             </div>
           </div>
           <div>
@@ -51,6 +67,28 @@
 
       <section class="assessment">
         <h2>Assessment</h2>
+        <div id="phsLanguageBar" class="phs-language-bar notranslate" translate="no" aria-label="Page language options">
+          <button type="button" id="phsTranslationToggle" class="phs-language-bar__button"
+                  aria-controls="phsTranslationPanel" aria-expanded="false"
+                  title="Translate assessment text (Alt + T)">
+            <span aria-hidden="true">&#127760;</span>
+            <span>Translate</span>
+            <kbd aria-hidden="true">Alt + T</kbd>
+          </button>
+          <div id="phsTranslationPanel" class="phs-language-panel" hidden>
+            <label for="phsTranslationLanguage">Language</label>
+            <select id="phsTranslationLanguage" disabled aria-describedby="phsTranslationStatus">
+              <option value="en">English (original)</option>
+            </select>
+            <p id="phsTranslationStatus" class="phs-language-status" role="status" aria-live="polite">
+              Choose a language supported by your browser.
+            </p>
+            <p class="phs-language-note">
+              Only displayed text is translated. Assessment marking and saved answers remain unchanged.
+              For languages missing here, try your browser's Translate menu.
+            </p>
+          </div>
+        </div>
         <div id="loading" class="loading">Loading questions…</div>
         <div class="info-grid quizmaster-selection-grid">
           <div>
@@ -90,7 +128,7 @@
       <section class="result-section hidden" id="result">
         <div class="result-header">
           <h2>Assessment Complete!</h2>
-          <p><strong id="student"></strong> to <span id="teacher-name"></span></p>
+          <p><strong id="student" translate="no"></strong> to <span id="teacher-name" translate="no"></span></p>
           <div class="grade" id="grade"></div>
         </div>
         <div id="answers"></div>
@@ -314,37 +352,264 @@
 <script src="photo-evidence.js?v=9" defer></script>
 <script src="reading-comfort.js?v=2" defer></script>
 
-    <!-- PHSTechQuiz: browser-native language help. No external translation API. -->
-<style>
-  .phs-translate-help {
-    margin: 0; padding: 12px 24px;
-    background: #fff7f7;
-    border-bottom: 1px solid #ebc9c9;
-    color: #1f2933;
-    font-family: inherit;
-    line-height: 1.5;
+
+
+
+
+<script>
+(function () {
+  'use strict';
+  var languages = [
+    ['ar','Arabic'],['bn','Bangla'],['bg','Bulgarian'],['zh','Chinese (Simplified)'],
+    ['zh-Hant','Chinese (Traditional)'],['cs','Czech'],['da','Danish'],['nl','Dutch'],
+    ['fi','Finnish'],['fr','French'],['de','German'],['el','Greek'],['he','Hebrew'],
+    ['hi','Hindi'],['hu','Hungarian'],['id','Indonesian'],['it','Italian'],['ja','Japanese'],
+    ['kn','Kannada'],['ko','Korean'],['lt','Lithuanian'],['mr','Marathi'],['no','Norwegian'],
+    ['pl','Polish'],['pt','Portuguese'],['ro','Romanian'],['ru','Russian'],['sk','Slovak'],
+    ['sl','Slovenian'],['es','Spanish'],['sv','Swedish'],['ta','Tamil'],['te','Telugu'],
+    ['th','Thai'],['tr','Turkish'],['uk','Ukrainian'],['vi','Vietnamese']
+  ];
+  var btn = document.getElementById('phsTranslationToggle');
+  var panel = document.getElementById('phsTranslationPanel');
+  var select = document.getElementById('phsTranslationLanguage');
+  var status = document.getElementById('phsTranslationStatus');
+  if (!btn || !panel || !select || !status) return;
+  var nativeApi = !!(window.isSecureContext && window.Translator &&
+    typeof window.Translator.availability === 'function' && typeof window.Translator.create === 'function');
+  var optionsChecked = false;
+  var translator = null;
+  var lang = 'en';
+  var generation = 0;
+  var originals = new WeakMap();
+  var originalAttrs = new WeakMap();
+  var timer = 0;
+  var inScan = false;
+  var needsScan = false;
+  var excluded = '#phsLanguageBar,script,style,noscript,svg,code,pre,textarea,' +
+    '[translate="no"],.notranslate,#student,#teacher-name,#locked-id,#grade,' +
+    '#submissionReceipt,#appSettingsStatus,#teacher option:not(:first-child),' +
+    '#answers .feedback p:first-of-type span';
+
+  function setStatus(message) { status.textContent = message; }
+  function protectedElement(element) {
+    return !element || !!element.closest(excluded);
   }
-  .phs-translate-help summary {
-    cursor: pointer;
-    color: #6e1818;
-    font-size: 1rem;
-    font-weight: 700;
-    width: max-content;
-    max-width: 100%;
-    padding: 6px 0;
+  function originalFor(node) {
+    var now = node.nodeValue;
+    var entry = originals.get(node);
+    if (!entry || (now !== entry.original && now !== entry.last)) {
+      entry = { original:now, last:now, language:'en' };
+      originals.set(node,entry);
+    }
+    return entry;
   }
-  .phs-translate-help summary:focus-visible { outline: 3px solid #6e1818; outline-offset: 4px; }
-  .phs-translate-help__content { max-width: 800px; padding: 8px 0 4px; }
-  .phs-translate-help__content p { margin: 0 0 10px; }
-  .phs-translate-help__content ol { padding-left: 22px; margin: 0 0 10px; }
-  .phs-translate-help__content li { margin-bottom: 6px; }
-  .phs-translate-help__note { font-size: 0.9rem; }
-  body.reading-dark-mode .phs-translate-help { background: #252c35; color: #f4f4f5; border-color: #46525f; }
-  body.reading-dark-mode .phs-translate-help summary { color: #ffe3e3; }
-</style>
+  function allTextNodes() {
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) {
+      if (n.parentElement && !protectedElement(n.parentElement) && /[A-Za-z]/.test(n.nodeValue)) {
+        nodes.push(n);
+      } else if (originals.has(n) && n.parentElement && !protectedElement(n.parentElement)) {
+        nodes.push(n);
+      }
+    }
+    return nodes;
+  }
+  function attrTargets() {
+    return Array.from(document.querySelectorAll('input[placeholder],textarea[placeholder],button[title]'))
+      .filter(function (el) { return !protectedElement(el); });
+  }
+  function getAttributeRecord(el, attr) {
+    var entry = originalAttrs.get(el) || {};
+    var now = el.getAttribute(attr) || '';
+    var item = entry[attr];
+    if (!item || (now !== item.original && now !== item.last)) {
+      item = { original:now, last:now, language:'en' };
+      entry[attr] = item;
+      originalAttrs.set(el,entry);
+    }
+    return item;
+  }
+  function restoreEnglish() {
+    allTextNodes().forEach(function (node) {
+      var old = originals.get(node);
+      if (old && node.nodeValue === old.last) {
+        node.nodeValue = old.original;
+        old.last = old.original;
+        old.language = 'en';
+      }
+    });
+    attrTargets().forEach(function (el) {
+      ['placeholder','title'].forEach(function (attr) {
+        if (!el.hasAttribute(attr)) return;
+        var item = getAttributeRecord(el,attr);
+        if (el.getAttribute(attr) === item.last) {
+          el.setAttribute(attr,item.original);
+          item.last = item.original;
+          item.language = 'en';
+        }
+      });
+    });
+  }
+  async function translateTextNode(node, selectedTranslator, target, token) {
+    if (!node.isConnected || !node.parentElement || protectedElement(node.parentElement)) return;
+    var item = originalFor(node);
+    if (item.language === target && node.nodeValue === item.last) return;
+    if (!/[A-Za-z]/.test(item.original)) return;
+    var before = node.nodeValue;
+    try {
+      var result = await selectedTranslator.translate(item.original);
+      if (token !== generation || !node.isConnected || node.nodeValue !== before) return;
+      node.nodeValue = result;
+      item.last = result;
+      item.language = target;
+    } catch (error) {
+      if (token === generation) console.warn('Could not translate some assessment text.',error);
+    }
+  }
+  async function translateAttribute(el, attr, selectedTranslator, target, token) {
+    if (!el.isConnected || !el.hasAttribute(attr)) return;
+    var item = getAttributeRecord(el,attr);
+    if (item.language === target || !/[A-Za-z]/.test(item.original)) return;
+    var before = el.getAttribute(attr);
+    try {
+      var result = await selectedTranslator.translate(item.original);
+      if (token !== generation || !el.isConnected || el.getAttribute(attr) !== before) return;
+      el.setAttribute(attr,result);
+      item.last = result;
+      item.language = target;
+    } catch (error) {
+      if (token === generation) console.warn('Could not translate a placeholder.',error);
+    }
+  }
+  async function scan() {
+    if (!translator || lang === 'en') return;
+    if (inScan) { needsScan = true; return; }
+    inScan = true;
+    var token = generation;
+    var current = translator;
+    var target = lang;
+    try {
+      var nodes = allTextNodes();
+      for (var i = 0; i < nodes.length; i += 4) {
+        if (token !== generation) return;
+        await Promise.all(nodes.slice(i,i+4).map(function (node) {
+          return translateTextNode(node,current,target,token);
+        }));
+      }
+      var elements = attrTargets();
+      for (var j = 0; j < elements.length; j += 4) {
+        if (token !== generation) return;
+        await Promise.all(elements.slice(j,j+4).flatMap(function (el) {
+          return ['placeholder','title'].filter(function (a) { return el.hasAttribute(a); })
+            .map(function (a) { return translateAttribute(el,a,current,target,token); });
+        }));
+      }
+      if (token === generation) setStatus('Showing ' + (languages.find(function (x) { return x[0] === lang; }) || ['',lang])[1] + '. English marking rules and saved answers are unchanged.');
+    } finally {
+      inScan = false;
+      if (needsScan) { needsScan = false; scheduleScan(); }
+    }
+  }
+  function scheduleScan() {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function () { timer=0; scan(); },220);
+  }
+  new MutationObserver(function (events) {
+    if (lang === 'en' || !translator) return;
+    if (events.some(function (event) { return !event.target.closest || !event.target.closest('#phsLanguageBar'); })) scheduleScan();
+  }).observe(document.body,{ subtree:true,childList:true,characterData:true,
+    attributes:true,attributeFilter:['placeholder','title'] });
 
-
-
+  async function checkLanguages() {
+    if (optionsChecked) return;
+    optionsChecked = true;
+    select.disabled = true;
+    if (!nativeApi) {
+      setStatus('In-page translation is not supported here. Try an up-to-date desktop Chrome or Edge browser, or use the browser Translate menu.');
+      return;
+    }
+    setStatus('Checking languages supported by this browser...');
+    var supported = [];
+    for (var i = 0; i < languages.length; i += 6) {
+      var batch = languages.slice(i,i+6);
+      var found = await Promise.all(batch.map(async function (item) {
+        try {
+          var availability = await window.Translator.availability({sourceLanguage:'en',targetLanguage:item[0]});
+          return availability && availability !== 'unavailable' ? item : null;
+        } catch (error) { return null; }
+      }));
+      found.forEach(function (item) { if (item) supported.push(item); });
+    }
+    supported.sort(function (a,b) { return a[1].localeCompare(b[1]); });
+    select.replaceChildren(new Option('English (original)','en'));
+    supported.forEach(function (item) { select.add(new Option(item[1],item[0])); });
+    select.value = lang;
+    select.disabled = false;
+    setStatus(supported.length ? 'Choose a language to translate the page. Some languages need a one-time browser model download.' :
+      'No translation languages are available in this browser. Try the browser Translate menu instead.');
+  }
+  function applyLanguage(target) {
+    generation++;
+    var token = generation;
+    if (target === 'en') {
+      lang = 'en';
+      var oldTranslator = translator;
+      translator = null;
+      if (oldTranslator) oldTranslator.destroy();
+      restoreEnglish();
+      setStatus('Original English text restored. Student answers are unchanged.');
+      return;
+    }
+    if (!nativeApi) { setStatus('This browser does not support in-page translation.'); return; }
+    setStatus('Preparing translation model...');
+    // The call must start directly in the student gesture, before any await.
+    var creating;
+    try {
+      creating = window.Translator.create({
+        sourceLanguage:'en',targetLanguage:target,
+        monitor:function (download) {
+          download.addEventListener('downloadprogress',function (event) {
+            if (token === generation) setStatus('Preparing language: ' + Math.round(event.loaded*100) + '%');
+          });
+        }
+      });
+    } catch (error) {
+      setStatus('This language is unavailable: ' + (error.message || error));
+      return;
+    }
+    creating.then(function (ready) {
+      if (token !== generation) { ready.destroy(); return; }
+      var old = translator;
+      translator = ready;
+      lang = target;
+      if (old) old.destroy();
+      setStatus('Translating assessment text...');
+      scheduleScan();
+    }).catch(function (error) {
+      if (token !== generation) return;
+      setStatus('Translation could not start (' + (error.message || 'unsupported language') + '). Try the browser Translate menu.');
+    });
+  }
+  btn.addEventListener('click',function () {
+    panel.hidden = !panel.hidden;
+    btn.setAttribute('aria-expanded',String(!panel.hidden));
+    if (!panel.hidden) { checkLanguages(); select.focus(); }
+  });
+  select.addEventListener('change',function () { applyLanguage(select.value); });
+  document.addEventListener('keydown',function (event) {
+    if (event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 't') {
+      event.preventDefault();
+      btn.click();
+    } else if (event.key === 'Escape' && !panel.hidden) {
+      panel.hidden = true;
+      btn.setAttribute('aria-expanded','false');
+      btn.focus();
+    }
+  });
+})();
+</script>
 
   </body>
 </html>
